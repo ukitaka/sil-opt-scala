@@ -1,4 +1,4 @@
-import me.waft.parser.{ParseImportDecl, ParseSILStageDecl}
+import me.waft.parser.ParseImportDecl
 import me.waft.sil.decl.ImportDecl
 import org.scalatest._
 
