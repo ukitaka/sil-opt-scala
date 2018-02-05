@@ -8,5 +8,5 @@ object ImportDeclParser {
   def importDecl: P[ImportDecl] =
     P("import " ~ moduleIdentifier).map(ImportDecl.apply _)
 
-  def moduleIdentifier: P[String] = IdentifierParser.identifier
+  def moduleIdentifier: P[String] = IdentifierParser.Swift.identifier
 }
