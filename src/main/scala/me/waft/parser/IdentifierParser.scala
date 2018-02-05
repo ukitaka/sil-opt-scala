@@ -2,7 +2,7 @@ package me.waft
 
 import fastparse.all._
 
-object Identifier {
+object IdentifierParser {
 
   def identifier: P[String] = (identifierHead ~ identifierCharacters).!
 

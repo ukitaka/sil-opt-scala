@@ -3,7 +3,7 @@ package me.waft.parser
 import fastparse.all._
 import me.waft.sil.decl.SILStageDecl
 
-object ParseSILStageDecl {
+object SILStageDeclParser {
   // sil-stage-decl ::= 'sil_stage' sil-stage
   def silStageDecl: P[SILStageDecl] = P("sil_stage " ~ silStage)
 
