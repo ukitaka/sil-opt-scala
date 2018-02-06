@@ -1,3 +1,4 @@
 package me.waft.swift.`type`
 
-case class Attribute()
+case class Attribute(name: String, balancedTokens: Seq[String])
+
