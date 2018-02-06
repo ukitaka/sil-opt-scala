@@ -16,7 +16,6 @@ sealed trait Type
   */
 case class ArrayType(elementType: Type) extends Type
 case class DictionaryType(keyType: Type, valueType: Type) extends Type
-case class FunctionType(argType: Type, valueType: Type) extends Type
 case class TupleType(types: Seq[Type]) extends Type
 case class OptionalType(wrappedType: Type) extends Type
 case class ImplicitlyUnwrappedOptionalType(wrappedType: Type) extends Type
@@ -26,6 +25,8 @@ case object AnyType extends Type
 case object SelfType extends Type
 case class ParenType(`type`: Type) extends Type
 
+case class FunctionType(attributes: Seq[Attribute], argType: Type,
+                        throwing: Option[Throwing], valueType: Type) extends Type
 /**
   * type → type-identifier
   */
