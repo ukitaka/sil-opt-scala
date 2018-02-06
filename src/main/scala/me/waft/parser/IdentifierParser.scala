@@ -1,4 +1,4 @@
-package me.waft
+package me.waft.parser
 
 import fastparse.all._
 

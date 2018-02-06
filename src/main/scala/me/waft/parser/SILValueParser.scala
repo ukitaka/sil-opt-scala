@@ -1,7 +1,7 @@
 package me.waft.parser
 
 import fastparse.all._
-import me.waft.IdentifierParser.SIL
+import me.waft.parser.IdentifierParser.SIL
 import me.waft.sil.SILValue
 
 object SILValueParser {
