@@ -1,5 +1,3 @@
 package me.waft
 
-package object sil {
-  trait SILInstruction
-}
+package object sil { }
