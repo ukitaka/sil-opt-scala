@@ -4,11 +4,14 @@ import fastparse.all._
 import me.waft.parser.IdentifierParser.SIL
 import me.waft.parser.SILValueParser._
 import me.waft.parser.SILTypeParser._
-import me.waft.sil.{SILArgument, SILLabel}
+import me.waft.parser.SILInstructionParser._
+import me.waft.parser.SILTerminatorParser._
+import me.waft.sil.{SILArgument, SILBasicBlock, SILLabel}
 
 
 object SILBasicBlockParser {
-  def basicBlock: P[Unit] = ???
+  def basicBlock: P[SILBasicBlock] =
+    (silLabel ~ silInstructionDef.rep() ~ silTerminator).map(SILBasicBlock.tupled)
 
   def silLabel: P[SILLabel] =
     (SIL.identifier ~ silLabelArguments ~ ":")

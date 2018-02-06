@@ -7,17 +7,19 @@ import SILOperandParser._
 import SILBasicBlockParser._
 
 object SILTerminatorParser {
-  def unreachable: P[SILTerminator] = P("unreachable").map(_ => Unreachable)
+  def silTerminator: P[SILTerminator] = unreachable | `return` | `throw` | unwind | br | condBr
 
-  def `return`: P[Return] = P("return" ~ silOperand).map(Return)
+  private[this] def unreachable: P[SILTerminator] = P("unreachable").map(_ => Unreachable)
 
-  def `throw`: P[Throw] = P("throw" ~ silOperand).map(Throw)
+  private[this] def `return`: P[Return] = P("return" ~ silOperand).map(Return)
 
-  def unwind: P[SILTerminator] = P("unwind").map(_ => Unwind)
+  private[this] def `throw`: P[Throw] = P("throw" ~ silOperand).map(Throw)
 
-  def br: P[Br] = P("br" ~ silLabel ~ silOperand.rep(0)).map(Br.tupled)
+  private[this] def unwind: P[SILTerminator] = P("unwind").map(_ => Unwind)
 
-  def condBr: P[CondBr] = (
+  private[this] def br: P[Br] = P("br" ~ silLabel ~ silOperand.rep(0)).map(Br.tupled)
+
+  private[this] def condBr: P[CondBr] = (
     // condition
     "cond_br" ~ silOperand ~ "," ~
       // if true
