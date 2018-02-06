@@ -15,16 +15,13 @@ object SILInstructionParser {
   private[this] def silInstructionResultNames: P[Seq[String]] =
     ("," ~ silValueName).rep(0).?.map(_.getOrElse(Seq.empty))
 
-  private[this] def silInstructionSourceInfo: P[Option[String]] = ???
-
-  def silInstructionDef: P[SILInstructionDef] = (
-    (silInstructionResult ~ "=").?.map(_.getOrElse(Seq.empty)) ~
-      silInstruction ~
-      silInstructionSourceInfo)
-    .map(p => SILInstructionDef(p._1, p._2))
+  def silInstructionDef: P[SILInstructionDef] =
+    ( (silInstructionResult ~ "=").?
+        .map(_.getOrElse(Seq.empty)) ~
+      silInstruction )
+      .map(SILInstructionDef.tupled)
 
   import instruction.AllocParser._
 
   def silInstruction: P[SILInstruction] = allocStack | allocBox
-
 }
