@@ -3,7 +3,7 @@ package me.waft.parser
 import fastparse.noApi._
 import me.waft.parser.White._
 import me.waft.sil.SILType
-import me.waft.sil.`type`.GenericParameter
+import me.waft.swift.`type`.GenericParameter
 
 object SILTypeParser {
   def silType: P[SILType] = ("$" ~ "*".? ~ IdentifierParser.SIL.identifier).!.map(SILType.apply)
