@@ -1,4 +1,4 @@
-import me.waft.parser.{CommentParser, IdentifierParser}
+import me.waft.parser.IdentifierParser
 import org.scalatest._
 
 class IdentifierParserSpec extends FlatSpec with Matchers {
