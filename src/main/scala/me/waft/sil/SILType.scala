@@ -1,5 +1,3 @@
 package me.waft.sil
 
-class SILType {
-
-}
+case class SILType(name: String)

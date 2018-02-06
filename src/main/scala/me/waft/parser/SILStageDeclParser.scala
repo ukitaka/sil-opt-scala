@@ -1,11 +1,12 @@
 package me.waft.parser
 
-import fastparse.all._
+import fastparse.noApi._
+import White._
 import me.waft.sil.decl.SILStageDecl
 
 object SILStageDeclParser {
   // sil-stage-decl ::= 'sil_stage' sil-stage
-  def silStageDecl: P[SILStageDecl] = P("sil_stage " ~ silStage)
+  def silStageDecl: P[SILStageDecl] = P("sil_stage" ~ silStage)
 
   private[this] def silStage: P[SILStageDecl] = P(raw | canonical)
 
