@@ -1,5 +1,5 @@
 package me.waft.sil
 
-class SILBasicBlock {
+case class SILBasicBlock(label: SILLabel, instructionDefs: Seq[SILInstructionDef]) {
 
 }
