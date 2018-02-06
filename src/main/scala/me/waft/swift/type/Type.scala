@@ -27,6 +27,9 @@ case class ParenType(`type`: Type) extends Type
 
 case class FunctionType(attributes: Seq[Attribute], argType: Type,
                         throwing: Option[Throwing], valueType: Type) extends Type
+
+case class FunctionTypeArgument(attributes: Seq[Attribute], `type`: Type) extends Type
+
 /**
   * type → type-identifier
   */

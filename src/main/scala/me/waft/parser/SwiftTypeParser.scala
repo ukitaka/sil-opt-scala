@@ -3,7 +3,7 @@ package me.waft.parser
 import fastparse.noApi._
 import me.waft.parser.White._
 import me.waft.parser.IdentifierParser.Swift
-import me.waft.swift.`type`.{Attribute, FunctionType, Throwing, Type}
+import me.waft.swift.`type`._
 
 object SwiftTypeParser {
   def `type`: P[Type] = functionType
@@ -15,9 +15,21 @@ object SwiftTypeParser {
       "->"
       ~ `type`).map(FunctionType.tupled)
 
-  def functionTypeArgumentClause: P[Type] = ???
+  private[this] def functionTypeArgumentClause: P[Type] =
+    ("("  ~ functionTypeArgumentList ~ ")").map(TupleType)
+
+  private[this] def functionTypeArgumentList: P[Seq[FunctionTypeArgument]] =
+    functionTypeArgument.map(arg => Seq(arg)) |
+      ( functionTypeArgument ~ "," ).rep(1)
+
+  private[this] def functionTypeArgument: P[FunctionTypeArgument] =
+    (attributes ~ `type`).map(FunctionTypeArgument.tupled)
+
+  private[this] def argumentLabel: P[String] = Swift.identifier
 
   private[this] def throwing: P[Throwing] = P("throws" | "rethrows").!.map(Throwing.apply _)
+
+  // attributes
 
   private[this] def attributes: P[Seq[Attribute]] = attribute.rep(1)
 
