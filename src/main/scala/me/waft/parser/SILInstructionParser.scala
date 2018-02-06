@@ -8,6 +8,7 @@ import me.waft.sil.{SILInstructionDef, SILValue}
 
 object SILInstructionParser {
   def silInstructionResult: P[Seq[SILValue]] =
+    silValue.map(name => Seq(name)) |
     ("(" ~ silValueName ~ silInstructionResultNames ~ ")")
       .map(names => names._1 +: names._2)
       .map(_.map(SILValue.apply))
