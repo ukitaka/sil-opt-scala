@@ -15,7 +15,7 @@ object SwiftTypeParser {
       functionTypeArgumentClause ~
       throwing.? ~
       "->"
-      ~ `type`).map(FunctionType.tupled)
+      ~ nominalType).map(FunctionType.tupled)
 
   def functionTypeArgumentClause: P[TupleType] =
     "(" ~ functionTypeArgumentList.map(TupleType) ~ ")"
@@ -25,7 +25,7 @@ object SwiftTypeParser {
       ( functionTypeArgument ~ "," ).rep(1)
 
   def functionTypeArgument: P[FunctionTypeArgument] =
-    (attributes.?.map(_.getOrElse(Seq.empty)) ~ `type`)
+    (attributes.?.map(_.getOrElse(Seq.empty)) ~ nominalType) //TODO: Suppor only nominal type for now
       .map(FunctionTypeArgument.tupled)
 
   private[this] def argumentLabel: P[String] = Swift.identifier
@@ -45,6 +45,6 @@ object SwiftTypeParser {
 
   private[this] def balancedTokens: P[Seq[String]] = balancedToken.rep(1)
 
-  private[this] def balancedToken: P[String] = Swift.identifier //TODO あとで実装
+  private[this] def balancedToken: P[String] = Swift.identifier //TODO
 
 }
