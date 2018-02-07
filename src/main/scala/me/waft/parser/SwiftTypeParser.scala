@@ -6,14 +6,17 @@ import me.waft.parser.IdentifierParser.Swift
 import me.waft.swift.`type`._
 
 object SwiftTypeParser {
-  def `type`: P[Type] = functionType
+  def `type`: P[Type] = nominalType | functionType
+
+  def nominalType: P[NominalType] = Swift.identifier.map(NominalType)
 
   def functionType: P[FunctionType] =
     (attributes.?.map(_.getOrElse(Seq.empty)) ~
       functionTypeArgumentClause ~
       throwing.? ~
       "->"
-      ~ `type`).map(FunctionType.tupled)
+//      ~ `type`).map(FunctionType.tupled)
+        ~ nominalType).map(FunctionType.tupled)
 
   private[this] def functionTypeArgumentClause: P[Type] =
     ("("  ~ functionTypeArgumentList ~ ")").map(TupleType)
@@ -23,7 +26,8 @@ object SwiftTypeParser {
       ( functionTypeArgument ~ "," ).rep(1)
 
   private[this] def functionTypeArgument: P[FunctionTypeArgument] =
-    (attributes ~ `type`).map(FunctionTypeArgument.tupled)
+//    (attributes ~ `type`).map(FunctionTypeArgument.tupled)
+      (attributes ~ nominalType).map(FunctionTypeArgument.tupled)
 
   private[this] def argumentLabel: P[String] = Swift.identifier
 
