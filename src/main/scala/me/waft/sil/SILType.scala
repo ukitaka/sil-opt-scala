@@ -1,3 +1,5 @@
 package me.waft.sil
 
-case class SILType(name: String)
+import me.waft.swift.`type`.SwiftType
+
+case class SILType(swiftType: SwiftType)

@@ -6,7 +6,7 @@ import me.waft.parser.IdentifierParser.Swift
 import me.waft.swift.`type`._
 
 object SwiftTypeParser {
-  def `type`: P[Type] = functionType | nominalType
+  def `type`: P[SwiftType] = functionType | nominalType
 
   def nominalType: P[NominalType] = Swift.identifier.map(NominalType)
 
