@@ -23,6 +23,7 @@ object SILInstructionParser {
       .map(SILInstructionDef.tupled)
 
   import instruction.AllocParser._
+  import instruction.StructParser._
 
-  def silInstruction: P[SILInstruction] = allocStack | allocBox
+  def silInstruction: P[SILInstruction] = allocStack | allocBox | structExtract
 }
