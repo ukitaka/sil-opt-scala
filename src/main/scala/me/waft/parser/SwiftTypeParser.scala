@@ -17,15 +17,16 @@ object SwiftTypeParser {
       "->"
       ~ `type`).map(FunctionType.tupled)
 
-  private[this] def functionTypeArgumentClause: P[Type] =
-    ("("  ~ functionTypeArgumentList ~ ")").map(TupleType)
+  def functionTypeArgumentClause: P[TupleType] =
+    "(" / functionTypeArgumentList.map(TupleType) ~ ")"
 
   private[this] def functionTypeArgumentList: P[Seq[FunctionTypeArgument]] =
     functionTypeArgument.map(arg => Seq(arg)) |
       ( functionTypeArgument ~ "," ).rep(1)
 
-  private[this] def functionTypeArgument: P[FunctionTypeArgument] =
-    (attributes ~ `type`).map(FunctionTypeArgument.tupled)
+  def functionTypeArgument: P[FunctionTypeArgument] =
+    (attributes.?.map(_.getOrElse(Seq.empty)) ~ `type`)
+      .map(FunctionTypeArgument.tupled)
 
   private[this] def argumentLabel: P[String] = Swift.identifier
 

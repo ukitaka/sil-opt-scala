@@ -1,6 +1,6 @@
 import fastparse.core.Parsed
 import me.waft.parser.SwiftTypeParser
-import me.waft.swift.`type`.{Attribute, NominalType}
+import me.waft.swift.`type`.{Attribute, FunctionTypeArgument, NominalType, TupleType}
 import org.scalatest._
 
 class SwiftFunctionTypeParserSpec extends FlatSpec with Matchers {
@@ -28,11 +28,29 @@ class SwiftFunctionTypeParserSpec extends FlatSpec with Matchers {
     result should matchPattern { case Parsed.Failure(_, _, _) =>  }
   }
 
-  "function parsing" should "work well" in {
-    val swiftType = "(Bool) -> Bool"
-    val result = SwiftTypeParser.functionType.parse(swiftType).get.value
-    true should be (false)
+  "functionTypeArgumentClause parsing" should "be fail without ->" in {
+    val boolType = "Bool"
+    val result = SwiftTypeParser.functionTypeArgumentClause.parse(boolType)
+    result should matchPattern { case Parsed.Failure(_, _, _) => }
   }
+
+//  "function type parsing" should "be fail without ->" in {
+//    val boolType = "Bool"
+//    val result = SwiftTypeParser.functionType.parse(boolType)
+//    result should matchPattern { case Parsed.Failure(_, _, _) => }
+//  }
+
+//  "functionTypeArgumentClause" should "be parsed well" in {
+//    val arg = "(Bool)"
+//    val result = SwiftTypeParser.functionTypeArgumentClause.parse(arg).get.value
+//    result should be (TupleType(Seq(NominalType("Bool"))))
+//  }
+
+//  "function parsing" should "work well" in {
+//    val swiftType = "(Bool) -> Bool"
+//    val result = SwiftTypeParser.functionType.parse(swiftType).get.value
+//    true should be (false)
+//  }
 
 //  "function parsing" should "work well" in {
 //    val swiftType = "@convention(thin) (Bool) -> Bool"
