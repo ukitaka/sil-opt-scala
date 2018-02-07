@@ -24,6 +24,8 @@ object SILInstructionParser {
 
   import instruction.AllocParser._
   import instruction.StructParser._
+  import instruction.LiteralParser._
 
-  def silInstruction: P[SILInstruction] = allocStack | allocBox | structExtract
+  def silInstruction: P[SILInstruction] =
+    allocStack | allocBox | structExtract | integerLiteral
 }

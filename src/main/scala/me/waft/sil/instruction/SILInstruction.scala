@@ -11,3 +11,6 @@ case class AllocBox(`type`: SILType) extends SILInstruction("alloc_box")
 
 case class StructExtract(operand: SILOperand, declRef: SILDeclRef)
   extends SILInstruction("struct_extract")
+
+case class IntegerLiteral(`type`: SILType, value: Int)
+  extends SILInstruction("integer_literal")

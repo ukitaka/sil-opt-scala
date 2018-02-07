@@ -8,7 +8,9 @@ import me.waft.swift.`type`._
 object SwiftTypeParser {
   def `type`: P[SwiftType] = functionType | nominalType
 
-  def nominalType: P[NominalType] = Swift.identifier.map(NominalType)
+  def nominalType: P[NominalType] =
+    Swift.identifier.map(NominalType) |
+    (Swift.identifier ~ ("." ~ Swift.identifier)).!.map(NominalType)
 
   def functionType: P[FunctionType] =
     (attributes.?.map(_.getOrElse(Seq.empty)) ~
