@@ -5,7 +5,7 @@ import fastparse.all._
 object IdentifierParser {
   object SIL {
     def identifier: P[String] =
-      CharIn( 'A' to 'Z', 'a' to 'z', '0' to '9' ).rep(1).!
+      CharIn( 'A' to 'Z', 'a' to 'z', '0' to '9', Seq('_') ).rep(1).!
   }
 
   object Swift {
