@@ -57,5 +57,7 @@ class SwiftFunctionTypeParserSpec extends FlatSpec with Matchers {
     val result = SwiftTypeParser.functionType.parse(swiftType).get.value
     result.valueType should be (NominalType("Bool"))
     result.argType should matchPattern { case TupleType(_) => }
+    result.attributes.head.name should be("convention")
+    result.attributes.head.balancedTokens.head should be("thin")
   }
 }
