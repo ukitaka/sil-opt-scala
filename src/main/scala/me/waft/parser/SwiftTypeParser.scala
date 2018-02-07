@@ -18,7 +18,7 @@ object SwiftTypeParser {
       ~ `type`).map(FunctionType.tupled)
 
   def functionTypeArgumentClause: P[TupleType] =
-    "(" / functionTypeArgumentList.map(TupleType) ~ ")"
+    "(" ~ functionTypeArgumentList.map(TupleType) ~ ")"
 
   private[this] def functionTypeArgumentList: P[Seq[FunctionTypeArgument]] =
     functionTypeArgument.map(arg => Seq(arg)) |
