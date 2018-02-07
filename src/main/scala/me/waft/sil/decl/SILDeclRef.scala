@@ -1,6 +1,6 @@
 package me.waft.sil.decl
 
-case class SILDeclRef(declRef: String, subref: SILDeclRef)
+case class SILDeclRef(declRef: String, subref: Option[SILDeclSubref])
 
 case class SILDeclSubref(subrefPart: Option[SILDeclSubrefPart],
                            uncurryLevel: Option[SILDeclUncurryLevel],
