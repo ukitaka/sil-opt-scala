@@ -1,5 +1,6 @@
 import org.scalatest._
 import me.waft.parser.instruction.StructParser._
+import me.waft.parser.instruction.LiteralParser._
 import me.waft.sil.decl.SILDeclRef
 import me.waft.sil.{SILOperand, SILType, SILValue}
 
@@ -9,5 +10,12 @@ class SILInstructionsParserSpec extends FlatSpec with Matchers {
     val result = structExtract.parse(instruction).get.value
     result.operand should be(SILOperand(SILValue("%0"), SILType("Bool")))
     result.declRef should be(SILDeclRef("Bool._value", None))
+  }
+
+  "integer_literal instruction" should "be parsed well" in {
+    val instruction = "integer_literal $Builtin.Int1, -1"
+    val result = integerLiteral.parse(instruction).get.value
+    result.value should be(-1)
+    result.`type` should be(SILType("Builtin.Int1"))
   }
 }
