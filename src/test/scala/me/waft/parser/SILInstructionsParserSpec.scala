@@ -1,4 +1,4 @@
-package me.waft
+package me.waft.parser
 
 import me.waft.parser.instruction.LiteralParser._
 import me.waft.parser.instruction.StructParser._

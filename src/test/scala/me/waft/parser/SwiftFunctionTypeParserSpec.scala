@@ -1,7 +1,6 @@
-package me.waft
+package me.waft.parser
 
 import fastparse.core.Parsed
-import me.waft.parser.SwiftTypeParser
 import me.waft.swift.`type`.{Attribute, FunctionTypeArgument, NominalType, TupleType}
 import org.scalatest._
 

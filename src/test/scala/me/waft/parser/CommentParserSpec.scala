@@ -1,6 +1,5 @@
-package me.waft
+package me.waft.parser
 
-import me.waft.parser.CommentParser
 import org.scalatest._
 
 class CommentParserSpec extends FlatSpec with Matchers {

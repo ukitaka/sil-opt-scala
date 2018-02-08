@@ -1,6 +1,5 @@
-package me.waft
+package me.waft.parser
 
-import me.waft.parser.SILInstructionParser
 import me.waft.sil._
 import me.waft.sil.instruction.AllocStack
 import me.waft.swift.`type`.NominalType

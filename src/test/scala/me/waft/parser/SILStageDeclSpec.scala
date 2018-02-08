@@ -1,4 +1,4 @@
-package me.waft
+package me.waft.parser
 
 import me.waft.sil.decl.SILStageDecl
 import org.scalatest._

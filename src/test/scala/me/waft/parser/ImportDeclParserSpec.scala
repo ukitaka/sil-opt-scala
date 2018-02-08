@@ -1,6 +1,5 @@
-package me.waft
+package me.waft.parser
 
-import me.waft.parser.ImportDeclParser
 import me.waft.sil.decl.ImportDecl
 import org.scalatest._
 

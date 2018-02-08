@@ -1,6 +1,5 @@
-package me.waft
+package me.waft.parser
 
-import me.waft.parser.IdentifierParser
 import org.scalatest._
 
 class IdentifierParserSpec extends FlatSpec with Matchers {
