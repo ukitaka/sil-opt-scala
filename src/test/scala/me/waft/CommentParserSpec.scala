@@ -1,3 +1,5 @@
+package me.waft
+
 import me.waft.parser.CommentParser
 import org.scalatest._
 

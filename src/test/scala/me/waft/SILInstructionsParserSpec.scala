@@ -1,8 +1,10 @@
-import org.scalatest._
-import me.waft.parser.instruction.StructParser._
+package me.waft
+
 import me.waft.parser.instruction.LiteralParser._
+import me.waft.parser.instruction.StructParser._
 import me.waft.sil.decl.SILDeclRef
 import me.waft.sil.{SILOperand, SILType, SILValue}
+import org.scalatest._
 
 class SILInstructionsParserSpec extends FlatSpec with Matchers {
   "struct_extract instruction" should "be parsed well" in {

@@ -1,3 +1,5 @@
+package me.waft
+
 import me.waft.parser.IdentifierParser
 import org.scalatest._
 

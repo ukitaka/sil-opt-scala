@@ -1,3 +1,5 @@
+package me.waft
+
 import me.waft.parser.SILInstructionParser
 import me.waft.sil._
 import me.waft.sil.instruction.AllocStack

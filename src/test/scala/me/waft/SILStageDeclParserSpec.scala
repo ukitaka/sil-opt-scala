@@ -1,3 +1,5 @@
+package me.waft
+
 import me.waft.parser.SILStageDeclParser
 import me.waft.sil.decl.SILStageDecl
 import org.scalatest._

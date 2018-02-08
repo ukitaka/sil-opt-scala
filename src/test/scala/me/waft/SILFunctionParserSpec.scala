@@ -1,3 +1,5 @@
+package me.waft
+
 import me.waft.parser.SILFunctionParser
 import me.waft.sil.Hidden
 import org.scalatest._

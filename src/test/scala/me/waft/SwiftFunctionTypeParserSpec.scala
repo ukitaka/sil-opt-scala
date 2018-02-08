@@ -1,3 +1,5 @@
+package me.waft
+
 import fastparse.core.Parsed
 import me.waft.parser.SwiftTypeParser
 import me.waft.swift.`type`.{Attribute, FunctionTypeArgument, NominalType, TupleType}

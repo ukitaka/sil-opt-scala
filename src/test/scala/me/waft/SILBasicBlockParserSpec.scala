@@ -1,6 +1,8 @@
+package me.waft
+
 import me.waft.parser.SILBasicBlockParser
-import me.waft.sil.instruction.AllocStack
 import me.waft.sil._
+import me.waft.sil.instruction.AllocStack
 import me.waft.swift.`type`.NominalType
 import org.scalatest._
 

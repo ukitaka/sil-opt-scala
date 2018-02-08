@@ -1,3 +1,5 @@
+package me.waft
+
 import me.waft.parser.SILOperandParser
 import me.waft.sil.{SILOperand, SILType, SILValue}
 import me.waft.swift.`type`.NominalType
