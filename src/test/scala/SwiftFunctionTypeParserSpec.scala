@@ -22,6 +22,12 @@ class SwiftFunctionTypeParserSpec extends FlatSpec with Matchers {
     result should be (NominalType("Bool"))
   }
 
+  "nominal type parsing" should "work well with type including dots" in {
+    val boolType = "A.B"
+    val result = SwiftTypeParser.nominalType.parse(boolType).get.value
+    result should be (NominalType("A.B"))
+  }
+
   "nominal type parsing" should "be fail with type wrapped with ( )" in {
     val boolType = "(Bool)"
     val result = SwiftTypeParser.nominalType.parse(boolType)
