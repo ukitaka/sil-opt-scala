@@ -14,3 +14,6 @@ case class StructExtract(operand: SILOperand, declRef: SILDeclRef)
 
 case class IntegerLiteral(`type`: SILType, value: Int)
   extends SILInstruction("integer_literal")
+
+case class BuiltIn(name: String, substitutions: Seq[String], operands: Seq[SILOperand], `type`: Seq[SILType])
+  extends SILInstruction("builtin")
