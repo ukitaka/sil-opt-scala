@@ -1,11 +1,11 @@
 package me.waft.sil.optimizer.meta
 
-import me.waft.sil.lang.SILOperand
+import me.waft.sil.lang._
 import me.waft.sil.lang.instruction.SILInstruction
 import me.waft.sil.lang.instruction._
 
 object SILTraverse {
-  def getOperands(sILInstruction: SILInstruction): Seq[SILOperand] = sILInstruction match {
+  def getOperands(instruction: SILInstruction): Seq[SILOperand] = instruction match {
     case AllocStack(_) => Seq()
     case AllocBox(_) => Seq()
     case StructExtract(operand, _) => Seq(operand)
@@ -16,5 +16,15 @@ object SILTraverse {
     case Store(_, operand) => Seq(operand)
     case Load(operand) => Seq(operand)
     case StrongRelease(operand) => Seq(operand)
+  }
+
+  def getOperands(terminator: SILTerminator): Seq[SILOperand] = terminator match {
+    case Unreachable => Seq()
+    case Return(operand) => Seq(operand)
+    case Throw(operand) => Seq(operand)
+    case Unwind => Seq()
+    case Br(_, operands) => operands
+    case CondBr(condOperand, _, ifTrueArgs, _, ifFalseArgs) =>
+      (condOperand +: ifTrueArgs) ++ ifFalseArgs
   }
 }
