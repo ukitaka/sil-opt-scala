@@ -18,5 +18,5 @@ case class IntegerLiteral(`type`: SILType, value: Int)
 
 case class SILSubstitution(target: SwiftType, to: SwiftType)
 
-case class BuiltIn(name: String, substitutions: Seq[SILSubstitution], operands: Seq[SILOperand], `type`: Seq[SILType])
+case class BuiltIn(name: String, substitutions: Seq[SILSubstitution], operands: Seq[SILOperand], `type`: SILType)
   extends SILInstruction("builtin")
