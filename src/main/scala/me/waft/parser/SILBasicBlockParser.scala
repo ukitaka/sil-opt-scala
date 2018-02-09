@@ -12,7 +12,7 @@ import me.waft.sil.{SILArgument, SILBasicBlock, SILLabel}
 
 object SILBasicBlockParser {
   def basicBlock: P[SILBasicBlock] =
-    (silLabel ~ silInstructionDef.rep() ~ silTerminator).map(SILBasicBlock.tupled)
+    (silLabel ~ silInstructionDefs ~ silTerminator).map(SILBasicBlock.tupled)
 
   def silLabel: P[SILLabel] =
     (SIL.identifier ~ silLabelArguments ~ ":")
