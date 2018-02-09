@@ -1,6 +1,5 @@
 package me.waft
 
-import fastparse.WhitespaceApi
 import me.waft.parser.CommentParser._
 
 package object parser {
@@ -22,9 +21,16 @@ package object parser {
       rep[R](min, ",", max, exactly) ~ trailingComma
   }
 
+  class WhitespaceApiForSeq[+T](p0: P[Seq[T]], WL: P0) extends fastparse.WhitespaceApi[Seq[T]](p0, WL) {
+    def ?? = ?.map(_.getOrElse(Seq.empty))
+  }
+
   class Wrapper(WL: P0){
     implicit def parserApi2[T, V](p0: T)(implicit c: T => P[V]): WhitespaceApi2[V] =
       new WhitespaceApi2[V](p0, WL)
+
+    implicit def parserForSeq[T](p0: P[Seq[T]]): WhitespaceApiForSeq[T] =
+      new WhitespaceApiForSeq[T](p0, WL)
   }
 
   val WhiteSpaceApi = new Wrapper(WL0)

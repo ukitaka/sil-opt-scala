@@ -19,8 +19,7 @@ object SILBasicBlockParser {
       .map(SILLabel.tupled)
 
   private[this] def silLabelArguments: P[Seq[SILArgument]] =
-    ( "(" ~ silArgument.repTC(1) ~ ")" ).?
-      .map(_.getOrElse(Seq.empty))
+    ( "(" ~ silArgument.repTC(1) ~ ")" ).??
 
   private[this] def silArgument: P[SILArgument] =
     (silValueName ~ ":" ~ silType)
