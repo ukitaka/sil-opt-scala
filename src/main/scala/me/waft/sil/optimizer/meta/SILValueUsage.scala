@@ -1,8 +1,11 @@
 package me.waft.sil.optimizer.meta
 
-import me.waft.sil.lang.SILFunction
+import me.waft.sil.lang.{SILBasicBlock, SILFunction, SILInstructionDef, SILValue}
+
+import scalax.collection.{Graph, GraphEdge}
 
 object SILValueUsage {
-  def analyseUsages(sILFunction: SILFunction) = ???
+  type UsageGraph = Graph[SILInstructionDef, GraphEdge.DiEdge]
+  def analyseUsages(bb: SILBasicBlock): UsageGraph = ???
 }
 
