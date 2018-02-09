@@ -32,6 +32,6 @@ class SILFunctionParserSpec extends FlatSpec with Matchers {
         |}
       """.stripMargin
     val result = SILFunctionParser.silFunction.parse(sil).get.value
-    result.linkage.get should be (None)
+    result.linkage should be (None)
   }
 }

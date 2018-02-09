@@ -1,7 +1,7 @@
 package me.waft.sil.instruction
 
 import me.waft.sil.decl.SILDeclRef
-import me.waft.sil.{SILOperand, SILType}
+import me.waft.sil.{SILOperand, SILType, SILValue}
 import me.waft.swift.`type`.SwiftType
 
 sealed abstract class SILInstruction(name: String)
@@ -26,3 +26,12 @@ case class Struct(`type`: SILType, operands: Seq[SILOperand])
 
 case class ProjectBox(operand: SILOperand)
   extends SILInstruction("project_box")
+
+case class Store(value: SILValue, operand: SILOperand)
+  extends SILInstruction("store")
+
+case class Load(operand: SILOperand)
+  extends SILInstruction("load")
+
+case class StrongRelease(operand: SILOperand)
+  extends SILInstruction("strong_release")
