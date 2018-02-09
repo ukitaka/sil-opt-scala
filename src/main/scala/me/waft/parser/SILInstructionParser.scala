@@ -17,7 +17,7 @@ object SILInstructionParser {
     ("," ~ silValueName).rep(0).?.map(_.getOrElse(Seq.empty))
 
   def silInstructionDefs: P[Seq[SILInstructionDef]] =
-    (silInstructionDef ~ "").rep(0, whitespaces)
+    silInstructionDef.rep(0, whitespaces)
 //    (silInstructionDef ~ silInstructionDefs).map(d => d._1 +: d._2) |
 //      silInstructionDef.map(d => Seq(d))
 

@@ -4,12 +4,19 @@ import me.waft.sil.instruction.AllocStack
 import me.waft.sil._
 import me.waft.swift.`type`.NominalType
 import org.scalatest._
+import White._
 
 class CommentParserSpec extends FlatSpec with Matchers {
   "Comment parser" should "work well" in {
     val sil = "// here is comment\n"
-    val result = CommentParser.comment.parse(sil).get.value
-    result should be ()
+    val result = CommentParser.comment.!.parse(sil).get.value
+    result should be ("// here is comment\n")
+  }
+
+  "Whitespaces parser" should "work well" in {
+    val sil = " // here is comment\n // here is also comment"
+    val result = whitespaces.!.parse(sil).get.value
+    result should be (" // here is comment\n // here is also comment")
   }
 
   "Parser" should "work well with comment" in {

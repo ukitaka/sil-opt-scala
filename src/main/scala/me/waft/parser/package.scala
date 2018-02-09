@@ -10,7 +10,7 @@ package object parser {
 
   val whitespace = P( " " | "\t" | newline)
 
-  val whitespaces = whitespace.rep | comment
+  val whitespaces = (whitespace | comment).rep
 
   val White = WhitespaceApi.Wrapper {
     import fastparse.all._
