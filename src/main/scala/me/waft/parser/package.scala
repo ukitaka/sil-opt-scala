@@ -7,6 +7,8 @@ package object parser {
 
   def number: P[Int] = CharIn('0' to '9').rep(1).!.map(_.toInt)
 
+  def stringLiteral: P[String] = ("\"" ~ (!"\"" ~ AnyChar).rep.! ~ "\"")
+
   val newline = P( "\n" | "\r\n" | "\r" | "\f")
 
   val whitespace = P( " " | "\t" | newline)
