@@ -1,7 +1,7 @@
 package me.waft.parser
 
 import me.waft.parser.IdentifierParser.Swift
-import me.waft.sil.decl.ImportDecl
+import me.waft.lang.decl.ImportDecl
 import fastparse.noApi._
 import WhiteSpaceApi._
 

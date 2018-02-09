@@ -1,4 +1,4 @@
-package me.waft.sil.decl
+package me.waft.lang.decl
 
 case class SILDeclRef(declRef: String, subref: Option[SILDeclSubref])
 

@@ -6,7 +6,7 @@ import me.waft.parser._
 import me.waft.parser.SwiftTypeParser._
 import me.waft.parser.SILTypeParser._
 import me.waft.parser.SILOperandParser._
-import me.waft.sil.instruction.{BuiltIn, SILSubstitution}
+import me.waft.lang.instruction.{BuiltIn, SILSubstitution}
 
 trait FunctionApplicationParser {
   def silSubstitutionList: P[Seq[SILSubstitution]] =

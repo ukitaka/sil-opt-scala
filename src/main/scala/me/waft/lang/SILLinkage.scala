@@ -1,4 +1,4 @@
-package me.waft.sil
+package me.waft.lang
 
 sealed abstract class SILLinkage(val name: String)
 

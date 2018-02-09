@@ -1,6 +1,6 @@
 package me.waft.parser
 
-import me.waft.sil.{SILOperand, SILType, SILValue}
+import me.waft.lang.{SILOperand, SILType, SILValue}
 import me.waft.swift.`type`.NominalType
 import org.scalatest._
 

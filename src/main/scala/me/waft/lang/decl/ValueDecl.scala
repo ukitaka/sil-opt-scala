@@ -1,3 +1,3 @@
-package me.waft.sil.decl
+package me.waft.lang.decl
 
 case class ValueDecl() extends Decl

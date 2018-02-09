@@ -1,6 +1,6 @@
 package me.waft.parser
 
-import me.waft.sil.Hidden
+import me.waft.lang.Hidden
 import org.scalatest._
 
 class SILFunctionParserSpec extends FlatSpec with Matchers {

@@ -1,6 +1,6 @@
 package me.waft.parser
 
-import me.waft.sil.decl.SILStageDecl
+import me.waft.lang.decl.SILStageDecl
 import org.scalatest._
 
 class SILStageDeclParserSpec extends FlatSpec with Matchers {

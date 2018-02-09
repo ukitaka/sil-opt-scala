@@ -1,4 +1,4 @@
-package me.waft.sil
+package me.waft.lang
 
 package object decl {
   trait Decl

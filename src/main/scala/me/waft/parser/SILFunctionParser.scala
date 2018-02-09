@@ -6,7 +6,7 @@ import me.waft.parser.IdentifierParser.SIL
 import me.waft.parser.SILLinkageParser._
 import me.waft.parser.SILTypeParser._
 import me.waft.parser.SILBasicBlockParser._
-import me.waft.sil.SILFunction
+import me.waft.lang.SILFunction
 
 object SILFunctionParser {
   // sil-function ::= 'sil' sil-linkage? sil-function-name ':' sil-type '{' sil-basic-block+ '}'

@@ -2,7 +2,7 @@ package me.waft.parser
 
 import fastparse.noApi._
 import WhiteSpaceApi._
-import me.waft.sil._
+import me.waft.lang._
 import SILOperandParser._
 import SILBasicBlockParser._
 

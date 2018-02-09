@@ -1,5 +1,5 @@
-package me.waft.sil
+package me.waft.lang
 
-import me.waft.sil.instruction.SILInstruction
+import me.waft.lang.instruction.SILInstruction
 
 case class SILInstructionDef(values: Seq[SILValue], instruction: SILInstruction)
