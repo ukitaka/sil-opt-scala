@@ -23,3 +23,6 @@ case class BuiltIn(name: String, substitutions: Seq[SILSubstitution], operands: 
 
 case class Struct(`type`: SILType, operands: Seq[SILOperand])
   extends SILInstruction("struct")
+
+case class ProjectBox(operand: SILOperand)
+  extends SILInstruction("project_box")

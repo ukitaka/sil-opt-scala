@@ -24,7 +24,7 @@ class SILFunctionParserSpec extends FlatSpec with Matchers {
       """sil @simple_promotion : $(Int) -> Int {
         |bb0(%0 : $Int):
         |  %1 = alloc_box $Int
-        |  %1a = project_box %1 : $Int, 0
+        |  %1a = project_box %1 : $Int
         |  store %0 to %1a : $*Int
         |  %3 = load %1a : $*Int
         |  strong_release %1 : $Int

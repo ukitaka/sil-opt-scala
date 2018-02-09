@@ -24,5 +24,5 @@ object SILInstructionParser
       .map(SILInstructionDef.tupled)
 
   def silInstruction: P[SILInstruction] =
-    allocStack | allocBox | struct | structExtract | integerLiteral | builtin
+    allocStack | allocBox | struct | structExtract | integerLiteral | builtin | projectBox
 }
