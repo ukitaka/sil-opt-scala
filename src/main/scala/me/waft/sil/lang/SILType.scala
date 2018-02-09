@@ -1,6 +1,6 @@
 package me.waft.sil.lang
 
-import me.waft.swift.`type`.{NominalType, SwiftType}
+import me.waft.swift.lang.`type`.{NominalType, SwiftType}
 
 case class SILType(swiftType: SwiftType)
 

@@ -2,7 +2,7 @@ package me.waft.sil.lang.instruction
 
 import me.waft.sil.lang.decl.SILDeclRef
 import me.waft.sil.lang.{SILOperand, SILType, SILValue}
-import me.waft.swift.`type`.SwiftType
+import me.waft.swift.lang.`type`.SwiftType
 
 sealed abstract class SILInstruction(name: String)
 
