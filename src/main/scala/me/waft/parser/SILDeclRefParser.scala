@@ -39,6 +39,4 @@ object SILDeclRefParser {
 
   def silDeclLang: P[SILDeclLang] =
     P("foreign").const(SILDeclLang.Foreign)
-
-  def number: P[Int] = CharIn('0' to '9').rep(1).!.map(_.toInt)
 }

@@ -5,6 +5,8 @@ import me.waft.parser.CommentParser._
 package object parser {
   import fastparse.all._
 
+  def number: P[Int] = CharIn('0' to '9').rep(1).!.map(_.toInt)
+
   val newline = P( "\n" | "\r\n" | "\r" | "\f")
 
   val whitespace = P( " " | "\t" | newline)
