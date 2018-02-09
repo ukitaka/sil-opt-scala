@@ -1,4 +1,4 @@
-package me.waft.lang
+package me.waft.sil.lang
 
 case class SILValue(name: String)
 

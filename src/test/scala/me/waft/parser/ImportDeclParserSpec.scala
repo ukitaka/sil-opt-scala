@@ -1,6 +1,6 @@
 package me.waft.parser
 
-import me.waft.lang.decl.ImportDecl
+import me.waft.sil.lang.decl.ImportDecl
 import org.scalatest._
 
 class ImportDeclParserSpec extends FlatSpec with Matchers {

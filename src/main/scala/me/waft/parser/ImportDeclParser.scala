@@ -1,9 +1,9 @@
 package me.waft.parser
 
-import me.waft.parser.IdentifierParser.Swift
-import me.waft.lang.decl.ImportDecl
 import fastparse.noApi._
-import WhiteSpaceApi._
+import me.waft.parser.IdentifierParser.Swift
+import me.waft.parser.WhiteSpaceApi._
+import me.waft.sil.lang.decl.ImportDecl
 
 object ImportDeclParser {
   def importDecl: P[ImportDecl] =

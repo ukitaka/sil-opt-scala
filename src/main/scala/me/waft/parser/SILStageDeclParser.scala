@@ -2,7 +2,7 @@ package me.waft.parser
 
 import fastparse.noApi._
 import WhiteSpaceApi._
-import me.waft.lang.decl.SILStageDecl
+import me.waft.sil.lang.decl.SILStageDecl
 
 object SILStageDeclParser {
   // sil-stage-decl ::= 'sil_stage' sil-stage

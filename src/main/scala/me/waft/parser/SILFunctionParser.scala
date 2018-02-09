@@ -1,12 +1,12 @@
 package me.waft.parser
 
 import fastparse.noApi._
-import WhiteSpaceApi._
 import me.waft.parser.IdentifierParser.SIL
+import me.waft.parser.SILBasicBlockParser._
 import me.waft.parser.SILLinkageParser._
 import me.waft.parser.SILTypeParser._
-import me.waft.parser.SILBasicBlockParser._
-import me.waft.lang.SILFunction
+import me.waft.parser.WhiteSpaceApi._
+import me.waft.sil.lang.SILFunction
 
 object SILFunctionParser {
   // sil-function ::= 'sil' sil-linkage? sil-function-name ':' sil-type '{' sil-basic-block+ '}'

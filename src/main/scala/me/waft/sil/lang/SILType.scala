@@ -1,4 +1,4 @@
-package me.waft.lang
+package me.waft.sil.lang
 
 import me.waft.swift.`type`.{NominalType, SwiftType}
 

@@ -1,3 +1,3 @@
-package me.waft.lang.decl
+package me.waft.sil.lang.decl
 
 case class ModuleDecl() extends Decl

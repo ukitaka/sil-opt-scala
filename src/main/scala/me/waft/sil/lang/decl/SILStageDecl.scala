@@ -1,4 +1,4 @@
-package me.waft.lang.decl
+package me.waft.sil.lang.decl
 
 sealed abstract class SILStageDecl(val name: String) extends Decl {
   def isRaw: Boolean = (this == SILStageDecl.Raw)

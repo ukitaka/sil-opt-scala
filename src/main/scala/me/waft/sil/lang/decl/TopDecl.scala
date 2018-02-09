@@ -1,4 +1,4 @@
-package me.waft.lang.decl
+package me.waft.sil.lang.decl
 
 sealed trait TopDecl extends Decl
 

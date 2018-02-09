@@ -3,8 +3,8 @@ package me.waft.parser
 import fastparse.noApi._
 import me.waft.parser.SILValueParser._
 import me.waft.parser.WhiteSpaceApi._
-import me.waft.lang.instruction.SILInstruction
-import me.waft.lang.{SILInstructionDef, SILValue}
+import me.waft.sil.lang.instruction.SILInstruction
+import me.waft.sil.lang.{SILInstructionDef, SILValue}
 
 object SILInstructionParser
   extends instruction.AllocParser

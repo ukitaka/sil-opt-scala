@@ -1,10 +1,10 @@
 package me.waft.parser
 
 import fastparse.noApi._
-import WhiteSpaceApi._
-import me.waft.lang._
-import SILOperandParser._
-import SILBasicBlockParser._
+import me.waft.parser.SILBasicBlockParser._
+import me.waft.parser.SILOperandParser._
+import me.waft.parser.WhiteSpaceApi._
+import me.waft.sil.lang._
 
 object SILTerminatorParser {
   def silTerminator: P[SILTerminator] = unreachable | `return` | `throw` | unwind | br | condBr

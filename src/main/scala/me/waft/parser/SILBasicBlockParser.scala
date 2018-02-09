@@ -1,13 +1,13 @@
 package me.waft.parser
 
 import fastparse.noApi._
-import WhiteSpaceApi._
 import me.waft.parser.IdentifierParser.SIL
-import me.waft.parser.SILValueParser._
-import me.waft.parser.SILTypeParser._
 import me.waft.parser.SILInstructionParser._
 import me.waft.parser.SILTerminatorParser._
-import me.waft.lang.{SILArgument, SILBasicBlock, SILLabel}
+import me.waft.parser.SILTypeParser._
+import me.waft.parser.SILValueParser._
+import me.waft.parser.WhiteSpaceApi._
+import me.waft.sil.lang.{SILArgument, SILBasicBlock, SILLabel}
 
 
 object SILBasicBlockParser {

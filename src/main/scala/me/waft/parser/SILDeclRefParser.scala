@@ -1,8 +1,9 @@
 package me.waft.parser
 import fastparse.noApi._
-import WhiteSpaceApi._
-import me.waft.lang.decl._
-import IdentifierParser.SIL
+import me.waft.parser.IdentifierParser.SIL
+import me.waft.parser.WhiteSpaceApi._
+import me.waft.sil.lang.decl
+import me.waft.sil.lang.decl._
 
 object SILDeclRefParser {
   def silDeclRef: P[SILDeclRef] =
@@ -12,9 +13,9 @@ object SILDeclRefParser {
 
   def silDeclSubref: P[SILDeclSubref] =
     ("!" ~ silDeclSubrefPart ~ ("." ~ silDeclUncurryLevel).? ~ ("." ~ silDeclLang).?)
-      .map { case (part, level, lang) => SILDeclSubref(Some(part), level, lang) } |
+      .map { case (part, level, lang) => decl.SILDeclSubref(Some(part), level, lang) } |
     ("!" ~ silDeclUncurryLevel ~ ("." ~ silDeclLang).?)
-      .map { case (level, lang) => SILDeclSubref(None, Some(level), lang) } |
+      .map { case (level, lang) => decl.SILDeclSubref(None, Some(level), lang) } |
     ("!" ~ silDeclLang)
         .const(SILDeclSubref(None, None, Some(SILDeclLang.Foreign)))
 
