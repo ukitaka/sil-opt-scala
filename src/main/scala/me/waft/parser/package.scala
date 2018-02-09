@@ -23,6 +23,8 @@ package object parser {
       rep[R](min, ",", max, exactly) ~ trailingComma
 
     def const[T](t: T): P[T] = map(_ => t)
+
+    def parened: P[T] = "(" ~ p0 ~ ")"
   }
 
   class WhitespaceApiSeq[+T](p0: P[Seq[T]], WL: P0) extends fastparse.WhitespaceApi[Seq[T]](p0, WL) {
