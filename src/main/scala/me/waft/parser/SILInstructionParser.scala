@@ -8,7 +8,7 @@ import me.waft.sil.{SILInstructionDef, SILValue}
 
 object SILInstructionParser
   extends instruction.AllocParser
-  with instruction.StructParser
+  with instruction.AggregateTypesParser
   with instruction.LiteralParser
     with instruction.FunctionApplicationParser {
 
@@ -24,5 +24,5 @@ object SILInstructionParser
       .map(SILInstructionDef.tupled)
 
   def silInstruction: P[SILInstruction] =
-    allocStack | allocBox | structExtract | integerLiteral | builtin
+    allocStack | allocBox | struct | structExtract | integerLiteral | builtin
 }

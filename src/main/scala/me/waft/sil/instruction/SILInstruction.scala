@@ -20,3 +20,6 @@ case class SILSubstitution(target: SwiftType, to: SwiftType)
 
 case class BuiltIn(name: String, substitutions: Seq[SILSubstitution], operands: Seq[SILOperand], `type`: SILType)
   extends SILInstruction("builtin")
+
+case class Struct(`type`: SILType, operands: Seq[SILOperand])
+  extends SILInstruction("struct")

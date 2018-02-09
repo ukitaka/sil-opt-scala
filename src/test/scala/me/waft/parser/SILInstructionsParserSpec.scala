@@ -1,12 +1,12 @@
 package me.waft.parser
 
-import me.waft.parser.instruction.{AllocParser, FunctionApplicationParser, LiteralParser, StructParser}
+import me.waft.parser.instruction.{AllocParser, FunctionApplicationParser, LiteralParser, AggregateTypesParser}
 import me.waft.sil.decl.SILDeclRef
 import me.waft.sil.{SILOperand, SILType, SILValue}
 import org.scalatest._
 
 class SILInstructionsParserSpec extends FlatSpec with Matchers
-  with StructParser with AllocParser with LiteralParser with FunctionApplicationParser {
+  with AggregateTypesParser with AllocParser with LiteralParser with FunctionApplicationParser {
   "struct_extract instruction" should "be parsed well" in {
     val instruction = "struct_extract %0 : $Bool, #Bool._value"
     val result = structExtract.parse(instruction).get.value
@@ -27,4 +27,12 @@ class SILInstructionsParserSpec extends FlatSpec with Matchers
     result.name should be("xor_Int1")
     result.`type` should be(SILType("Builtin.Int1"))
   }
+
+  "struct instruction" should "be parsed well" in {
+    val instruction = "struct $Bool (%4 : $Builtin.Int1)"
+    val result = struct.parse(instruction).get.value
+    result.operands.head should be(SILOperand(SILValue("%4"), SILType("Builtin.Int1")))
+    result.`type` should be(SILType("Bool"))
+  }
+
 }

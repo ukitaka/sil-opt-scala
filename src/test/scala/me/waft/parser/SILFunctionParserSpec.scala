@@ -16,6 +16,6 @@ class SILFunctionParserSpec extends FlatSpec with Matchers {
        |}
      """.stripMargin
     val result = SILFunctionParser.silFunction.parse(sil).get.value
-    result.linkage should be (Hidden)
+    result.linkage.get should be (Hidden)
   }
 }
