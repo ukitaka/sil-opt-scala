@@ -1,8 +1,7 @@
 package me.waft.sil.lang.instruction
 
 import me.waft.sil.lang.decl.SILDeclRef
-import me.waft.sil.lang.{SILOperand, SILType, SILValue}
-import me.waft.swift.lang.`type`.SwiftType
+import me.waft.sil.lang.{SILOperand, SILSubstitution, SILType, SILValue}
 
 sealed abstract class SILInstruction(name: String)
 
@@ -15,8 +14,6 @@ case class StructExtract(operand: SILOperand, declRef: SILDeclRef)
 
 case class IntegerLiteral(`type`: SILType, value: Int)
   extends SILInstruction("integer_literal")
-
-case class SILSubstitution(target: SwiftType, to: SwiftType)
 
 case class BuiltIn(name: String, substitutions: Seq[SILSubstitution], operands: Seq[SILOperand], `type`: SILType)
   extends SILInstruction("builtin")
