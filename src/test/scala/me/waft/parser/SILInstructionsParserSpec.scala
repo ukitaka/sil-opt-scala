@@ -1,12 +1,12 @@
 package me.waft.parser
 
-import me.waft.parser.instruction.LiteralParser._
-import me.waft.parser.instruction.StructParser._
+import me.waft.parser.instruction.{AllocParser, LiteralParser, StructParser}
 import me.waft.sil.decl.SILDeclRef
 import me.waft.sil.{SILOperand, SILType, SILValue}
 import org.scalatest._
 
-class SILInstructionsParserSpec extends FlatSpec with Matchers {
+class SILInstructionsParserSpec extends FlatSpec with Matchers
+  with StructParser with AllocParser with LiteralParser {
   "struct_extract instruction" should "be parsed well" in {
     val instruction = "struct_extract %0 : $Bool, #Bool._value"
     val result = structExtract.parse(instruction).get.value
