@@ -16,29 +16,29 @@ object SILDeclRefParser {
     ("!" ~ silDeclUncurryLevel ~ ("." ~ silDeclLang).?)
         .map(a => SILDeclSubref.apply(None, Some(a._1), a._2)) |
     ("!" ~ silDeclLang)
-        .map(_ => SILDeclSubref.apply(None, None, Some(SILDeclLang.Foreign)))
+        .const(SILDeclSubref(None, None, Some(SILDeclLang.Foreign)))
 
   import SILDeclSubrefPart._
 
   def silDeclSubrefPart: P[SILDeclSubrefPart] = {
-    return P("getter").map(_ => Getter) |
-      P("setter").map(_ => Setter) |
-      P("allocator").map(_ => Allocator) |
-      P("initializer").map(_ => Initializer) |
-      P("enumelt").map(_ => Enumelt) |
-      P("destroyer").map(_ => Destoryer) |
-      P("deallocator").map(_ => Deallocator) |
-      P("globalaccessor").map(_ => Globalaccessor) |
-      P("ivardestroyer").map(_ => Ivardestroyer) |
-      P("ivarinitializer").map(_ => Ivarinitializer) |
+    return P("getter").const(Getter) |
+      P("setter").const(Setter) |
+      P("allocator").const(Allocator) |
+      P("initializer").const(Initializer) |
+      P("enumelt").const(Enumelt) |
+      P("destroyer").const(Destoryer) |
+      P("deallocator").const(Deallocator) |
+      P("globalaccessor").const(Globalaccessor) |
+      P("ivardestroyer").const(Ivardestroyer) |
+      P("ivarinitializer").const(Ivarinitializer) |
       P("defaultarg" ~ "." ~ number).map(Defaultarg)
   }
 
   def silDeclUncurryLevel: P[SILDeclUncurryLevel] =
-    number.map(SILDeclUncurryLevel.apply)
+    number.map(SILDeclUncurryLevel)
 
   def silDeclLang: P[SILDeclLang] =
-    P("foreign").map(_ => SILDeclLang.Foreign)
+    P("foreign").const(SILDeclLang.Foreign)
 
   def number: P[Int] = CharIn('0' to '9').rep(1).!.map(_.toInt)
 }

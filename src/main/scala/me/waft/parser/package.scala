@@ -19,6 +19,8 @@ package object parser {
     def repTC[R](min: Int = 0, max: Int = Int.MaxValue, exactly: Int = -1)
                 (implicit ev: fastparse.core.Implicits.Repeater[T, R]): P[R] =
       rep[R](min, ",", max, exactly) ~ trailingComma
+
+    def const[T](t: T): P[T] = map(_ => t)
   }
 
   class WhitespaceApiSeq[+T](p0: P[Seq[T]], WL: P0) extends fastparse.WhitespaceApi[Seq[T]](p0, WL) {
