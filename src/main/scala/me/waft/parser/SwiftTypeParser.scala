@@ -9,7 +9,7 @@ object SwiftTypeParser {
   def `type`: P[SwiftType] = functionType | nominalType
 
   def nominalType: P[NominalType] =
-    (Swift.identifier ~~ ("." ~~ Swift.identifier).rep(0)).!.map(NominalType)
+    Swift.identifier.rep(1, ".").!.map(NominalType)
 
   def functionType: P[FunctionType] =
     (attributes.?.map(_.getOrElse(Seq.empty)) ~
