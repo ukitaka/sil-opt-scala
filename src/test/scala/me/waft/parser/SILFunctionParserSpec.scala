@@ -18,4 +18,20 @@ class SILFunctionParserSpec extends FlatSpec with Matchers {
     val result = SILFunctionParser.silFunction.parse(sil).get.value
     result.linkage.get should be (Hidden)
   }
+
+  "SIL function" should "be parsed well No.2" in {
+    val sil =
+      """sil @simple_promotion : $(Int) -> Int {
+        |bb0(%0 : $Int):
+        |  %1 = alloc_box $Int
+        |  %1a = project_box %1 : $Int, 0
+        |  store %0 to %1a : $*Int
+        |  %3 = load %1a : $*Int
+        |  strong_release %1 : $Int
+        |  return %3 : $Int
+        |}
+      """.stripMargin
+    val result = SILFunctionParser.silFunction.parse(sil).get.value
+    result.linkage.get should be (None)
+  }
 }
