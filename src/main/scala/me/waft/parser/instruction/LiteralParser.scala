@@ -5,7 +5,7 @@ import me.waft.parser.WhiteSpaceApi._
 import me.waft.parser.SILTypeParser._
 import me.waft.sil.instruction.IntegerLiteral
 
-object LiteralParser {
+trait LiteralParser {
   def integerLiteral: P[IntegerLiteral] =
     ("integer_literal" ~ silType ~ "," ~ intLiteral).map(IntegerLiteral.tupled)
 

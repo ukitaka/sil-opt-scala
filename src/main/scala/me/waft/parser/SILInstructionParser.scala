@@ -6,7 +6,11 @@ import me.waft.parser.WhiteSpaceApi._
 import me.waft.sil.instruction.SILInstruction
 import me.waft.sil.{SILInstructionDef, SILValue}
 
-object SILInstructionParser {
+object SILInstructionParser
+  extends instruction.AllocParser
+  with instruction.StructParser
+  with instruction.LiteralParser {
+
   def silInstructionResult: P[Seq[SILValue]] =
     silValue.map(name => Seq(name)) |
       silValueName.map(SILValue.apply).repTC(1).parened
@@ -19,10 +23,6 @@ object SILInstructionParser {
         .map(_.getOrElse(Seq.empty)) ~
       silInstruction)
       .map(SILInstructionDef.tupled)
-
-  import instruction.AllocParser._
-  import instruction.StructParser._
-  import instruction.LiteralParser._
 
   def silInstruction: P[SILInstruction] =
     allocStack | allocBox | structExtract | integerLiteral
