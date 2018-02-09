@@ -9,17 +9,10 @@ import me.waft.sil.{SILInstructionDef, SILValue}
 object SILInstructionParser {
   def silInstructionResult: P[Seq[SILValue]] =
     silValue.map(name => Seq(name)) |
-    ("(" ~ silValueName ~ silInstructionResultNames ~ ")")
-      .map(names => names._1 +: names._2)
-      .map(_.map(SILValue.apply))
-
-  private[this] def silInstructionResultNames: P[Seq[String]] =
-    ("," ~ silValueName).rep(0).?.map(_.getOrElse(Seq.empty))
+      silValueName.map(SILValue.apply).repTC(1).parened
 
   def silInstructionDefs: P[Seq[SILInstructionDef]] =
     silInstructionDef.rep(0, whitespaces)
-//    (silInstructionDef ~ silInstructionDefs).map(d => d._1 +: d._2) |
-//      silInstructionDef.map(d => Seq(d))
 
   def silInstructionDef: P[SILInstructionDef] =
     ( (silInstructionResult ~ "=").?
