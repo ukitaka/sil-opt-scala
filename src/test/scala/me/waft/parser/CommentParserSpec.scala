@@ -1,6 +1,6 @@
 package me.waft.parser
 
-import me.waft.parser.White._
+import me.waft.parser.WhiteSpaceApi._
 import me.waft.sil._
 import me.waft.swift.`type`.NominalType
 import org.scalatest._

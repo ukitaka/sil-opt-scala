@@ -1,7 +1,7 @@
 package me.waft.parser
 
 import fastparse.noApi._
-import me.waft.parser.White._
+import me.waft.parser.WhiteSpaceApi._
 import me.waft.sil.SILType
 import SwiftTypeParser._
 

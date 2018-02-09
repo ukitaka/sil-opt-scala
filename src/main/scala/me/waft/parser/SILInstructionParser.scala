@@ -2,7 +2,7 @@ package me.waft.parser
 
 import fastparse.noApi._
 import me.waft.parser.SILValueParser._
-import me.waft.parser.White._
+import me.waft.parser.WhiteSpaceApi._
 import me.waft.sil.instruction.SILInstruction
 import me.waft.sil.{SILInstructionDef, SILValue}
 

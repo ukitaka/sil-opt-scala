@@ -1,7 +1,7 @@
 package me.waft.parser
 
 import fastparse.noApi._
-import White._
+import WhiteSpaceApi._
 import me.waft.parser.IdentifierParser.SIL
 import me.waft.parser.SILValueParser._
 import me.waft.parser.SILTypeParser._

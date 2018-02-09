@@ -3,7 +3,7 @@ package me.waft.parser
 import me.waft.parser.IdentifierParser.Swift
 import me.waft.sil.decl.ImportDecl
 import fastparse.noApi._
-import White._
+import WhiteSpaceApi._
 
 object ImportDeclParser {
   def importDecl: P[ImportDecl] =

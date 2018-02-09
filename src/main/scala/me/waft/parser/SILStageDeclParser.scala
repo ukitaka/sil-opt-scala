@@ -1,7 +1,7 @@
 package me.waft.parser
 
 import fastparse.noApi._
-import White._
+import WhiteSpaceApi._
 import me.waft.sil.decl.SILStageDecl
 
 object SILStageDeclParser {

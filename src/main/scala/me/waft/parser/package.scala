@@ -12,8 +12,21 @@ package object parser {
 
   val whitespaces = (whitespace | comment).rep
 
-  val White = WhitespaceApi.Wrapper {
-    import fastparse.all._
-    NoTrace(whitespaces)
+  val trailingComma: P0 = P( ("," ~ whitespaces ~ newline).? )
+
+  private val WL0 = NoTrace(whitespaces)
+
+  class WhitespaceApi2[+T](p0: P[T], WL: P0) extends fastparse.WhitespaceApi[T](p0, WL) {
+    def repTC[R](min: Int = 0, max: Int = Int.MaxValue, exactly: Int = -1)
+                (implicit ev: fastparse.core.Implicits.Repeater[T, R]): P[R] =
+      rep[R](min, ",", max, exactly) ~ trailingComma
   }
+
+  class Wrapper(WL: P0){
+    implicit def parserApi2[T, V](p0: T)(implicit c: T => P[V]): WhitespaceApi2[V] =
+      new WhitespaceApi2[V](p0, WL)
+  }
+
+  val WhiteSpaceApi = new Wrapper(WL0)
 }
+
