@@ -12,9 +12,9 @@ object SILDeclRefParser {
 
   def silDeclSubref: P[SILDeclSubref] =
     ("!" ~ silDeclSubrefPart ~ ("." ~ silDeclUncurryLevel).? ~ ("." ~ silDeclLang).?)
-      .map(a => SILDeclSubref.apply(Some(a._1), a._2, a._3)) |
+      .map { case (part, level, lang) => SILDeclSubref(Some(part), level, lang) } |
     ("!" ~ silDeclUncurryLevel ~ ("." ~ silDeclLang).?)
-        .map(a => SILDeclSubref.apply(None, Some(a._1), a._2)) |
+      .map { case (level, lang) => SILDeclSubref(None, Some(level), lang) } |
     ("!" ~ silDeclLang)
         .const(SILDeclSubref(None, None, Some(SILDeclLang.Foreign)))
 
