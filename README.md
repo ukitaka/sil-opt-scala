@@ -202,13 +202,13 @@ Swift Intermediate Language parser and optimizer written in Scala.
 
 ### Terminators
 
-- [ ] unreachable
-- [ ] return
-- [ ] throw
+- [x] unreachable
+- [x] return
+- [x] throw
 - [ ] yield
-- [ ] unwind
-- [ ] br
-- [ ] cond_br
+- [x] unwind
+- [x] br
+- [x] cond_br
 - [ ] switch_value
 - [ ] select_value
 - [ ] switch_enum
