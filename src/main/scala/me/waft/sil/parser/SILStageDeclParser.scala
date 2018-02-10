@@ -1,10 +1,12 @@
 package me.waft.sil.parser
 
 import fastparse.noApi._
-import WhiteSpaceApi._
+import me.waft.core.parser.Parser
 import me.waft.sil.lang.decl.SILStageDecl
 
-object SILStageDeclParser {
+trait SILStageDeclParser extends Parser {
+  import WhiteSpaceApi._
+
   // sil-stage-decl ::= 'sil_stage' sil-stage
   def silStageDecl: P[SILStageDecl] = P("sil_stage" ~ silStage)
 

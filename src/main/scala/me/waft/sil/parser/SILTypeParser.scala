@@ -1,10 +1,11 @@
 package me.waft.sil.parser
 
 import fastparse.noApi._
-import me.waft.sil.parser.WhiteSpaceApi._
-import me.waft.swift.parser.SwiftTypeParser._
+import me.waft.core.parser.Parser
+import me.waft.swift.parser.SwiftTypeParser
 import me.waft.sil.lang.SILType
 
-object SILTypeParser {
-  def silType: P[SILType] = ("$" ~ "*".? ~ `type`).map(SILType.apply)
+trait SILTypeParser extends Parser with SwiftTypeParser {
+  import WhiteSpaceApi._
+  def silType: P[SILType] = ("$" ~~ "*".? ~~ swiftType).map(SILType.apply)
 }

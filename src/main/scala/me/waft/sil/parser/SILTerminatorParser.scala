@@ -1,12 +1,11 @@
 package me.waft.sil.parser
 
 import fastparse.noApi._
-import me.waft.sil.parser.SILBasicBlockParser._
-import me.waft.sil.parser.SILOperandParser._
-import me.waft.sil.parser.WhiteSpaceApi._
 import me.waft.sil.lang._
 
-object SILTerminatorParser {
+trait SILTerminatorParser extends SILOperandParser with SILLabelParser {
+  import WhiteSpaceApi._
+
   def silTerminator: P[SILTerminator] = unreachable | `return` | `throw` | unwind | br | condBr
 
   private[this] def unreachable: P[SILTerminator] = P("unreachable").const(Unreachable)
@@ -24,9 +23,9 @@ object SILTerminatorParser {
     "cond_br" ~ silOperand ~ "," ~
       // if true
       silLabel ~
-      ( "(" ~ silOperand ~ ( "," ~ silOperand ).rep(1) ~ ")" ).map(ops => ops._1 +: ops._2) ~
+      (silOperand.repTC(1).parened) ~
       // if false
       silLabel ~
-      ( "(" ~ silOperand ~ ( "," ~ silOperand ).rep(1) ~ ")" ).map(ops => ops._1 +: ops._2)
+      (silOperand.repTC(1).parened)
     ).map(CondBr.tupled)
 }

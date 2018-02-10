@@ -1,18 +1,21 @@
 package me.waft.sil.parser
 
 import fastparse.noApi._
-import me.waft.sil.parser.SILValueParser._
-import me.waft.sil.parser.WhiteSpaceApi._
+import me.waft.core.parser.Parser
 import me.waft.sil.lang.instruction.SILInstruction
 import me.waft.sil.lang.{SILInstructionDef, SILValue}
 
-object SILInstructionParser
-  extends instruction.AllocParser
+trait SILInstructionParser
+  extends Parser
+    with SILValueParser
+    with instruction.AllocParser
     with instruction.AggregateTypesParser
     with instruction.LiteralParser
     with instruction.FunctionApplicationParser
     with instruction.AccessingMemoryParser
     with instruction.ReferenceCountingParser {
+
+  import WhiteSpaceApi._
 
   def silInstructionResult: P[Seq[SILValue]] =
     silValue.map(name => Seq(name)) |

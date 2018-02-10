@@ -1,15 +1,15 @@
 package me.waft.sil.parser
 import fastparse.noApi._
-import me.waft.sil.parser.IdentifierParser.SIL
-import me.waft.sil.parser.WhiteSpaceApi._
 import me.waft.sil.lang.decl
 import me.waft.sil.lang.decl._
 
-object SILDeclRefParser {
+trait SILDeclRefParser extends IdentifierParser {
+  import WhiteSpaceApi._
+
   def silDeclRef: P[SILDeclRef] =
     ("#" ~ silDeclRefIdentifier ~ silDeclSubref.?).map(SILDeclRef.tupled)
 
-  def silDeclRefIdentifier: P[String] = ( SIL.identifier ~ (".".! ~ SIL.identifier)).!
+  def silDeclRefIdentifier: P[String] = ( identifier ~ (".".! ~ identifier)).!
 
   def silDeclSubref: P[SILDeclSubref] =
     ("!" ~ silDeclSubrefPart ~ ("." ~ silDeclUncurryLevel).? ~ ("." ~ silDeclLang).?)

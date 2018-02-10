@@ -1,8 +1,6 @@
-package me.waft.sil
+package me.waft.core.parser
 
-import me.waft.sil.parser.CommentParser._
-
-package object parser {
+trait Parser {
   import fastparse.all._
 
   def number: P[Int] = CharIn('0' to '9').rep(1).!.map(_.toInt)
@@ -12,6 +10,8 @@ package object parser {
   val newline = P( "\n" | "\r\n" | "\r" | "\f")
 
   val whitespace = P( " " | "\t" | newline)
+
+  val comment = P( "//" ~/ (!"\n" ~ AnyChar).rep ~/ ("\n" | End))
 
   val whitespaces = (whitespace | comment).rep
 
@@ -24,7 +24,7 @@ package object parser {
                 (implicit ev: fastparse.core.Implicits.Repeater[T, R]): P[R] =
       rep[R](min, ",", max, exactly) ~ trailingComma
 
-    def const[T](t: T): P[T] = map(_ => t)
+    def const[A](a: A): P[A] = map(_ => a)
 
     def parened: P[T] = "(" ~ p0 ~ ")"
   }
@@ -34,6 +34,8 @@ package object parser {
   }
 
   class Wrapper(WL: P0){
+    import scala.language.implicitConversions
+
     implicit def parserApi[T, V](p0: T)(implicit c: T => P[V]): WhitespaceApi0[V] =
       new WhitespaceApi0[V](p0, WL)
     implicit def parserForSeq[T](p0: P[Seq[T]]): WhitespaceApiSeq[T] =

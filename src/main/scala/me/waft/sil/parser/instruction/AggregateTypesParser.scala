@@ -1,13 +1,13 @@
 package me.waft.sil.parser.instruction
 
 import fastparse.noApi._
-import me.waft.sil.parser.SILDeclRefParser._
-import me.waft.sil.parser.SILOperandParser._
-import me.waft.sil.parser.SILTypeParser._
-import me.waft.sil.parser.WhiteSpaceApi._
 import me.waft.sil.lang.instruction.{Struct, StructExtract}
+import me.waft.sil.parser.{SILDeclRefParser, SILOperandParser, SILTypeParser}
 
-trait AggregateTypesParser {
+trait AggregateTypesParser extends SILDeclRefParser
+    with SILOperandParser
+    with SILTypeParser {
+  import WhiteSpaceApi._
   def structExtract: P[StructExtract] =
     ("struct_extract" ~ silOperand ~ "," ~ silDeclRef).map(StructExtract.tupled)
 

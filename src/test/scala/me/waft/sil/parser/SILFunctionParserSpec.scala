@@ -3,7 +3,7 @@ package me.waft.sil.parser
 import me.waft.sil.lang.Hidden
 import org.scalatest._
 
-class SILFunctionParserSpec extends FlatSpec with Matchers {
+class SILFunctionParserSpec extends FlatSpec with Matchers with SILFunctionParser {
   "SIL function" should "be parsed well" in {
     val sil =
       """sil hidden @_T03notAAS2b4bool_tF : $@convention(thin) (Bool) -> Bool {
@@ -15,7 +15,7 @@ class SILFunctionParserSpec extends FlatSpec with Matchers {
        |  return %5 : $Bool
        |}
      """.stripMargin
-    val result = SILFunctionParser.silFunction.parse(sil).get.value
+    val result = silFunction.parse(sil).get.value
     result.linkage.get should be (Hidden)
   }
 
@@ -31,7 +31,7 @@ class SILFunctionParserSpec extends FlatSpec with Matchers {
         |  return %3 : $Int
         |}
       """.stripMargin
-    val result = SILFunctionParser.silFunction.parse(sil).get.value
+    val result = silFunction.parse(sil).get.value
     result.linkage should be (None)
   }
 }
