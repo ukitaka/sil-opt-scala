@@ -25,15 +25,15 @@ $ sil-opt -dce my_sil_file.sil
 
 ### Allocation and Deallocation
 
-- [ ] alloc_stack
+- [x] alloc_stack
 - [ ] alloc_ref
 - [ ] alloc_ref_dynamic
-- [ ] alloc_box
+- [x] alloc_box
 - [ ] alloc_value_buffer
 - [ ] alloc_global
 - [ ] dealloc_stack
 - [ ] dealloc_box
-- [ ] project_box
+- [x] project_box
 - [ ] dealloc_ref
 - [ ] dealloc_partial_ref
 - [ ] dealloc_value_buffer
@@ -66,7 +66,7 @@ $ sil-opt -dce my_sil_file.sil
 ### Reference Counting
 
 - [ ] strong_retain
-- [ ] strong_release
+- [x] strong_release
 - [ ] set_deallocating
 - [ ] strong_retain_unowned
 - [ ] unowned_retain
@@ -109,7 +109,7 @@ $ sil-opt -dce my_sil_file.sil
 - [ ] abort_apply
 - [ ] end_apply
 - [ ] partial_apply
-- [ ] builtin
+- [x] builtin
 
 ### Metatypes
 
@@ -133,8 +133,8 @@ $ sil-opt -dce my_sil_file.sil
 - [ ] tuple_extract
 - [ ] tuple_element_addr
 - [ ] destructure_tuple
-- [ ] struct
-- [ ] struct_extract
+- [x] struct
+- [x] struct_extract
 - [ ] struct_element_addr
 - [ ] destructure_struct
 - [ ] object
@@ -263,7 +263,7 @@ $ sil-opt -dce my_sil_file.sil
 - [ ] Print Epilogue retains of Returned Values and Argument releases
 - [ ] Print Epilogue retains of Returned Values and Argument releases
 - [ ] Redundant Overflow Check Removal
-- [ ] Dead Code Elimination
+- [x] Dead Code Elimination
 - [ ] Dead Argument Elimination via Function Specialization
 - [ ] Dead Function Elimination
 - [ ] Dead Object Elimination for Classes with Trivial Destruction
