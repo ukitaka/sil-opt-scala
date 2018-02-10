@@ -16,7 +16,7 @@ case class SILValueUsage(bb: SILBasicBlock) {
   def valueDecl(value: SILValue): SILInstructionDef =
     bb.instructionDefs.filter(_.values.contains(value)).head
 
-  def unusedValues: Set[SILValue] =
+  lazy val unusedValues: Set[SILValue] =
     usageGraph.nodes
       .filter(node =>
         usageGraph.filter(usageGraph.having(edge = _.target == node)).isEmpty
