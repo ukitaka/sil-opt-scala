@@ -1,6 +1,6 @@
 package me.waft.sil.lang.decl
 
-sealed trait TopDecl extends Decl
+sealed trait TopDecl extends SILDecl
 
 object TopDecl {
   case class Value(valueDecl: ValueDecl)

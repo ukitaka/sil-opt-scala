@@ -1,6 +1,6 @@
 package me.waft.sil.lang.decl
 
-sealed abstract class SILStageDecl(val name: String) extends Decl {
+sealed abstract class SILStageDecl(val name: String) extends SILDecl {
   def isRaw: Boolean = (this == SILStageDecl.Raw)
   def isCanonical: Boolean = (this == SILStageDecl.Canonical)
 }
