@@ -6,8 +6,8 @@ import me.waft.sil.lang.instruction._
 
 sealed trait SILTraverse
 
-case class SILInstructionTraverse(instruction: SILInstruction) extends SILTraverse {
-   def getOperands(instruction: SILInstruction): Seq[SILOperand] = instruction match {
+case class SILInstructionTraverse(private val instruction: SILInstruction) extends SILTraverse {
+   def getOperands: Seq[SILOperand] = instruction match {
     case AllocStack(_) => Seq()
     case AllocBox(_) => Seq()
     case StructExtract(operand, _) => Seq(operand)
@@ -21,7 +21,7 @@ case class SILInstructionTraverse(instruction: SILInstruction) extends SILTraver
   }
 }
 
-case class SILTerminatorTraverse(terminator: SILTerminator) extends SILTraverse {
+case class SILTerminatorTraverse(private val terminator: SILTerminator) extends SILTraverse {
   def getOperands: Seq[SILOperand] = terminator match {
     case Unreachable => Seq()
     case Return(operand) => Seq(operand)
