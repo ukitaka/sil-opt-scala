@@ -4,8 +4,10 @@ import me.waft.sil.lang._
 import me.waft.sil.lang.instruction.SILInstruction
 import me.waft.sil.lang.instruction._
 
-object SILTraverse {
-  def getOperands(instruction: SILInstruction): Seq[SILOperand] = instruction match {
+sealed trait SILTraverse
+
+case class SILInstructionTraverse(instruction: SILInstruction) extends SILTraverse {
+   def getOperands(instruction: SILInstruction): Seq[SILOperand] = instruction match {
     case AllocStack(_) => Seq()
     case AllocBox(_) => Seq()
     case StructExtract(operand, _) => Seq(operand)
@@ -17,8 +19,10 @@ object SILTraverse {
     case Load(operand) => Seq(operand)
     case StrongRelease(operand) => Seq(operand)
   }
+}
 
-  def getOperands(terminator: SILTerminator): Seq[SILOperand] = terminator match {
+case class SILTerminatorTraverse(terminator: SILTerminator) extends SILTraverse {
+  def getOperands: Seq[SILOperand] = terminator match {
     case Unreachable => Seq()
     case Return(operand) => Seq(operand)
     case Throw(operand) => Seq(operand)

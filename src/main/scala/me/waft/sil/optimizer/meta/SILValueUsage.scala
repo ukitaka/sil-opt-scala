@@ -1,6 +1,6 @@
 package me.waft.sil.optimizer.meta
 
-import me.waft.sil.lang.{SILBasicBlock, SILFunction, SILInstructionDef, SILValue}
+import me.waft.sil.lang.{SILBasicBlock, SILInstructionDef}
 
 import scalax.collection.{Graph, GraphEdge}
 
