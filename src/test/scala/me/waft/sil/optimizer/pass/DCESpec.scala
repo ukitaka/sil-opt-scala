@@ -5,9 +5,9 @@ import me.waft.sil.parser.SILFunctionParser
 import org.scalatest._
 
 class DCESpec extends FlatSpec with Matchers with SILFunctionParser {
-  "DCE pass" should "work well" in {
+  "Dead code elimination pass" should "work well" in {
     val sil =
-      """sil hidden @_T01d8hogehgoeSiyF : $@convention(thin) (Int) -> Int {
+      """sil hidden @_T01d8hogehgoeSiyF : $@convention(thin) () -> Int {
         |bb0:
         |  %0 = integer_literal $Builtin.Int64, 1          // user: %1
         |  %1 = struct $Int (%0 : $Builtin.Int64)          // user: %2
@@ -18,7 +18,13 @@ class DCESpec extends FlatSpec with Matchers with SILFunctionParser {
       """.stripMargin
     val bb = silFunction.parse(sil).get.value.basicBlocks.head
     val optimizedBb = DCE.eliminateDeadCodeInBB(bb)
+
+    // %1 is eliminated
     bb.instructionDefs.exists(_.values.contains(SILValue("%1"))) should be(true)
     optimizedBb.instructionDefs.exists(_.values.contains(SILValue("%1"))) should be(false)
+
+    // and %0 is eliminated
+    bb.instructionDefs.exists(_.values.contains(SILValue("%0"))) should be(true)
+    optimizedBb.instructionDefs.exists(_.values.contains(SILValue("%0"))) should be(false)
   }
 }

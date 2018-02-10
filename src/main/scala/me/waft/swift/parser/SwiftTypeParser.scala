@@ -6,10 +6,13 @@ import me.waft.swift.lang.`type`._
 trait SwiftTypeParser extends SwiftIdentifierParser {
   import WhiteSpaceApi._
 
-  def swiftType: P[SwiftType] = functionType | nominalType
+  def swiftType: P[SwiftType] = functionType | nominalType | tupleType
 
   def nominalType: P[NominalType] =
     swiftIdentifier.rep(1, ".").!.map(NominalType)
+
+  // TODO: Support only `()` for now.
+  def tupleType: P[TupleType] = ("(" ~ ")").const(TupleType(Seq()))
 
   protected def functionType: P[FunctionType] =
     (attributes.?.map(_.getOrElse(Seq.empty)) ~
@@ -22,10 +25,10 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
     functionTypeArgumentList.parened.map(TupleType)
 
   private[this] def functionTypeArgumentList: P[Seq[FunctionTypeArgument]] =
-    functionTypeArgument.repTC(1)
+    functionTypeArgument.repTC(0)
 
   protected def functionTypeArgument: P[FunctionTypeArgument] =
-    (attributes.?? ~ nominalType) //TODO: Suppor only nominal type for now
+    (attributes.?? ~ nominalType) //TODO: Suppor only nominal / tuple type for now
       .map(FunctionTypeArgument.tupled)
 
   private[this] def throwing: P[Throwing] = P("throws" | "rethrows").!.map(Throwing.apply _)
