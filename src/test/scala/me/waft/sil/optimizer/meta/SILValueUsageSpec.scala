@@ -11,6 +11,7 @@ class SILValueUsageSpec extends FlatSpec with Matchers with SILBasicBlockParser 
   "SIL Value usage" should "be analysed well" in {
     val sil =
       """|bb0(%0 : $Bool):
+         |  %1 = struct_extract %0 : $Bool, #Bool._value
          |  %2 = struct_extract %0 : $Bool, #Bool._value
          |  %3 = integer_literal $Builtin.Int1, -1
          |  %4 = builtin "xor_Int1"(%2 : $Builtin.Int1, %3 : $Builtin.Int1) : $Builtin.Int1
@@ -24,7 +25,11 @@ class SILValueUsageSpec extends FlatSpec with Matchers with SILBasicBlockParser 
       SILValue("%5") ~> SILValue("%4"),
       SILValue("%4") ~> SILValue("%3"),
       SILValue("%4") ~> SILValue("%2"),
-      SILValue("%2") ~> SILValue("%0")
+      SILValue("%2") ~> SILValue("%0"),
+      SILValue("%1") ~> SILValue("%0")
     ))
+
+    SILValueUsage(bb).unusedValues should be(Set(SILValue("%1")))
+
   }
 }
