@@ -18,7 +18,219 @@ sil-opt stage.sil
 
 You have to build swift compiler at first to use `sil-opt` command.
 
-## Passes
+## SIL Instruction Set
+
+### Allocation and Deallocation
+
+- [ ] alloc_stack
+- [ ] alloc_ref
+- [ ] alloc_ref_dynamic
+- [ ] alloc_box
+- [ ] alloc_value_buffer
+- [ ] alloc_global
+- [ ] dealloc_stack
+- [ ] dealloc_box
+- [ ] project_box
+- [ ] dealloc_ref
+- [ ] dealloc_partial_ref
+- [ ] dealloc_value_buffer
+- [ ] project_value_buffer
+
+### Debug Information
+
+- [ ] debug_value
+- [ ] debug_value_addr
+
+### Accessing Memory
+
+- [ ] load
+- [ ] store
+- [ ] load_borrow
+- [ ] end_borrow
+- [ ] assign
+- [ ] mark_uninitialized
+- [ ] mark_function_escape
+- [ ] mark_uninitialized_behavior
+- [ ] copy_addr
+- [ ] destroy_addr
+- [ ] index_addr
+- [ ] tail_addr
+- [ ] index_raw_pointer
+- [ ] bind_memory
+- [ ] begin_access
+- [ ] end_access
+
+### Reference Counting
+
+- [ ] strong_retain
+- [ ] strong_release
+- [ ] set_deallocating
+- [ ] strong_retain_unowned
+- [ ] unowned_retain
+- [ ] unowned_release
+- [ ] load_weak
+- [ ] store_weak
+- [ ] load_unowned
+- [ ] store_unowned
+- [ ] fix_lifetime
+- [ ] mark_dependence
+- [ ] strong_pin
+- [ ] strong_unpin
+- [ ] is_unique
+- [ ] is_unique_or_pinned
+- [ ] copy_block
+- [ ] builtin "unsafeGuaranteed"
+- [ ] builtin "unsafeGuaranteedEnd"
+
+### Literals
+
+- [ ] function_ref
+- [ ] global_addr
+- [ ] global_value
+- [ ] integer_literal
+- [ ] float_literal
+- [ ] string_literal
+
+### Dynamic Dispatch
+
+- [ ] class_method
+- [ ] objc_method
+- [ ] super_method
+- [ ] objc_super_method
+- [ ] witness_method
+
+### Function Application
+
+- [ ] apply
+- [ ] begin_apply
+- [ ] abort_apply
+- [ ] end_apply
+- [ ] partial_apply
+- [ ] builtin
+
+### Metatypes
+
+- [ ] metatype
+- [ ] value_metatype
+- [ ] existential_metatype
+- [ ] objc_protocol
+
+### Aggregate Types
+
+- [ ] retain_value
+- [ ] retain_value_addr
+- [ ] unmanaged_retain_value
+- [ ] copy_value
+- [ ] release_value
+- [ ] release_value_addr
+- [ ] unmanaged_release_value
+- [ ] destroy_value
+- [ ] autorelease_value
+- [ ] tuple
+- [ ] tuple_extract
+- [ ] tuple_element_addr
+- [ ] destructure_tuple
+- [ ] struct
+- [ ] struct_extract
+- [ ] struct_element_addr
+- [ ] destructure_struct
+- [ ] object
+- [ ] ref_element_addr
+- [ ] ref_tail_addr
+
+### Enums
+
+- [ ] enum
+- [ ] unchecked_enum_data
+- [ ] init_enum_data_addr
+- [ ] inject_enum_addr
+- [ ] unchecked_take_enum_data_addr
+- [ ] select_enum
+- [ ] select_enum_addr
+
+### Protocol and Protocol Composition Types
+
+- [ ] init_existential_addr
+- [ ] init_existential_value
+- [ ] deinit_existential_addr
+- [ ] deinit_existential_value
+- [ ] open_existential_addr
+- [ ] open_existential_value
+- [ ] init_existential_ref
+- [ ] open_existential_ref
+- [ ] init_existential_metatype
+- [ ] open_existential_metatype
+- [ ] alloc_existential_box
+- [ ] project_existential_box
+- [ ] open_existential_box
+- [ ] open_existential_box_value
+- [ ] dealloc_existential_box
+
+### Blocks
+
+- [ ] project_block_storage
+- [ ] init_block_storage_header
+
+### Unchecked Conversions
+
+- [ ] upcast
+- [ ] address_to_pointer
+- [ ] pointer_to_address
+- [ ] unchecked_ref_cast
+- [ ] unchecked_ref_cast_addr
+- [ ] unchecked_addr_cast
+- [ ] unchecked_trivial_bit_cast
+- [ ] unchecked_bitwise_cast
+- [ ] ref_to_raw_pointer
+- [ ] raw_pointer_to_ref
+- [ ] ref_to_unowned
+- [ ] unowned_to_ref
+- [ ] ref_to_unmanaged
+- [ ] unmanaged_to_ref
+- [ ] convert_function
+- [ ] convert_escape_to_noescape
+- [ ] thin_function_to_pointer
+- [ ] pointer_to_thin_function
+- [ ] classify_bridge_object
+- [ ] ref_to_bridge_object
+- [ ] bridge_object_to_ref
+- [ ] bridge_object_to_word
+- [ ] thin_to_thick_function
+- [ ] thick_to_objc_metatype
+- [ ] objc_to_thick_metatype
+- [ ] objc_metatype_to_object
+- [ ] objc_existential_metatype_to_object
+
+### Checked Conversions
+
+- [ ] unconditional_checked_cast
+- [ ] unconditional_checked_cast_addr
+- [ ] unconditional_checked_cast_value
+
+### Runtime Failures
+
+- [ ] cond_fail
+
+### Terminators
+
+- [ ] unreachable
+- [ ] return
+- [ ] throw
+- [ ] yield
+- [ ] unwind
+- [ ] br
+- [ ] cond_br
+- [ ] switch_value
+- [ ] select_value
+- [ ] switch_enum
+- [ ] switch_enum_addr
+- [ ] dynamic_method_br
+- [ ] checked_cast_br
+- [ ] checked_cast_value_br
+- [ ] checked_cast_addr_br
+- [ ] try_apply
+
+## SIL Optimization Passes
 
 - [ ] Dump Alias Analysis over all Pairs
 - [ ] Array Bounds Check Optimization
@@ -131,3 +343,4 @@ You have to build swift compiler at first to use `sil-opt` command.
 - [ ] Utility pass. Removes all non-term insts from blocks with unreachable terms
 - [ ] Utility pass. Serializes the current SILModule
 - [ ] sil-bug-reducer Tool Testing by Asserting on a Sentinel Function
+
