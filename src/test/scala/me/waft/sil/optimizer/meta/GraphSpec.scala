@@ -19,5 +19,7 @@ class GraphSpec extends FlatSpec with Matchers {
     e.target should be(2)
     g.edges.flatMap(_.privateNodes) should be(Set(1, 4, 5))
     e.adjacents should be(Set(3 ~> 2, 5 ~> 2))
+
+    g.filter((i: Int) => i % 2 == 0) should be(Graph(0, 4 ~> 2))
   }
 }
