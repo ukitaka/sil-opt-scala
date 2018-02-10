@@ -1,22 +1,25 @@
 # sil-scala
 
+Swift Intermediate Language parser / optimizer written in Scala.
+
 ## SIL Document
 
-[docs/SIL.rst](https://github.com/apple/swift/blob/master/docs/SIL.rst)
-
-## Parser
-
-[lib/ParseSIL/ParseSIL.cpp](https://github.com/apple/swift/blob/master/lib/ParseSIL/ParseSIL.cpp)
+- [docs/SIL.rst](https://github.com/apple/swift/blob/master/docs/SIL.rst)
+- [Swift - Summary of the Grammar](https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/zzSummaryOfTheGrammar.html)
 
 ## Check if emitted SIL is valid
 
-Uses `sil-opt` command.
+You can use `sil-opt` command to check if SIL syntax is valid
 
 ```
-sil-opt stage.sil
+$ sil-opt my_sil_file.sil
 ```
 
-You have to build swift compiler at first to use `sil-opt` command.
+Or enable some optimization passes to debug optimizer.
+
+```
+$ sil-opt -dce my_sil_file.sil
+```
 
 ## SIL Instruction Set
 
