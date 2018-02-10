@@ -1,16 +1,17 @@
 package me.waft.sil.optimizer.meta
 
 import me.waft.sil.lang.{SILBasicBlock, SILInstructionDef, SILValue}
-import me.waft.sil.optimizer.meta.SILValueUsage.UsageGraph
-import scala.collection.Set
 
+import scala.collection.Set
 import scalax.collection.GraphPredef._
 import scalax.collection.{Graph, GraphEdge}
 
 case class SILValueUsage(bb: SILBasicBlock) {
   import Implicits._
 
-  private lazy val usageGraph: UsageGraph = SILValueUsage.analyseUsages(bb)
+  type UsageGraph = Graph[SILValue, GraphEdge.DiEdge]
+
+  protected lazy val usageGraph: UsageGraph = analyseUsages(bb)
 
   def valueDecl(value: SILValue): SILInstructionDef =
     bb.instructionDefs.filter(_.values.contains(value)).head
@@ -22,14 +23,8 @@ case class SILValueUsage(bb: SILBasicBlock) {
         && !bb.terminator.getOperands.exists(_.value == node.value)
       )
       .map(_.value)
-}
 
-object SILValueUsage {
-  import Implicits._
-
-  type UsageGraph = Graph[SILValue, GraphEdge.DiEdge]
-
-  def analyseUsages(bb: SILBasicBlock): UsageGraph = {
+  private[meta] def analyseUsages(bb: SILBasicBlock): UsageGraph = {
     val nodes = bb.instructionDefs
       .flatMap(_.values)
       .map(n => Graph[SILValue, GraphEdge.DiEdge](n))
@@ -41,4 +36,3 @@ object SILValueUsage {
     nodes.reduce(_ ++ _) ++ edges.reduce(_ ++ _)
   }
 }
-

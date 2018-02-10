@@ -19,7 +19,8 @@ class SILValueUsageSpec extends FlatSpec with Matchers with SILBasicBlockParser 
          |  return %5 : $Bool
       """.stripMargin
     val bb = basicBlock.parse(sil).get.value
-    val graph = SILValueUsage.analyseUsages(bb)
+    val usage = SILValueUsage(bb)
+    val graph = usage.analyseUsages(bb)
 
     graph should be(Graph(
       SILValue("%5") ~> SILValue("%4"),
@@ -29,7 +30,6 @@ class SILValueUsageSpec extends FlatSpec with Matchers with SILBasicBlockParser 
       SILValue("%1") ~> SILValue("%0")
     ))
 
-    SILValueUsage(bb).unusedValues should be(Set(SILValue("%1")))
-
+    usage.unusedValues should be(Set(SILValue("%1")))
   }
 }
