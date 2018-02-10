@@ -12,7 +12,7 @@ case class SILValueUsage(bb: SILBasicBlock) {
   def valueDecl(value: SILValue): SILInstructionDef =
     bb.instructionDefs.filter(_.values.contains(value)).head
 
-  def unusedValues: Set[SILValue] = ???
+  def unusedValues: Set[SILValue] = ??? // usageGraph.edges
 }
 
 object SILValueUsage {
