@@ -90,7 +90,7 @@ $ sil-opt -dce my_sil_file.sil
 - [ ] function_ref
 - [ ] global_addr
 - [ ] global_value
-- [ ] integer_literal
+- [x] integer_literal
 - [ ] float_literal
 - [ ] string_literal
 
