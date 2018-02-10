@@ -46,8 +46,8 @@ $ sil-opt -dce my_sil_file.sil
 
 ### Accessing Memory
 
-- [ ] load
-- [ ] store
+- [x] load
+- [x] store
 - [ ] load_borrow
 - [ ] end_borrow
 - [ ] assign
