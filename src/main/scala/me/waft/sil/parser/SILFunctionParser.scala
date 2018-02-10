@@ -12,5 +12,5 @@ trait SILFunctionParser extends SILBasicBlockParser with SILLinkageParser {
       .map(SILFunction.tupled)
 
   // sil-function-name ::= '@' [A-Za-z_0-9]+
-  def silFunctionName: P[String] = ("@" ~ identifier).!
+  def silFunctionName: P[String] = ("@" ~~ identifier).!
 }

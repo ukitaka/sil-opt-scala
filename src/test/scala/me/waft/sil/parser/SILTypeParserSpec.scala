@@ -5,7 +5,7 @@ import org.scalatest._
 
 class SILTypeParserSpec extends FlatSpec with Matchers with SILTypeParser {
   "sil type" should "be parsed well" in {
-    val sil = "$Dog "
+    val sil = "$Dog Cat"
     silType.parse(sil).get.value shouldBe(SILType("Dog"))
 
 

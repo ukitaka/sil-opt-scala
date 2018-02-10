@@ -35,6 +35,12 @@ class SwiftFunctionTypeParserSpec extends FlatSpec with Matchers with SwiftTypeP
     result should matchPattern { case Parsed.Failure(_, _, _) =>  }
   }
 
+  "nominal type parsing" should "work well with space" in {
+    val s = "Dog Cat"
+    val result = nominalType.parse(s).get.value
+    result should be(NominalType("Dog"))
+  }
+
   "functionTypeArgumentClause parsing" should "be fail without ->" in {
     val boolType = "Bool"
     val result = functionTypeArgumentClause.parse(boolType)

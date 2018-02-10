@@ -1,12 +1,10 @@
 package me.waft.swift.parser
 
-import fastparse.noApi._
+import fastparse.all._
 import me.waft.core.parser.Parser
 
 trait SwiftIdentifierParser extends Parser {
-  import WhiteSpaceApi._
-
-  def swiftIdentifier: P[String] = (identifierHead ~~ identifierCharacters).!
+  def swiftIdentifier: P[String] = (identifierHead ~ identifierCharacters).!
 
   private[this] def identifierHead: P[String] =
     CharIn( 'A' to 'Z', 'a' to 'z', Seq('_') ).!
