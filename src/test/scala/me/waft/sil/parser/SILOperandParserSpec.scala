@@ -11,4 +11,11 @@ class SILOperandParserSpec extends FlatSpec with Matchers with SILOperandParser 
     val result = silOperand.parse(sil).get.value
     result should be (SILOperand(SILValue("%1"), SILType(int)))
   }
+
+  "SIL operand parser" should "work well with `undef`" in {
+    val sil = "undef : $Builtin.Int32"
+    val int = NominalType("Builtin.Int32")
+    val result = silOperand.parse(sil).get.value
+    result should be (SILOperand(SILValue.undef, SILType(int)))
+  }
 }
