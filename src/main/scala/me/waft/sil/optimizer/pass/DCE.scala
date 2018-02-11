@@ -1,6 +1,6 @@
 package me.waft.sil.optimizer.pass
 
-import me.waft.sil.lang.{SILBasicBlock, SILFunction, SILInstructionDef}
+import me.waft.sil.lang._
 import me.waft.sil.optimizer.meta.SILValueUsage
 
 import scala.collection.Set

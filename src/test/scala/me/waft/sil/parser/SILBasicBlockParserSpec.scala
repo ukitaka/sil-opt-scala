@@ -15,7 +15,7 @@ class SILBasicBlockParserSpec extends FlatSpec with Matchers with SILBasicBlockP
     val result = basicBlock.parse(sil).get.value
     val dog = NominalType("Dog")
     result.label.identifier should be ("bb0")
-    result.label.args.head should be (SILArgument("%0", SILType(dog)))
+    result.label.args.head should be (SILOperand(SILValue("%0"), SILType(dog)))
     result.instructionDefs.head.instruction should be (AllocStack(SILType(dog)))
     result.instructionDefs.head.values.head should be (SILValue("%1"))
     result.terminator should be (Return(SILOperand(SILValue("%1"), SILType(dog))))

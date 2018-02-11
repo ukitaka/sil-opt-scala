@@ -1,6 +1,7 @@
 package me.waft.sil.optimizer.pass
 
 import me.waft.sil.lang.SILValue
+import me.waft.sil.optimizer.meta.SILValueUsage
 import me.waft.sil.parser.SILFunctionParser
 import org.scalatest._
 
@@ -96,9 +97,9 @@ class DCESpec extends FlatSpec with Matchers with SILFunctionParser {
         |}
       """.stripMargin
 
-    val func0 = silFunction.parse(sil).get.value.basicBlocks.head
-    val func1 = silFunction.parse(optimizedSil).get.value.basicBlocks.head
-    val func2 = DCE.eliminateDeadCodeInBB(func0)
+    val func0 = silFunction.parse(sil).get.value
+    val func1 = silFunction.parse(optimizedSil).get.value
+    val func2 = DCE.eliminateDeadCode(func0)
 
     func1 shouldBe(func2)
   }
