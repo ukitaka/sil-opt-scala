@@ -116,7 +116,7 @@ Swift Intermediate Language parser and optimizer written in Scala.
 - [ ] destroy_value
 - [ ] autorelease_value
 - [ ] tuple
-- [ ] tuple_extract
+- [x] tuple_extract
 - [ ] tuple_element_addr
 - [ ] destructure_tuple
 - [x] struct

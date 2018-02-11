@@ -33,6 +33,7 @@ case class SILValueUsage(bb: SILBasicBlock) {
       user <- d.values
       uses <- d.instruction.getOperands.map(_.value)
     } yield Graph(user ~> uses)
-    nodes.reduce(_ ++ _) ++ edges.reduce(_ ++ _)
+    (nodes.reduceLeftOption(_ ++ _).getOrElse(Graph())
+        ++ edges.reduceLeftOption(_ ++ _).getOrElse(Graph()))
   }
 }

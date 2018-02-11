@@ -17,6 +17,7 @@ case class SILInstructionTraverse(private val instruction: SILInstruction) exten
     case Store(_, operand) => Seq(operand)
     case Load(operand) => Seq(operand)
     case StrongRelease(operand) => Seq(operand)
+    case TupleExtract(operand, _) => Seq(operand)
   }
 }
 
