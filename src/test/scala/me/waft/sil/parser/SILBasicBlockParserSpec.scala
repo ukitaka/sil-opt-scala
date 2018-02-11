@@ -20,4 +20,13 @@ class SILBasicBlockParserSpec extends FlatSpec with Matchers with SILBasicBlockP
     result.instructionDefs.head.values.head should be (SILValue("%1"))
     result.terminator should be (Return(SILOperand(SILValue("%1"), SILType(dog))))
   }
+
+  "SIL basic block parser" should "work well without instruction def" in {
+    val sil =
+      """bb2:
+         |  br bb1(undef : $Builtin.Int32, undef : $Builtin.Int32)
+       """.stripMargin
+    val result = basicBlock.parse(sil).get.value
+    result.label.identifier should be ("bb2")
+  }
 }
