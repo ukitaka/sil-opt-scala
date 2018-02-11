@@ -33,5 +33,8 @@ case class Load(operand: SILOperand)
 case class StrongRelease(operand: SILOperand)
   extends SILInstruction("strong_release")
 
+case class Tuple(operands: Seq[SILOperand]) //TODO
+  extends SILInstruction("tuple")
+
 case class TupleExtract(operand: SILOperand, index: Int)
   extends SILInstruction("tuple_extract")

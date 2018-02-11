@@ -35,4 +35,10 @@ class SILInstructionsParserSpec extends FlatSpec with Matchers
     result.`type` should be(SILType("Bool"))
   }
 
+  "empty tuple instruction" should "be parsed well" in {
+    val instruction = "tuple ()"
+    val result = tuple.parse(instruction).get.value
+    result.operands should be(Seq.empty)
+  }
+
 }

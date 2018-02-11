@@ -20,7 +20,7 @@ case class SILValueUsage(bb: SILBasicBlock) {
     usageGraph.nodes
       .filter(node =>
         usageGraph.filter(usageGraph.having(edge = _.target == node)).isEmpty
-        && !bb.terminator.getOperands.exists(_.value == node.value)
+        && !bb.terminator.getValues.exists(_ == node.value)
       )
       .map(_.value)
 
@@ -31,7 +31,7 @@ case class SILValueUsage(bb: SILBasicBlock) {
     val edges = for {
       d <- bb.instructionDefs
       user <- d.values
-      uses <- d.instruction.getOperands.map(_.value)
+      uses <- d.instruction.getValues
     } yield Graph(user ~> uses)
     (nodes.reduceLeftOption(_ ++ _).getOrElse(Graph())
         ++ edges.reduceLeftOption(_ ++ _).getOrElse(Graph()))
