@@ -17,7 +17,7 @@ trait SILTerminatorParser extends SILOperandParser with SILLabelParser {
   private[this] def unwind: P[SILTerminator] = P("unwind").const(Unwind)
 
   private[this] def br: P[Br] =
-    P("br" ~/ identifier ~ silOperand.repTC(0).parened)
+    P("br" ~/ identifier ~ silOperand.repTC(0).parened.??)
       .map(Br.tupled)
 
   private[this] def condBr: P[CondBr] =
