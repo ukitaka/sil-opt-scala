@@ -17,17 +17,17 @@ trait SILTerminatorParser extends SILOperandParser with SILLabelParser {
   private[this] def unwind: P[SILTerminator] = P("unwind").const(Unwind)
 
   private[this] def br: P[Br] =
-    P("br" ~ identifier ~ silOperand.repTC(0).parened)
+    P("br" ~/ identifier ~ silOperand.repTC(0).parened)
       .map(Br.tupled)
 
-  private[this] def condBr: P[CondBr] = (
+  private[this] def condBr: P[CondBr] =
     // condition
-    "cond_br" ~ silOperand ~ "," ~
+    ("cond_br" ~/ silValue ~ ","
       // if true
-      silLabel ~
-      (silOperand.repTC(1).parened) ~
+      ~ identifier
+      ~ (silOperand.repTC(1).parened).??
+      ~ ","
       // if false
-      silLabel ~
-      (silOperand.repTC(1).parened)
-    ).map(CondBr.tupled)
-}
+      ~ identifier
+      ~ (silOperand.repTC(1).parened).??
+    ) .map(CondBr.tupled)}

@@ -14,9 +14,9 @@ case object Unwind extends SILTerminator
 
 case class Br(label: String, args: Seq[SILOperand]) extends SILTerminator
 
-case class CondBr(condOperand: SILOperand,
-                  ifTrueLabel: SILLabel, ifTrueArgs: Seq[SILOperand],
-                  ifFalseLabel: SILLabel, ifFalseArgs: Seq[SILOperand]) extends SILTerminator
+case class CondBr(value: SILValue,
+                  ifTrueLabel: String, ifTrueArgs: Seq[SILOperand],
+                  ifFalseLabel: String, ifFalseArgs: Seq[SILOperand]) extends SILTerminator
 
 // case class SwitchValue() extends SILTerminator
 // case class SelectValue() extends SILTerminator
