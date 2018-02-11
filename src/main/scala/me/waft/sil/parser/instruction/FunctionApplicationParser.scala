@@ -4,7 +4,6 @@ import fastparse.noApi._
 import me.waft.sil.lang.SILSubstitution
 import me.waft.sil.lang.instruction.BuiltIn
 import me.waft.sil.parser._
-import me.waft.swift.parser.SwiftTypeParser
 
 trait FunctionApplicationParser extends SILOperandParser with SILTypeParser {
   import WhiteSpaceApi._

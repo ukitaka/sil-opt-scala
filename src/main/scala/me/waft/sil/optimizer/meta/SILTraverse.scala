@@ -1,8 +1,7 @@
 package me.waft.sil.optimizer.meta
 
 import me.waft.sil.lang._
-import me.waft.sil.lang.instruction.SILInstruction
-import me.waft.sil.lang.instruction._
+import me.waft.sil.lang.instruction.{SILInstruction, _}
 
 sealed trait SILTraverse
 
