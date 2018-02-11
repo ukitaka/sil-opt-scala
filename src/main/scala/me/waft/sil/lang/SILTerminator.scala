@@ -12,7 +12,7 @@ case class Throw(operand: SILOperand) extends SILTerminator
 
 case object Unwind extends SILTerminator
 
-case class Br(label: SILLabel, args: Seq[SILOperand]) extends SILTerminator
+case class Br(label: String, args: Seq[SILOperand]) extends SILTerminator
 
 case class CondBr(condOperand: SILOperand,
                   ifTrueLabel: SILLabel, ifTrueArgs: Seq[SILOperand],
