@@ -10,9 +10,9 @@ trait SILTerminatorParser extends SILOperandParser with SILLabelParser {
 
   private[this] def unreachable: P[SILTerminator] = P("unreachable").const(Unreachable)
 
-  private[this] def `return`: P[Return] = P("return" ~ silOperand).map(Return)
+  private[this] def `return`: P[Return] = P("return" ~/ silOperand).map(Return)
 
-  private[this] def `throw`: P[Throw] = P("throw" ~ silOperand).map(Throw)
+  private[this] def `throw`: P[Throw] = P("throw" ~/ silOperand).map(Throw)
 
   private[this] def unwind: P[SILTerminator] = P("unwind").const(Unwind)
 
