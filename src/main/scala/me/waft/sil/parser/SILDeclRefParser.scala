@@ -32,11 +32,11 @@ trait SILDeclRefParser extends IdentifierParser {
       P("globalaccessor").const(Globalaccessor) |
       P("ivardestroyer").const(Ivardestroyer) |
       P("ivarinitializer").const(Ivarinitializer) |
-      P("defaultarg" ~ "." ~ number).map(Defaultarg)
+      P("defaultarg" ~ "." ~ intLiteral).map(Defaultarg)
   }
 
   def silDeclUncurryLevel: P[SILDeclUncurryLevel] =
-    number.map(SILDeclUncurryLevel)
+    intLiteral.map(SILDeclUncurryLevel)
 
   def silDeclLang: P[SILDeclLang] =
     P("foreign").const(SILDeclLang.Foreign)

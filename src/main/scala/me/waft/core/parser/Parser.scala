@@ -3,7 +3,8 @@ package me.waft.core.parser
 trait Parser {
   import fastparse.all._
 
-  def number: P[Int] = CharIn('0' to '9').rep(1).!.map(_.toInt)
+  def intLiteral: P[Int] =
+    ("-".? ~ CharIn('1' to '9') ~ CharIn('0' to '9').rep(0)).!.map(_.toInt) | "0".!.map(_.toInt)
 
   def stringLiteral: P[String] = ("\"" ~ (!"\"" ~ AnyChar).rep.! ~ "\"")
 

@@ -10,7 +10,4 @@ trait LiteralParser extends SILTypeParser {
   def integerLiteral: P[IntegerLiteral] =
     ("integer_literal" ~ silType ~ "," ~ intLiteral).map(IntegerLiteral.tupled)
 
-  private def intLiteral: P[Int] =
-    ("-".? ~ CharIn('1' to '9') ~ CharIn('0' to '9').rep(0)).!.map(_.toInt) |
-      "0".!.map(_.toInt)
 }
