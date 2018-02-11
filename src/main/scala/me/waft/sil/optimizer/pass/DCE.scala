@@ -19,7 +19,7 @@ object DCE extends Pass {
     if (usage.unusedValues.isEmpty) {
       return bb
     }
-    val unusedDefs = usage.unusedValues.map(usage.valueDecl)
+    val unusedDefs = usage.unusedValues.flatMap(usage.valueDecl)
     eliminateDeadCodeInBB(removeUnusedDefs(bb, unusedDefs))
   }
 

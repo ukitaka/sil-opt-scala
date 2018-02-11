@@ -13,20 +13,20 @@ case class SILValueUsage(bb: SILBasicBlock) {
 
   protected lazy val usageGraph: UsageGraph = analyseUsages(bb)
 
-  def valueDecl(value: SILValue): SILInstructionDef =
-    bb.instructionDefs.filter(_.values.contains(value)).head
+  def valueDecl(value: SILValue): Option[SILInstructionDef] =
+    bb.instructionDefs.filter(_.values.contains(value)).headOption
 
   lazy val unusedValues: Set[SILValue] =
     usageGraph.nodes
       .filter(node =>
         usageGraph.filter(usageGraph.having(edge = _.target == node)).isEmpty
-        && !bb.terminator.getValues.exists(_ == node.value)
+          && !bb.label.args.exists(_.value == node.value)
+          && !bb.terminator.getValues.exists(_ == node.value)
       )
       .map(_.value)
 
   private[meta] def analyseUsages(bb: SILBasicBlock): UsageGraph = {
-    val nodes = bb.instructionDefs
-      .flatMap(_.values)
+    val nodes = ( bb.label.args.map(_.value) ++ bb.instructionDefs.flatMap(_.values) )
       .map(n => Graph[SILValue, GraphEdge.DiEdge](n))
     val edges = for {
       d <- bb.instructionDefs
