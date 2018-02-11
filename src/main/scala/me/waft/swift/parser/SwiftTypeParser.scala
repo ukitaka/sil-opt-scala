@@ -11,15 +11,16 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
   def nominalType: P[NominalType] =
     swiftIdentifier.rep(1, ".").!.map(NominalType)
 
-  // TODO: Support only `()` for now.
-  def tupleType: P[TupleType] = ("(" ~ ")").const(TupleType(Seq()))
+  // TODO: Support only `(NominalType ...)` for now.
+  def tupleType: P[TupleType] = ("(" ~ nominalType.repTC(0) ~ ")")
+    .map(TupleType.apply)
 
   protected def functionType: P[FunctionType] =
     (attributes.?.map(_.getOrElse(Seq.empty)) ~
       functionTypeArgumentClause ~
       throwing.? ~
       "->"
-      ~ nominalType).map(FunctionType.tupled)
+      ~/ nominalType).map(FunctionType.tupled)
 
   protected def functionTypeArgumentClause: P[TupleType] =
     functionTypeArgumentList.parened.map(TupleType)
