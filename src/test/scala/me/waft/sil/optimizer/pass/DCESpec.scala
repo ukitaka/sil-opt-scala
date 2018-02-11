@@ -49,10 +49,57 @@ class DCESpec extends FlatSpec with Matchers with SILFunctionParser {
         |}
        """.stripMargin
 
-    val bb0 = silFunction.parse(sil).get.value.basicBlocks.head
-    val bb1 = silFunction.parse(optimizedSil).get.value.basicBlocks.head
-    val bb2 = DCE.eliminateDeadCodeInBB(bb0)
+    val func0 = silFunction.parse(sil).get.value
+    val func1 = silFunction.parse(optimizedSil).get.value
+    val func2 = DCE.eliminateDeadCode(func0)
 
-    bb1 shouldBe(bb2)
+    func1 shouldBe(func2)
+  }
+
+  "@dead2" should "be optimized well" in {
+    val sil =
+      """sil @dead2 : $@convention(thin) () -> () {
+        |bb0:
+        |  %0 = integer_literal $Builtin.Int32, 2
+        |  %1 = integer_literal $Builtin.Int32, 0
+        |  br bb1(%0 : $Builtin.Int32, %1 : $Builtin.Int32)
+        |bb1(%3 : $Builtin.Int32, %4 : $Builtin.Int32):
+        |  %5 = integer_literal $Builtin.Int32, 100
+        |  %7 = builtin "cmp_slt_Int32"(%4 : $Builtin.Int32, %5 : $Builtin.Int32) : $Builtin.Int1
+        |  cond_br %7, bb2, bb3
+        |bb2:
+        |  %9 = integer_literal $Builtin.Int32, 3
+        |  %11 = integer_literal $Builtin.Int1, -1
+        |  %12 = builtin "sadd_with_overflow_Int32"(%3 : $Builtin.Int32, %9 : $Builtin.Int32, %11 : $Builtin.Int1) : $(Builtin.Int32, Builtin.Int1)
+        |  %13 = tuple_extract %12 : $(Builtin.Int32, Builtin.Int1), 0
+        |  %14 = integer_literal $Builtin.Int32, 1
+        |  %15 = builtin "sadd_with_overflow_Int32"(%4 : $Builtin.Int32, %14 : $Builtin.Int32, %11 : $Builtin.Int1) : $(Builtin.Int32, Builtin.Int1)
+        |  %16 = tuple_extract %15 : $(Builtin.Int32, Builtin.Int1), 0
+        |  br bb1(%13 : $Builtin.Int32, %16 : $Builtin.Int32)
+        |bb3:
+        |  %18 = tuple ()
+        |  return %18 : $()
+        |}
+      """.stripMargin
+
+    val optimizedSil =
+      """sil @dead2 : $@convention(thin) () -> () {
+        |bb0:
+        |  br bb1(undef : $Builtin.Int32, undef : $Builtin.Int32)
+        |bb1(%1 : $Builtin.Int32, %2 : $Builtin.Int32):
+        |  br bb3
+        |bb2:
+        |  br bb1(undef : $Builtin.Int32, undef : $Builtin.Int32)
+        |bb3:
+        |  %5 = tuple ()
+        |  return %5 : $()
+        |}
+      """.stripMargin
+
+    val func0 = silFunction.parse(sil).get.value.basicBlocks.head
+    val func1 = silFunction.parse(optimizedSil).get.value.basicBlocks.head
+    val func2 = DCE.eliminateDeadCodeInBB(func0)
+
+    func1 shouldBe(func2)
   }
 }

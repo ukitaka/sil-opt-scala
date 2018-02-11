@@ -16,11 +16,12 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
     .map(TupleType.apply)
 
   protected def functionType: P[FunctionType] =
-    (attributes.?.map(_.getOrElse(Seq.empty)) ~
-      functionTypeArgumentClause ~
-      throwing.? ~
-      "->"
-      ~/ nominalType).map(FunctionType.tupled)
+    (attributes.?.map(_.getOrElse(Seq.empty))
+      ~ functionTypeArgumentClause
+      ~ throwing.?
+      ~ "->"
+      ~/ (nominalType | tupleType) )
+      .map(FunctionType.tupled)
 
   protected def functionTypeArgumentClause: P[TupleType] =
     functionTypeArgumentList.parened.map(TupleType)

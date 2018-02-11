@@ -4,7 +4,7 @@ import fastparse.core.Parsed
 import me.waft.swift.lang.`type`.{Attribute, FunctionTypeArgument, NominalType, TupleType}
 import org.scalatest._
 
-class SwiftFunctionTypeParserSpec extends FlatSpec with Matchers with SwiftTypeParser {
+class SwiftTypeParserSpec extends FlatSpec with Matchers with SwiftTypeParser {
   "attribute parsing" should "work well" in {
     val attr = "@convention(thin)"
     val result = attribute.parse(attr).get.value
@@ -63,6 +63,13 @@ class SwiftFunctionTypeParserSpec extends FlatSpec with Matchers with SwiftTypeP
     val swiftType = "(Bool) -> Bool"
     val result = functionType.parse(swiftType).get.value
     result.valueType should be (NominalType("Bool"))
+  }
+
+  "function type parsing" should "work well with empty tuple" in {
+    val swiftType = "() -> ()"
+    val result = functionType.parse(swiftType).get.value
+    result.valueType should be (TupleType(Seq()))
+    result.argType should be (TupleType(Seq()))
   }
 
   "function parsing" should "work well" in {
