@@ -4,6 +4,7 @@ import org.scalatest._
 
 import scalax.collection.Graph
 import scalax.collection.GraphPredef._
+import scalax.collection.GraphTraversal.DepthFirst
 
 class GraphSpec extends FlatSpec with Matchers {
   // %0 = …
@@ -44,7 +45,6 @@ class GraphSpec extends FlatSpec with Matchers {
 
     val node1 = g.get("1")
     val node2 = g.get("2")
-    val node3 = g.get("3")
 
     node1.hasPredecessors shouldBe(true)
     node1.diPredecessors shouldBe(Set("r"))
@@ -57,5 +57,15 @@ class GraphSpec extends FlatSpec with Matchers {
     node2.hasSuccessors shouldBe(true)
     node2.diSuccessors shouldBe(Set("3", "4"))
 
+    val nodeR = g.get("r")
+    import g.ExtendedNodeVisitor
+
+    nodeR.innerNodeTraverser.withKind(DepthFirst).foreach {
+      ExtendedNodeVisitor((node, count, depth, informer) => {
+        if (node.value == "7") {
+          depth should be(5)
+        }
+      })
+    }
   }
 }
