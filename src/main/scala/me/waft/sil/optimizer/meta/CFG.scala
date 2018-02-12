@@ -18,6 +18,8 @@ case class CFG(function: SILFunction) {
     } yield (from ~> to)
   )
 
+  lazy val entryNode: SILBasicBlock = function.basicBlocks.head
+
   def dumpCFG() = {
     val g: Graph[String, GraphEdge.DiEdge] = Graph.from(
       graph.nodes.map(_.label.identifier),
