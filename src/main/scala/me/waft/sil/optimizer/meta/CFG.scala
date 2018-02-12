@@ -4,14 +4,12 @@ import me.waft.sil.lang.{SILBasicBlock, SILFunction}
 
 import scalax.collection.GraphEdge
 import scalax.collection.GraphPredef._
-import scalax.collection.GraphEdge._
 import scalax.collection.immutable.Graph
 
-case class CFG(function: SILFunction) extends SILGraph[SILBasicBlock, GraphEdge.DiEdge] {
+case class CFG(function: SILFunction) extends GraphProxy[SILBasicBlock, GraphEdge.DiEdge] {
   import Implicits._
-  type G = Graph[SILBasicBlock, GraphEdge.DiEdge]
 
-  private[meta] lazy val graph: G = Graph.from(
+  private[meta] lazy val graph: GraphT = Graph.from(
     function.basicBlocks,
     for {
       from <- function.basicBlocks
