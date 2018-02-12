@@ -6,7 +6,7 @@ import scalax.collection.GraphEdge
 import scalax.collection.GraphPredef._
 import scalax.collection.immutable.Graph
 
-case class CFG(function: SILFunction) extends GraphProxy[SILBasicBlock, GraphEdge.DiEdge] {
+case class CFG(function: SILFunction) extends DiGraphProxy[SILBasicBlock] {
   import Implicits._
 
   private[meta] lazy val graph: GraphT = Graph.from(
@@ -17,7 +17,9 @@ case class CFG(function: SILFunction) extends GraphProxy[SILBasicBlock, GraphEdg
     } yield (from ~> to)
   )
 
-  lazy val entryNode: graph.NodeT = graph.get(function.basicBlocks.head)
+  type NodeT = GraphT#NodeT
+
+  lazy val entryNode: NodeT = graph.get(function.basicBlocks.head)
 
   def dumpCFG() = {
     val g: Graph[String, GraphEdge.DiEdge] = Graph.from(

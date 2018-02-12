@@ -2,43 +2,71 @@ package me.waft.sil.optimizer.meta
 
 import me.waft.sil.lang.SILBasicBlock
 
-import scalax.collection.GraphEdge
+import scala.annotation.tailrec
+import scalax.collection.Graph
 import scalax.collection.GraphPredef._
 import scalax.collection.GraphTraversal.DepthFirst
-import scalax.collection.immutable.Graph
 
-case class DominatorTree(cfg: CFG) {
-  import Implicits._
+case class DominatorTree(cfg: CFG) extends DiGraphProxy[SILBasicBlock] {
   import scala.collection.mutable.Map
 
-  type G = Graph[SILBasicBlock, GraphEdge.DiEdge]
-  type D = Map[SILBasicBlock, Set[SILBasicBlock]]
+  type NodeT = GraphT#NodeT
 
-  private val d: D = Map(cfg.entryNode.value -> Set(cfg.entryNode.value))
+  type DominatorMap = Map[SILBasicBlock, Set[SILBasicBlock]]
 
-  cfg.entryNode
-    .innerNodeTraverser
-    .withKind(DepthFirst)
-    .filterNot(_ == cfg.entryNode)
-    .foreach { node =>
-      val bb = node.value
-      val predecessors: Set[SILBasicBlock] = node.diPredecessors.map(_.value)
-      val intersectedPredecessorsD = predecessors
-        .map { predecessor =>
-          d.get(predecessor.value) match {
-            case Some(s) => s
-            case None => {
-              d.update(predecessor.value, cfg.graph.nodes.map(_.value).toSet)
-              d(predecessor.value)
-            }
-          }
-        }
+  private lazy val dominatorMap: DominatorMap = buildDominatorMap
+
+  private def buildDominatorMap: DominatorMap = {
+    val initialDominatorMap: DominatorMap =
+        Map(cfg.entryNode.value -> Set(cfg.entryNode.value)) ++
+          Map(cfg.nodes.filterNot((node: NodeT) => node == cfg.entryNode)
+            .map(_.value -> cfg.nodes.map((node: NodeT) => node.value).toSet).toSeq: _*)
+
+    def predecessorsDominatorMap(node: NodeT, current: DominatorMap): Set[SILBasicBlock] =
+      node.diPredecessors
+        .map(_.value)
+        .map(bb => current(bb))
         .reduce(_ intersect  _)
-      println(s"${node.label.identifier}'s pred is ${predecessors.map(_.label.identifier)}")
-      println(s"union of ${intersectedPredecessorsD.map(_.label.identifier)} and ${Set(bb.label.identifier)} is...")
-      println((Set(bb) union intersectedPredecessorsD).map(_.label.identifier))
-      println("------")
-      d.update(bb, Set(bb) union  intersectedPredecessorsD)
+
+    def update(node: NodeT, current: DominatorMap): Boolean = {
+      val newValue = predecessorsDominatorMap(node, current) union Set(node.value)
+      if (newValue == current(node.value)) {
+        return false
+      } else {
+        current.update(node.value, newValue)
+        return true
+      }
     }
-  println(d.map(kv => (kv._1.label.identifier, kv._2.map(_.label.identifier))))
+
+    @tailrec
+    def build(current: DominatorMap): DominatorMap = {
+      val updated = cfg.entryNode
+        .innerNodeTraverser
+        .withKind(DepthFirst)
+        .filterNot(_ == cfg.entryNode)
+        .map { node => update(node, current) }
+        .reduce(_ || _)
+
+      if (updated) {
+        current
+      } else {
+        build(current)
+      }
+    }
+
+    build(initialDominatorMap)
+  }
+
+  private def buildDominatorTree: GraphT =
+    Graph.from(
+      cfg.nodes,
+      for {
+        (key: SILBasicBlock, values: Set[SILBasicBlock]) <- dominatorMap
+        value <- values
+      } yield (key ~> value)
+    )
+
+  // graph that represents dominator tree
+  override private[meta] lazy val graph = buildDominatorTree
+
 }
