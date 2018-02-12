@@ -3,9 +3,7 @@ package me.waft.sil.optimizer.meta
 import me.waft.sil.lang._
 import me.waft.sil.lang.instruction.{SILInstruction, _}
 
-sealed trait SILTraverse
-
-case class SILInstructionTraverse(private val instruction: SILInstruction) extends SILTraverse {
+case class SILInstructionTraverse(private val instruction: SILInstruction) {
    def allValues: Set[SILValue] = instruction match {
     case AllocStack(_) => Set()
     case AllocBox(_) => Set()
@@ -22,7 +20,7 @@ case class SILInstructionTraverse(private val instruction: SILInstruction) exten
   }
 }
 
-case class SILTerminatorTraverse(private val terminator: SILTerminator) extends SILTraverse {
+case class SILTerminatorTraverse(private val terminator: SILTerminator) {
   def allValues: Set[SILValue] = terminator match {
     case Unreachable => Set()
     case Return(operand) => Set(operand.value)
@@ -32,8 +30,10 @@ case class SILTerminatorTraverse(private val terminator: SILTerminator) extends 
     case CondBr(cond, _, ifTrueArgs, _, ifFalseArgs) =>
       ((cond +: ifTrueArgs.map(_.value)) ++ ifFalseArgs.map(_.value)).toSet
   }
+}
 
-  def allBranches(function: SILFunction): Set[SILBasicBlock] = terminator match {
+case class SILBasicBlockTraverse(private val bb: SILBasicBlock) {
+ def allBranches(function: SILFunction): Set[SILBasicBlock] = bb.terminator match {
     case Br(label, _) =>
       function.basicBlocks.filter(_.label.identifier == label).toSet
     case CondBr(_, ifTrueLabel, _, ifFalseLabel, _) =>
