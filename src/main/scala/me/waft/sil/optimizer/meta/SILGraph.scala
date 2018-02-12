@@ -4,14 +4,14 @@ import scala.collection.generic.CanBuildFrom
 import scala.reflect.ClassTag
 import scalax.collection.GraphPredef._
 import scalax.collection._
-import scalax.collection.config.AdjacencyListArrayConfig
+import scalax.collection.config.CoreConfig
 import scalax.collection.generic.ImmutableGraphCompanion
 import scalax.collection.immutable.{AdjacencyListGraph, Graph => ImmutableGraph}
 import scalax.collection.mutable.ArraySet
 
 abstract class SILGraph[N, E[X] <: EdgeLikeIn[X]]
 ( iniNodes: Traversable[N]    = Nil, iniEdges: Traversable[E[N]] = Nil)
-( implicit override val edgeT: ClassTag[E[N]], val _config: SILGraph.Config with AdjacencyListArrayConfig)
+( implicit override val edgeT: ClassTag[E[N]])
   extends ImmutableGraph[N,E]
     with    AdjacencyListGraph[N,E,SILGraph]
     with    GraphTraversalImpl[N,E]
@@ -19,8 +19,9 @@ abstract class SILGraph[N, E[X] <: EdgeLikeIn[X]]
 
   val graphCompanion: ImmutableGraphCompanion[SILGraph] = SILGraph
 
-  protected type Config = SILGraph.Config
-  override final def config = _config.asInstanceOf[graphCompanion.Config with Config]
+  protected type Config = CoreConfig
+
+  override final val config = CoreConfig()
 
   @inline final protected def newNodeSet: NodeSetT = new NodeSet
   @transient private[this] val _nodes: NodeSetT = newNodeSet
