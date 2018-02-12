@@ -32,7 +32,7 @@ class CFGSpec extends FlatSpec with Matchers with SILFunctionParser {
     val f = silFunction.parse(sil).get.value
 
     val cfg = CFG(f)
-    cfg.entryNode.label.identifier should be("bb0")
+    cfg.entryNode.value.label.identifier should be("bb0")
     cfg.dumpCFG()
   }
 }

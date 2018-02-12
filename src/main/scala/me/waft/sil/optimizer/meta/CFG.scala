@@ -10,7 +10,7 @@ case class CFG(function: SILFunction) {
   import Implicits._
   type G = Graph[SILBasicBlock, GraphEdge.DiEdge]
 
-  private lazy val graph: G = Graph.from(
+  private[meta] lazy val graph: G = Graph.from(
     function.basicBlocks,
     for {
       from <- function.basicBlocks
@@ -18,7 +18,7 @@ case class CFG(function: SILFunction) {
     } yield (from ~> to)
   )
 
-  lazy val entryNode: SILBasicBlock = function.basicBlocks.head
+  lazy val entryNode: graph.NodeT = graph.get(function.basicBlocks.head)
 
   def dumpCFG() = {
     val g: Graph[String, GraphEdge.DiEdge] = Graph.from(
