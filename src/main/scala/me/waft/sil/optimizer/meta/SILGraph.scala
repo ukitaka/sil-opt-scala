@@ -8,6 +8,7 @@ import scalax.collection.config.CoreConfig
 import scalax.collection.generic.ImmutableGraphCompanion
 import scalax.collection.immutable.{AdjacencyListGraph, Graph => ImmutableGraph}
 import scalax.collection.mutable.ArraySet
+import scala.language.higherKinds
 
 abstract class SILGraph[N, E[X] <: EdgeLikeIn[X]]
 ( iniNodes: Traversable[N]    = Nil, iniEdges: Traversable[E[N]] = Nil)
