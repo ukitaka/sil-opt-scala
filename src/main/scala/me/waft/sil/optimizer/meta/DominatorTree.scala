@@ -3,7 +3,7 @@ package me.waft.sil.optimizer.meta
 import me.waft.sil.lang.SILBasicBlock
 
 import scala.annotation.tailrec
-import scalax.collection.Graph
+import scalax.collection.{Graph, GraphEdge}
 import scalax.collection.GraphPredef._
 import scalax.collection.GraphTraversal.DepthFirst
 
@@ -69,4 +69,12 @@ case class DominatorTree(cfg: CFG) extends DiGraphProxy[SILBasicBlock] {
   // graph that represents dominator tree
   override private[meta] lazy val graph = buildDominatorTree
 
+
+  def dumpDT() = {
+    val g: Graph[String, GraphEdge.DiEdge] = Graph.from(
+      graph.nodes.map(_.label.identifier),
+      graph.edges.map(e => e.source.label.identifier ~> e.target.label.identifier)
+    )
+    println(g)
+  }
 }

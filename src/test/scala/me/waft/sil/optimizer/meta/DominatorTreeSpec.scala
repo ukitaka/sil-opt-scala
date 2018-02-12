@@ -34,5 +34,6 @@ class DominatorTreeSpec extends FlatSpec with Matchers with SILFunctionParser {
     val cfg = CFG(f)
     cfg.dumpCFG()
     val dt = DominatorTree(cfg)
+    dt.dumpDT()
   }
 }
