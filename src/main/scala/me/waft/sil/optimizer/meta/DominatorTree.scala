@@ -63,7 +63,7 @@ case class DominatorTree(cfg: CFG) extends DiGraphProxy[SILBasicBlock] {
       for {
         (key: SILBasicBlock, values: Set[SILBasicBlock]) <- dominatorMap
         value <- values
-      } yield (key ~> value)
+      } yield (value ~> key)
     )
 
   // graph that represents dominator tree
