@@ -1,4 +1,4 @@
-package me.waft.sil.optimizer.meta
+package me.waft.sil.optimizer.analysis
 
 import org.scalatest._
 
