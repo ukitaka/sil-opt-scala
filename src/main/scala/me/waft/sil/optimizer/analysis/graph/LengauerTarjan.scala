@@ -11,6 +11,13 @@ case class LengauerTarjan[N](controlFlowGraph: Graph[N, GraphEdge.DiEdge], entry
 
   type NodeSetT = depthFirstSpanningTree.NodeSetT
 
+  def getNode(n: WithDFNumber[N]): NodeT =
+    depthFirstSpanningTree
+      .get(n)
+      .asInstanceOf[NodeT]
+
+  def getNode(n: N): NodeT = getNode(WithDFNumber(n, dfnum(n)))
+
   def dfnum(nodeValue: N): Int =
     depthFirstSpanningTree.nodes.find(_.nodeValue == nodeValue).get.value.number
 
@@ -47,7 +54,7 @@ case class LengauerTarjan[N](controlFlowGraph: Graph[N, GraphEdge.DiEdge], entry
 
   def immediateDominator(node: NodeT): WithDFNumber[N] = {
     val semiN = semiDominator(node)
-    val semiNNode: NodeT = depthFirstSpanningTree.get(semiN).asInstanceOf[NodeT]
+    val semiNNode: NodeT = getNode(semiN)
     val y: WithDFNumber[N] = {
       def allSuccessors(semiN: NodeT, n: NodeT): Set[NodeT] = {
         semiN.diSuccessors.filterNot(_ == n).flatMap { s =>
@@ -60,7 +67,7 @@ case class LengauerTarjan[N](controlFlowGraph: Graph[N, GraphEdge.DiEdge], entry
     if (semiDominator(y) == semiDominator(node)) {
       semiN
     } else {
-      immediateDominator(depthFirstSpanningTree.get(y).asInstanceOf[NodeT])
+      immediateDominator(getNode(y))
     }
   }
 }
