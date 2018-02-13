@@ -1,6 +1,7 @@
 package me.waft.sil.optimizer.pass
 
 import me.waft.sil.lang._
+import me.waft.sil.optimizer.analysis.SILValueUsage
 
 import scala.collection.Set
 
