@@ -6,7 +6,7 @@ import scalax.collection.mutable.{Graph => MutableGraph}
 import scala.collection.mutable.Map
 import scalax.collection.immutable.Graph
 
-case class WithDFNumber[N](nodeValue: N, number: Int)
+case class WithDFNumber[T](nodeValue: T, number: Int)
 
 case class DepthFirstSpanningTree[N](graph: DiGraph[N], entryNodeValue: N) {
   import graph.ExtendedNodeVisitor
