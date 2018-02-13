@@ -17,12 +17,7 @@ case class LengauerTarjan[N](controlFlowGraph: Graph[N, GraphEdge.DiEdge], entry
   def dfnum(node: NodeT): Int = dfnum(node.nodeValue)
 
   def allPredecessors(node: NodeT): Set[NodeT] =
-    if(node.hasPredecessors) {
-      node.diPredecessors
-        .flatMap(p => allPredecessors(p.asInstanceOf[NodeT]))
-    } else {
-      Set()
-    }
+      node.diPredecessors.flatMap(p => allPredecessors(p.asInstanceOf[NodeT]))
 
   def ancestors(node: WithDFNumber[N]): Set[WithDFNumber[N]] =
     depthFirstSpanningTree.nodes
@@ -33,20 +28,39 @@ case class LengauerTarjan[N](controlFlowGraph: Graph[N, GraphEdge.DiEdge], entry
   def ancestors(nodeValue: N): Set[WithDFNumber[N]] =
     ancestors(WithDFNumber(nodeValue, dfnum(nodeValue)))
 
-  def semidominator(nodeValue: WithDFNumber[N]): WithDFNumber[N] = {
+  def semiDominator(nodeValue: WithDFNumber[N]): WithDFNumber[N] = {
     val node = depthFirstSpanningTree.get(nodeValue)
-    semidominator(node)
+    semiDominator(node)
   }
 
-  def semidominator(node: NodeT): WithDFNumber[N] = {
+  def semiDominator(node: NodeT): WithDFNumber[N] = {
     val n = node.nodeValue
     val candidates: Set[WithDFNumber[N]] = allPredecessors(node).flatMap { v =>
       if (dfnum(v) < dfnum(n)) {
         Set(depthFirstSpanningTree.get(v).value)
       } else {
-        ancestors(WithDFNumber(n, dfnum(n))).map(u => semidominator(u))
+        ancestors(WithDFNumber(n, dfnum(n))).map(u => semiDominator(u))
       }
     }
     candidates.minBy(_.number)
+  }
+
+  def immediateDominator(node: NodeT): WithDFNumber[N] = {
+    val semiN = semiDominator(node)
+    val semiNNode: NodeT = depthFirstSpanningTree.get(semiN).asInstanceOf[NodeT]
+    val y: WithDFNumber[N] = {
+      def allSuccessors(semiN: NodeT, n: NodeT): Set[NodeT] = {
+        semiN.diSuccessors.filterNot(_ == n).flatMap { s =>
+          allSuccessors(s.asInstanceOf[NodeT], n)
+        }
+      }
+      allSuccessors(semiNNode, node).minBy(_.number)
+    }
+
+    if (semiDominator(y) == semiDominator(node)) {
+      semiN
+    } else {
+      immediateDominator(depthFirstSpanningTree.get(y).asInstanceOf[NodeT])
+    }
   }
 }
