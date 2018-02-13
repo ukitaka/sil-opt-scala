@@ -1,4 +1,4 @@
-package me.waft.sil.optimizer.meta
+package me.waft.sil.optimizer.analysis
 
 import me.waft.sil.lang._
 import me.waft.sil.lang.instruction.{SILInstruction, _}

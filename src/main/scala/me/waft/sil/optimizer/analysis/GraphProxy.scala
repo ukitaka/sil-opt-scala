@@ -1,4 +1,4 @@
-package me.waft.sil.optimizer.meta
+package me.waft.sil.optimizer.analysis
 
 import scalax.collection.{Graph, GraphBase, GraphEdge}
 import scalax.collection.GraphPredef.EdgeLikeIn
@@ -7,7 +7,7 @@ import scala.language.higherKinds
 trait GraphProxy[N, E[X] <: EdgeLikeIn[X]] {
   type GraphT = Graph[N, E] with GraphBase[N, E]
 
-  private[meta] def graph: GraphT
+  private[analysis] def graph: GraphT
 
   def nodes: GraphT#NodeSetT = graph.nodes
 

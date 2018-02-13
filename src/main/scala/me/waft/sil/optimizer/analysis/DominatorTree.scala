@@ -1,4 +1,4 @@
-package me.waft.sil.optimizer.meta
+package me.waft.sil.optimizer.analysis
 
 import me.waft.sil.lang.SILBasicBlock
 
@@ -67,7 +67,7 @@ case class DominatorTree(cfg: CFG) extends DiGraphProxy[SILBasicBlock] {
     )
 
   // graph that represents dominator tree
-  override private[meta] lazy val graph = buildDominatorTree
+  override private[analysis] lazy val graph = buildDominatorTree
 
 
   def dumpDT() = {

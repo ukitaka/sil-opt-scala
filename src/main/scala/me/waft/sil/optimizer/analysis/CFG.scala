@@ -1,4 +1,4 @@
-package me.waft.sil.optimizer.meta
+package me.waft.sil.optimizer.analysis
 
 import me.waft.sil.lang.{SILBasicBlock, SILFunction}
 
@@ -9,7 +9,7 @@ import scalax.collection.immutable.Graph
 case class CFG(function: SILFunction) extends DiGraphProxy[SILBasicBlock] {
   import Implicits._
 
-  private[meta] lazy val graph: GraphT = Graph.from(
+  private[analysis] lazy val graph: GraphT = Graph.from(
     function.basicBlocks,
     for {
       from <- function.basicBlocks

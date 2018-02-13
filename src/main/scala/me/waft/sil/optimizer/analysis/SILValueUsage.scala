@@ -1,4 +1,4 @@
-package me.waft.sil.optimizer.meta
+package me.waft.sil.optimizer.analysis
 
 import me.waft.sil.lang.{SILBasicBlock, SILInstructionDef, SILValue}
 
@@ -33,7 +33,7 @@ case class SILValueUsage(bb: SILBasicBlock) {
       )
       .map(_.value)
 
-  private[meta] def analyseUsages(bb: SILBasicBlock): UsageGraph = {
+  private[analysis] def analyseUsages(bb: SILBasicBlock): UsageGraph = {
     val nodes = ( bb.label.args.map(_.value) ++ bb.instructionDefs.flatMap(_.values) )
       .map(n => Graph[SILValue, GraphEdge.DiEdge](n))
     val edges = for {
