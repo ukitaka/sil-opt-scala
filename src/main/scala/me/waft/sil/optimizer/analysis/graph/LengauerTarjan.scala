@@ -23,13 +23,9 @@ case class LengauerTarjan[N](controlFlowGraph: Graph[N, GraphEdge.DiEdge], entry
 
   def dfnum(node: NodeT): Int = dfnum(node.nodeValue)
 
-  def allPredecessors(node: NodeT): Set[NodeT] = {
-    node.diPredecessors.flatMap(p => Set(p) ++ allPredecessors(p.asInstanceOf[NodeT]))
-  }
-
   def ancestors(node: WithDFNumber[N]): Set[WithDFNumber[N]] =
     depthFirstSpanningTree.nodes
-      .filter(_.value.number < node.number)
+      .filter(n => n.pathTo(getNode(node)).isDefined && n.value.number < node.number)
       .map(_.value)
       .toSet
 
@@ -43,22 +39,30 @@ case class LengauerTarjan[N](controlFlowGraph: Graph[N, GraphEdge.DiEdge], entry
 
   def semiDominator(node: NodeT): WithDFNumber[N] = {
     val n = node.nodeValue
+    println(s"")
     println(s"semidom(${node})")
 //    println(depthFirstSpanningTree.edges)
-    print("allPre = ")
-    println(allPredecessors(node))
 
-    val candidates: Set[WithDFNumber[N]] = allPredecessors(node).flatMap { v =>
+
+    val cfgNode = controlFlowGraph.get(node.nodeValue)
+
+    println(s"cfgNode = ${cfgNode}")
+
+    val predecessors: Set[WithDFNumber[N]] = cfgNode.diPredecessors.map(p => getNode(p.value).value)
+    print("allPre = ")
+    println(predecessors)
+
+    val candidates: Set[WithDFNumber[N]] = predecessors.flatMap { v =>
       println(s"if dfnum(${v})< dfnum(${node})")
-      val nodeV = depthFirstSpanningTree.get(v).value
-      if (dfnum(v) < dfnum(n)) {
-        println("<")
-        val a = Set(depthFirstSpanningTree.get(v).value)
+      if (dfnum(v.nodeValue) < dfnum(n)) {
+        print("<")
+        val a = Set(getNode(v).value)
         println(a)
         a
       } else {
-        println(">")
-        val a = (ancestors(n) ++ Set(nodeV)).map(u => semiDominator(u))
+        print(">")
+        print(s"ans is ${Set(v) ++ ancestors(v)}")
+        val a = (Set(v) ++ ancestors(v)).map(u => semiDominator(u))
         println(a)
         a
       }
