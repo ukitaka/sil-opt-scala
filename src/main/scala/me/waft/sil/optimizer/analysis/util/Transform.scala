@@ -22,4 +22,26 @@ object Transform {
 
   def postDominanceFrontier[N](graph: Graph[N, GraphEdge.DiEdge], exitNodeValue: N): Map[N, Set[N]] =
     dominanceFrontier(reverse((graph)), exitNodeValue)
+
+  def controlDependenceGraph[N](graph: Graph[N, GraphEdge.DiEdge],
+                                entryNodeValue: N,
+                                exitNodeValue: N,
+                                newEntryNodeValue: N,
+                                newExitNodeValue:  N): Graph[N, GraphEdge.DiEdge] = {
+    val newGraph: Graph[N, GraphEdge.DiEdge] = Graph.from(
+      graph.nodes.map(_.value) ++ Set(newEntryNodeValue, newExitNodeValue),
+      graph.edges.map(e => e.from.value ~> e.to.value) ++ Set(newEntryNodeValue ~> entryNodeValue,
+        exitNodeValue ~> newExitNodeValue,
+        newEntryNodeValue ~> newEntryNodeValue)
+    )
+    val pdf = postDominanceFrontier(newGraph, newExitNodeValue)
+
+    // CDG
+    Graph.from(
+      pdf.keys,
+      pdf.flatMap { case (y, dfn) =>
+        dfn.map(x => x ~> y)
+      }
+    )
+  }
 }
