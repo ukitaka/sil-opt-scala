@@ -1,10 +1,8 @@
 package me.waft.sil.optimizer.analysis.graph
 
-import scalax.collection.{Graph, GraphEdge}
-
 case class LengauerTarjan[N](controlFlowGraph: DiGraph[N], entryNodeValue: N) {
 
-  private val dfst: DepthFirstSpanningTree[N] =
+  val dfst: DepthFirstSpanningTree[N] =
     DepthFirstSpanningTree(controlFlowGraph, entryNodeValue)
 
 
@@ -12,23 +10,30 @@ case class LengauerTarjan[N](controlFlowGraph: DiGraph[N], entryNodeValue: N) {
 
   type CFGNodeT = controlFlowGraph.NodeT
   type CFGNodeSetT = controlFlowGraph.NodeSetT
-  private type DFSTNodeT = depthFirstSpanningTree.NodeT
-  private type DFSTNodeSetT = depthFirstSpanningTree.NodeSetT
+  type DFSTNodeT = depthFirstSpanningTree.NodeT
+  type DFSTNodeSetT = depthFirstSpanningTree.NodeSetT
 
-  private def dfstNode[T <: CFGNodeT](node: T): DFSTNodeT =
-    depthFirstSpanningTree.get(node).asInstanceOf[DFSTNodeT]
+  def dfstNode[T <: CFGNodeT](node: T): DFSTNodeT =
+    depthFirstSpanningTree.get(node.value).asInstanceOf[DFSTNodeT]
 
-  private def cfgNode[T <: DFSTNodeT](node: T): CFGNodeT =
-    controlFlowGraph.get(node).asInstanceOf[CFGNodeT]
+  def dfstNode(nodeValue: N): DFSTNodeT =
+    depthFirstSpanningTree.get(nodeValue).asInstanceOf[DFSTNodeT]
 
+  def cfgNode[T <: DFSTNodeT](node: T): CFGNodeT =
+    controlFlowGraph.get(node.value).asInstanceOf[CFGNodeT]
 
-  private def ancestors[T <: DFSTNodeT](node: T, proper: Boolean = true): Set[DFSTNodeT] = {
+  def cfgNode(nodeValue: N): CFGNodeT =
+    controlFlowGraph.get(nodeValue).asInstanceOf[CFGNodeT]
+
+  private def ancestors[T <: DFSTNodeT](node: T, proper: Boolean): Set[DFSTNodeT] = {
     val nodes = depthFirstSpanningTree.nodes
       .filter(n => n.pathTo(node).isDefined && dfNum(n) < dfNum(node))
       .map(_.asInstanceOf[DFSTNodeT])
       .toSet
     if (proper) nodes else (Set(node.asInstanceOf[DFSTNodeT]) ++ nodes)
   }
+
+  def semiDominator(nodeValue: N): CFGNodeT = semiDominator(cfgNode(nodeValue))
 
   def semiDominator[T <: CFGNodeT](node: T): CFGNodeT = {
     val n = node.value
