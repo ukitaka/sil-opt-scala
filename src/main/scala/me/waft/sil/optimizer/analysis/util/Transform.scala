@@ -32,7 +32,7 @@ object Transform {
       graph.nodes.map(_.value) ++ Set(newEntryNodeValue, newExitNodeValue),
       graph.edges.map(e => e.from.value ~> e.to.value) ++ Set(newEntryNodeValue ~> entryNodeValue,
         exitNodeValue ~> newExitNodeValue,
-        newEntryNodeValue ~> newEntryNodeValue)
+        newEntryNodeValue ~> newExitNodeValue)
     )
     val pdf = postDominanceFrontier(newGraph, newExitNodeValue)
 
