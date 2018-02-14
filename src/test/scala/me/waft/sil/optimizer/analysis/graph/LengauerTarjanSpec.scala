@@ -6,7 +6,6 @@ import scalax.collection.Graph
 import scalax.collection.GraphPredef._
 
 class LengauerTarjanSpec extends FlatSpec with Matchers {
-  "semiDominator" should "work well" in {
     val g = Graph(
       "r" ~> "d",
       "d" ~> "x",
@@ -22,7 +21,14 @@ class LengauerTarjanSpec extends FlatSpec with Matchers {
       "v" ~> "n"
     )
 
-    val l = LengauerTarjan(g, "r")
+  val l = LengauerTarjan(g, "r")
+
+  "semiDominator" should "work well" in {
     l.semiDominator("n").value should (be("s") or be("d"))
+  }
+
+  "immediateDominator" should "work well" in {
+    l.immediateDominator("s").value should (be("d"))
+    l.immediateDominator("n").value should (be("d"))
   }
 }

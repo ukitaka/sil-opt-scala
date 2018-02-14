@@ -71,6 +71,8 @@ case class LengauerTarjan[N](controlFlowGraph: DiGraph[N], entryNodeValue: N) {
     * ・semi(n) if semi(y) == semi(n)
     * ・idom(y) if semi(y) != semi(n)
     */
+  def immediateDominator(nodeValue: N): CFGNodeT = immediateDominator(cfgNode(nodeValue))
+
   def immediateDominator[T <: CFGNodeT](n: T): CFGNodeT = {
     val semiN = semiDominator(n)
 
