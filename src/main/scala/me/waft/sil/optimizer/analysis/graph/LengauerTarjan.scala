@@ -44,7 +44,7 @@ case class LengauerTarjan[N](controlFlowGraph: DiGraph[N], entryNodeValue: N) {
         Set(v)
       } else {
         ancestors(dfstNode(v), false)
-          .filter(u => dfNum(u) > dfNum(v))
+          .filter(u => dfNum(u) > dfNum(n))
           .map(a => cfgNode(a))
           .map(u =>  semiDominator(u))
       }
