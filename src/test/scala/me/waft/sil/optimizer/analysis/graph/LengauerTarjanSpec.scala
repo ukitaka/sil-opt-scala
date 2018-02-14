@@ -23,7 +23,7 @@ class LengauerTarjanSpec extends FlatSpec with Matchers {
     )
 
     val l = LengauerTarjan(g, "r")
-    val node = l.getNode("n")
-    l.semiDominator(node).nodeValue should be("s")
+    val node: DiGraph[String]#NodeT = g.get("n")
+    l.semiDominator(node).value should be("s")
   }
 }
