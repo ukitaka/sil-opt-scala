@@ -11,9 +11,8 @@ case class DepthFirstSpanningTree[N](graph: DiGraph[N], entryNodeValue: N) { sel
 
   val entryNode = graph.get(entryNodeValue)
 
-  private val _dfNum: MutableMap[N, Int] = MutableMap()
 
-  private def getNode(n: N) =  depthFirstSpanningTree.get(n)
+  private val _dfNum: MutableMap[N, Int] = MutableMap()
 
   val dfNum: Map[N, Int] = _dfNum.toMap
 
@@ -35,9 +34,14 @@ case class DepthFirstSpanningTree[N](graph: DiGraph[N], entryNodeValue: N) { sel
     )
   }
 
-  def ancestors[T <: graph.NodeT](node: T): Set[graph.NodeT] =
-    depthFirstSpanningTree.nodes
+  type NodeT = depthFirstSpanningTree.NodeT
+
+  def ancestors[T <: NodeT](node: T, proper: Boolean = true): Set[NodeT] = {
+    val nodes = depthFirstSpanningTree.nodes
       .filter(n => n.pathTo(node).isDefined && dfNum(n) < dfNum(node))
-      .map(_.asInstanceOf[graph.NodeT])
+      .map(_.asInstanceOf[NodeT])
       .toSet
+    if (proper) nodes else (Set(node.asInstanceOf[NodeT]) ++ nodes)
+  }
+
 }

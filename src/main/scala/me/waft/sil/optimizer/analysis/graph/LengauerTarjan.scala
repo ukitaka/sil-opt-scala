@@ -11,8 +11,14 @@ case class LengauerTarjan[N](controlFlowGraph: DiGraph[N], entryNodeValue: N) {
 
   type CFGNodeT = controlFlowGraph.NodeT
   type CFGNodeSetT = controlFlowGraph.NodeSetT
-  type DFSTNodeT = depthFirstSpanningTree.NodeT
-  type DFSTNodeSetT = depthFirstSpanningTree.NodeSetT
+  private type DFSTNodeT = depthFirstSpanningTree.NodeT
+  private type DFSTNodeSetT = depthFirstSpanningTree.NodeSetT
+
+  private def dfstNode[T <: CFGNodeT](node: T): DFSTNodeT =
+    depthFirstSpanningTree.get(node).asInstanceOf[DFSTNodeT]
+
+  private def cfgNode[T <: DFSTNodeT](node: T): CFGNodeT =
+    controlFlowGraph.get(node).asInstanceOf[CFGNodeT]
 
   def semiDominator[T <: CFGNodeT](node: T): CFGNodeT = {
     val n = node.value
@@ -22,7 +28,7 @@ case class LengauerTarjan[N](controlFlowGraph: DiGraph[N], entryNodeValue: N) {
       if (dfNum(v) < dfNum(n)) {
         Set(v)
       } else {
-        (Set(v) ++ ancestors(v)).map(u =>  semiDominator(u))
+        ancestors(dfstNode(v), false).map(a => ctfgNode(a)).map(u =>  semiDominator(u))
       }
     }
     candidates.minBy(node => dfNum(node.value))
