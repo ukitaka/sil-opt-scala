@@ -31,4 +31,14 @@ class LengauerTarjanSpec extends FlatSpec with Matchers {
     l.immediateDominator("s").value should (be("d"))
     l.immediateDominator("n").value should (be("d"))
   }
+
+  val dt = l.dominatorTree
+
+  "dominator tree" should "be spanning tree" in {
+    g.nodes.forall(node => dt.nodes.contains(node)) should be(true)
+  }
+
+  "dominator tree" should "include edge that starts from root" in {
+    dt.edges.contains("r" ~> "d") should be(true)
+  }
 }

@@ -1,5 +1,8 @@
 package me.waft.sil.optimizer.analysis.graph
 
+import scalax.collection.immutable.Graph
+import scalax.collection.GraphPredef._
+
 case class LengauerTarjan[N](controlFlowGraph: DiGraph[N], entryNodeValue: N) {
 
   val dfst: DepthFirstSpanningTree[N] =
@@ -94,4 +97,11 @@ case class LengauerTarjan[N](controlFlowGraph: DiGraph[N], entryNodeValue: N) {
       immediateDominator(y)
     }
   }
+
+  def dominatorTree: DiGraph[N] = Graph.from(
+    controlFlowGraph.nodes,
+    controlFlowGraph.nodes
+      .filterNot(_.value == entryNodeValue)
+      .map(node => immediateDominator(node).value ~> node.value)
+  )
 }
