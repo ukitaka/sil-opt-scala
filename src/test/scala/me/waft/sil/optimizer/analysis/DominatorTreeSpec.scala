@@ -1,5 +1,6 @@
 package me.waft.sil.optimizer.analysis
 
+import me.waft.sil.optimizer.analysis.util.Transform
 import me.waft.sil.parser.SILFunctionParser
 import org.scalatest._
 
@@ -33,9 +34,7 @@ class DominatorTreeSpec extends FlatSpec with Matchers with SILFunctionParser {
       """.stripMargin
     val f = silFunction.parse(sil).get.value
     val cfg = CFG(f)
-    cfg.dumpCFG()
-    val dt = DominatorTree(cfg)
-    dt.dumpDT()
+//    Transform.dominatorTree(cfg.graph, cfg.entryNode.value)
   }
 
   "DT2" should "work well" in {
@@ -64,8 +63,6 @@ class DominatorTreeSpec extends FlatSpec with Matchers with SILFunctionParser {
       """.stripMargin
     val f = silFunction.parse(sil).get.value
     val cfg = CFG(f)
-    cfg.dumpCFG()
-    val dt = DominatorTree(cfg)
-    dt.dumpDT()
+    Transform.dominatorTree(cfg.graph, cfg.entryNode.value)
   }
 }

@@ -1,4 +1,4 @@
-package me.waft.sil.optimizer.analysis.graph
+package me.waft.sil.optimizer.analysis.util
 
 import scalax.collection.immutable.Graph
 import scalax.collection.GraphPredef._
