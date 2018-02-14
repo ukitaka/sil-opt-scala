@@ -5,7 +5,13 @@ import me.waft.sil.optimizer.analysis.SILValueUsage
 
 import scala.collection.Set
 
-object DCE extends Pass {
+trait DCEPass extends Pass {
+  def eliminateDeadCode(function: SILFunction): SILFunction
+}
+
+// Simple dead code elimination.
+// Just eliminate unused instructions.
+object DCE extends DCEPass {
   def eliminateDeadCode(function: SILFunction) =
     SILFunction(
       function.linkage,
@@ -29,4 +35,13 @@ object DCE extends Pass {
       bb.instructionDefs.filterNot(unusedDefs.contains),
       bb.terminator
     )
+}
+
+// Aggressive dead code elimination....
+// Mark used basic blocks and instructions as `Live`, and
+// eliminate unmarked codes.
+object AggressiveDCE extends DCEPass {
+  def eliminateDeadCode(function: SILFunction): SILFunction = {
+    function
+  }
 }
