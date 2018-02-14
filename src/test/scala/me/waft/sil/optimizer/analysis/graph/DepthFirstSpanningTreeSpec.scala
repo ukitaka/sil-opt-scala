@@ -32,14 +32,6 @@ class DepthFirstSpanningTreeSpec extends FlatSpec with Matchers {
     val dfst = DepthFirstSpanningTree(g, "A")
     val tree = dfst.depthFirstSpanningTree
     val dfNum = dfst.dfNum
-    //dfst.nodes.foreach { node =>
-    //  println(s"${node.nodeValue} is number ${node.number}")
-    //}
-    //dfst.edges.foreach { edge =>
-    //  val from = edge.from.nodeValue + edge.from.number.toString
-    //  val to = edge.to.nodeValue + edge.to.number.toString
-    //  println(s"${from} -> ${to}")
-    //}
     tree.nodes.find(_.value == "A").map(n => dfNum(n.value)).get should be(1)
     tree.nodes.find(_.value == "M").map(n => dfNum(n.value)).get should (be(7) or (be(5) or be(4)))
   }
