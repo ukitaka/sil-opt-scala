@@ -6,7 +6,7 @@ import scalax.collection.GraphPredef._
 object Transform {
   def reverse[N](graph: Graph[N, GraphEdge.DiEdge]): Graph[N, GraphEdge.DiEdge] = Graph.from(
     graph.nodes,
-    graph.edges.map(edge => edge.from.value ~> edge.to.value)
+    graph.edges.map(edge => edge.to.value ~> edge.from.value)
   )
 
   def dominatorTree[N](graph: Graph[N, GraphEdge.DiEdge], entryNodeValue: N): Graph[N, GraphEdge.DiEdge] =
@@ -21,7 +21,7 @@ object Transform {
   }
 
   def postDominanceFrontier[N](graph: Graph[N, GraphEdge.DiEdge], exitNodeValue: N): Map[N, Set[N]] =
-    dominanceFrontier(reverse((graph)), exitNodeValue)
+    dominanceFrontier(reverse(graph), exitNodeValue)
 
   def controlDependenceGraph[N](graph: Graph[N, GraphEdge.DiEdge],
                                 entryNodeValue: N,
