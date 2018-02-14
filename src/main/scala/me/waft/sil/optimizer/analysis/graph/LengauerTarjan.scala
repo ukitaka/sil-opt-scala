@@ -2,26 +2,20 @@ package me.waft.sil.optimizer.analysis.graph
 
 import scalax.collection.{Graph, GraphEdge}
 
-case class LengauerTarjan[N](controlFlowGraph: Graph[N, GraphEdge.DiEdge], entryNodeValue: N) {
+case class LengauerTarjan[N](controlFlowGraph: DiGraph[N], entryNodeValue: N) {
 
-  val depthFirstSpanningTree =
-    DepthFirstSpanningTree(controlFlowGraph, entryNodeValue).result
+  val depthFirstSpanningTree: DepthFirstSpanningTree[N] =
+    DepthFirstSpanningTree(controlFlowGraph, entryNodeValue)
 
-  type NodeT = depthFirstSpanningTree.NodeT
 
-  type NodeSetT = depthFirstSpanningTree.NodeSetT
+  type NodeT = controlFlowGraph.NodeT
 
-  def getNode(n: WithDFNumber[N]): NodeT =
-    depthFirstSpanningTree
+  type NodeSetT = controlFlowGraph.NodeSetT
+
+  def getNode(n: N): NodeT =
+    depthFirstSpanningTree.tree
       .get(n)
-      .asInstanceOf[NodeT]
-
-  def getNode(n: N): NodeT = getNode(WithDFNumber(n, dfnum(n)))
-
-  def dfnum(nodeValue: N): Int =
-    depthFirstSpanningTree.nodes.find(_.nodeValue == nodeValue).get.value.number
-
-  def dfnum(node: NodeT): Int = dfnum(node.nodeValue)
+        .asInstanceOf[NodeT]
 
   def ancestors(node: WithDFNumber[N]): Set[WithDFNumber[N]] =
     depthFirstSpanningTree.nodes
