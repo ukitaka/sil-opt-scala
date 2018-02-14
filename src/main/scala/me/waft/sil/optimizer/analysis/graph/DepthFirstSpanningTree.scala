@@ -6,12 +6,14 @@ import scalax.collection.mutable.{Graph => MutableGraph}
 import scala.collection.mutable.{ Map => MutableMap }
 import scalax.collection.immutable.Graph
 
-case class DepthFirstSpanningTree[N](graph: DiGraph[N], entryNodeValue: N) {
+case class DepthFirstSpanningTree[N](graph: DiGraph[N], entryNodeValue: N) { self =>
   import graph.ExtendedNodeVisitor
 
   val entryNode = graph.get(entryNodeValue)
 
   private val _dfNum: MutableMap[N, Int] = MutableMap()
+
+  private def getNode(n: N) =  depthFirstSpanningTree.get(n)
 
   val dfNum: Map[N, Int] = _dfNum.toMap
 
@@ -32,4 +34,10 @@ case class DepthFirstSpanningTree[N](graph: DiGraph[N], entryNodeValue: N) {
       graph.edges
     )
   }
+
+  def ancestors[T <: graph.NodeT](node: T): Set[graph.NodeT] =
+    depthFirstSpanningTree.nodes
+      .filter(n => n.pathTo(node).isDefined && dfNum(n) < dfNum(node))
+      .map(_.asInstanceOf[graph.NodeT])
+      .toSet
 }
