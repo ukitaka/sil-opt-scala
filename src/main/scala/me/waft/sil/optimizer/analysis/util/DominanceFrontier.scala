@@ -24,7 +24,10 @@ case class DominanceFrontier[N](graph: DiGraph[N], entryNodeValue: N) {
       .flatMap { c =>
         val dfc = computeDF(c.value)
         dfc.filter { w =>
-          node.pathTo(dt.get(w)).isEmpty
+          // Here is described as "n does not dominates w"
+          // in "Modern Compiler Implementation in ML",
+          // "c does not dominates w" to be exact.
+          c.pathTo(dt.get(w)).isEmpty
         }
       }
   }
