@@ -33,15 +33,4 @@ case class DepthFirstSpanningTree[N](graph: DiGraph[N], entryNodeValue: N) { sel
       graph.edges
     )
   }
-
-  type NodeT = depthFirstSpanningTree.NodeT
-
-  def ancestors[T <: NodeT](node: T, proper: Boolean = true): Set[NodeT] = {
-    val nodes = depthFirstSpanningTree.nodes
-      .filter(n => n.pathTo(node).isDefined && dfNum(n) < dfNum(node))
-      .map(_.asInstanceOf[NodeT])
-      .toSet
-    if (proper) nodes else (Set(node.asInstanceOf[NodeT]) ++ nodes)
-  }
-
 }
