@@ -72,9 +72,19 @@ case class LengauerTarjan[N](controlFlowGraph: DiGraph[N], entryNodeValue: N) {
     * ・idom(y) if semi(y) != semi(n)
     */
   def immediateDominator[T <: CFGNodeT](n: T): CFGNodeT = {
-    val y: CFGNodeT = ???
-
     val semiN = semiDominator(n)
+
+    val y: CFGNodeT = {
+      def recurseSuccessors(semiN: CFGNodeT, n: CFGNodeT): Set[CFGNodeT] = {
+          semiN.diSuccessors
+            .filter(y => dfNum(y) <= dfNum(n))
+            .flatMap { s =>
+              Set(s) ++ recurseSuccessors(s.asInstanceOf[CFGNodeT], n)
+            }
+            .map(_.asInstanceOf[CFGNodeT])
+      }
+      recurseSuccessors(semiN, n).minBy(s => dfNum(semiDominator(s)))
+    }
 
     if (semiDominator(y) == semiN) {
       semiN
