@@ -26,15 +26,13 @@ object Transform {
   def controlDependenceGraph[N](graph: Graph[N, GraphEdge.DiEdge],
                                 entryNodeValue: N,
                                 exitNodeValue: N,
-                                newEntryNodeValue: N,
-                                newExitNodeValue:  N): Graph[N, GraphEdge.DiEdge] = {
+                                newEntryNodeValue: N): Graph[N, GraphEdge.DiEdge] = {
     val newGraph: Graph[N, GraphEdge.DiEdge] = Graph.from(
-      graph.nodes.map(_.value) ++ Set(newEntryNodeValue, newExitNodeValue),
+      graph.nodes.map(_.value) ++ Set(newEntryNodeValue),
       graph.edges.map(e => e.from.value ~> e.to.value) ++ Set(newEntryNodeValue ~> entryNodeValue,
-        exitNodeValue ~> newExitNodeValue,
-        newEntryNodeValue ~> newExitNodeValue)
+        newEntryNodeValue ~> exitNodeValue)
     )
-    val pdf = postDominanceFrontier(newGraph, newExitNodeValue)
+    val pdf = postDominanceFrontier(newGraph, exitNodeValue)
 
     // CDG
     Graph.from(
