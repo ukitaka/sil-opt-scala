@@ -14,7 +14,7 @@ case class DepthFirstSpanningTree[N](graph: DiGraph[N], entryNodeValue: N) { sel
 
   private val _dfNum: MutableMap[N, Int] = MutableMap()
 
-  val dfNum: Map[N, Int] = _dfNum.toMap
+  def dfNum: Map[N, Int] = _dfNum.toMap
 
   val depthFirstSpanningTree: DiGraph[N] = {
     val graph: MutableDiGraph[N] = MutableGraph()
