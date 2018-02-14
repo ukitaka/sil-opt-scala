@@ -81,12 +81,11 @@ case class LengauerTarjan[N](controlFlowGraph: DiGraph[N], entryNodeValue: N) {
 
     val y: CFGNodeT = {
       def recurseSuccessors(semiN: CFGNodeT, n: CFGNodeT): Set[CFGNodeT] = {
-          semiN.diSuccessors
-            .filter(y => dfNum(y) <= dfNum(n))
+          dfstNode(semiN).diSuccessors
+            .filter(y => dfNum(y.value) <= dfNum(n.value))
             .flatMap { s =>
-              Set(s) ++ recurseSuccessors(s.asInstanceOf[CFGNodeT], n)
+              Set(cfgNode(s)) ++ recurseSuccessors(cfgNode(s), n)
             }
-            .map(_.asInstanceOf[CFGNodeT])
       }
       recurseSuccessors(semiN, n).minBy(s => dfNum(semiDominator(s)))
     }

@@ -34,7 +34,7 @@ class DominatorTreeSpec extends FlatSpec with Matchers with SILFunctionParser {
       """.stripMargin
     val f = silFunction.parse(sil).get.value
     val cfg = CFG(f)
-//    Transform.dominatorTree(cfg.graph, cfg.entryNode.value)
+    Transform.dominatorTree(cfg.graph, cfg.entryNode.value)
   }
 
   "DT2" should "work well" in {
