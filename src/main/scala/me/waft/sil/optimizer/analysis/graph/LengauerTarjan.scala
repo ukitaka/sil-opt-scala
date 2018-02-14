@@ -33,6 +33,16 @@ case class LengauerTarjan[N](controlFlowGraph: DiGraph[N], entryNodeValue: N) {
     if (proper) nodes else (Set(node.asInstanceOf[DFSTNodeT]) ++ nodes)
   }
 
+  /**
+    * Semidominator Theorem
+    *
+    * To find the semidominator of a node n, consider all predecessors v of n in the CFG
+    * ・If v is a proper ancestor of n in the spanning tree, then v is a candidate for semi(n)
+    * ・If v is a non-ancestor of n then for each u that is an ancestor of v (or u = v), let semi(u) be a candidate for semi(n)
+    *
+    * NOTE: This theorem is described in "Modern Compiler Implementation in ML.
+    * But this definition misses some conditions. I think "dfnum(u) > dfnum(n)" is necessary for the latter.
+    */
   def semiDominator(nodeValue: N): CFGNodeT = semiDominator(cfgNode(nodeValue))
 
   def semiDominator[T <: CFGNodeT](node: T): CFGNodeT = {
@@ -52,24 +62,24 @@ case class LengauerTarjan[N](controlFlowGraph: DiGraph[N], entryNodeValue: N) {
     candidates.minBy(node => dfNum(node.value))
   }
 
-  /*
-  def immediateDominator(node: NodeT): N = {
-    val semiN = semiDominator(node)
-    val semiNNode: NodeT = getNode(semiN)
-    val y: WithDFNumber[N] = {
-      def allSuccessors(semiN: NodeT, n: NodeT): Set[NodeT] = {
-        semiN.diSuccessors.filterNot(_ == n).flatMap { s =>
-          Set(s) ++ allSuccessors(s.asInstanceOf[NodeT], n)
-        }
-      }
-      allSuccessors(semiNNode, node).minBy(_.number)
-    }
+  /**
+    * Dominator Theorem
+    *
+    * On the spanning path below semi(n) and above or including n, let y be the node with the smallest-numbered
+    * semidominator. Then idom(n) is
+    *
+    * ・semi(n) if semi(y) == semi(n)
+    * ・idom(y) if semi(y) != semi(n)
+    */
+  def immediateDominator[T <: CFGNodeT](n: T): CFGNodeT = {
+    val y: CFGNodeT = ???
 
-    if (semiDominator(y) == semiDominator(node)) {
+    val semiN = semiDominator(n)
+
+    if (semiDominator(y) == semiN) {
       semiN
     } else {
-      immediateDominator(getNode(y))
+      immediateDominator(y)
     }
   }
-  */
 }
