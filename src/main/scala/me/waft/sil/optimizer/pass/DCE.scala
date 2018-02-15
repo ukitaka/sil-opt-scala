@@ -95,6 +95,8 @@ object AggressiveDCE extends DCEPass {
       }
     }
 
+    println(live)
+
     def markAsLive(value: SILValue, live: MutableSet[SILInstructionDef]) = {
       ???
     }
