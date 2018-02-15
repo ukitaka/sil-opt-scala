@@ -4,6 +4,7 @@ import me.waft.sil.lang._
 import me.waft.sil.optimizer.analysis.SILValueUsage
 
 import scala.collection.mutable.{ Set => MutableSet }
+import scala.collection.immutable.Set
 
 trait DCEPass extends Pass {
   def eliminateDeadCode(function: SILFunction): SILFunction
@@ -25,7 +26,7 @@ object DCE extends DCEPass {
     if (usage.unusedValues.isEmpty) {
       return bb
     }
-    val unusedDefs = usage.unusedValues.flatMap(usage.valueDecl)
+    val unusedDefs = usage.unusedValues.flatMap(usage.valueDecl).toSet
     eliminateDeadCodeInBB(removeUnusedDefs(bb, unusedDefs))
   }
 
