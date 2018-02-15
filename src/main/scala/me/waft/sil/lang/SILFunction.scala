@@ -16,5 +16,5 @@ case class SILFunction(linkage: Option[SILLinkage], name: String,
         case _ => false
       }
     }
-    .head
+    .headOption.getOrElse(basicBlocks.last)
 }
