@@ -88,7 +88,9 @@ object AggressiveDCE extends DCEPass {
             }
 
           // そのブロックが制御依存しているブロックのterminator
-
+          cdg.get(bb).diSuccessors.foreach { bbNode =>
+//            live.add(bbNode.value.terminator)
+          }
 
 
         }
