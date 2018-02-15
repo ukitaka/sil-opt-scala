@@ -37,7 +37,9 @@ object DCE extends DCEPass {
   }
 
   private def removeUnusedDefs(bb: SILBasicBlock, usage: SILValueUsage): SILBasicBlock = {
-    val unusedDefs = usage.unusedValues(bb).flatMap(usage.valueDecl).toSet
+    val unusedDefs = usage.unusedValues(bb)
+      .flatMap(usage.valueDecl)
+      .collect { case SILStatement.InstructionDef(i, _) => i }
     SILBasicBlock(
       bb.label,
       bb.instructionDefs.filterNot(unusedDefs.contains),
@@ -75,25 +77,26 @@ object AggressiveDCE extends DCEPass {
       bb.statements.foreach { statement =>
         if (seemsUseful(statement)) {
           if (live.add(statement)) {
-            propagateLiveness(statement, bb)
+            propagateLiveness(statement)
           }
         }
       }
     }
 
-    def propagateLiveness(statement: SILStatement, bb: SILBasicBlock) = {
+    def propagateLiveness(statement: SILStatement): Unit = {
       statement.instruction.allValues
         .map(value => usage.valueDecl(value))
         .collect { case Some(i) => i }
         .foreach { i =>
-          if (live.add(SILStatement(i))) {
-            // propagateLiveness(statement, bb)
+          if (live.add(i)) {
+             propagateLiveness(statement)
           }
         }
 
-      cdg.get(bb).diSuccessors.foreach { bbNode =>
-        if (live.add(SILStatement(bbNode.value.terminator))) {
-          // propagateLiveness(statement, bb)
+      cdg.get(statement.basicBlock).diSuccessors.foreach { bbNode =>
+        val bb = bbNode.value
+        if (live.add(SILStatement(bb.terminator, bb))) {
+           propagateLiveness(statement)
         }
       }
     }
@@ -101,7 +104,7 @@ object AggressiveDCE extends DCEPass {
     def removeUnusedDefs(bb: SILBasicBlock): SILBasicBlock = {
       SILBasicBlock(
         bb.label,
-        bb.instructionDefs.filter(i => live.contains(SILStatement(i))),
+        bb.instructionDefs.filter(i => live.contains(SILStatement(i, bb))),
         bb.terminator
       )
     }

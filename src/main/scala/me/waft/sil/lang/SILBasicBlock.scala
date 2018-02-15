@@ -3,7 +3,8 @@ package me.waft.sil.lang
 import me.waft.sil.lang.instruction.{Br, SILTerminator}
 
 case class SILBasicBlock(label: SILLabel, instructionDefs: Seq[SILInstructionDef], terminator: SILTerminator) {
-  val statements: Seq[SILStatement] = instructionDefs.map(SILStatement.apply) :+ SILStatement(terminator)
+  val statements: Seq[SILStatement] =
+    instructionDefs.map(i => SILStatement(i, this)) :+ SILStatement(terminator, this)
 }
 
 object SILBasicBlock {

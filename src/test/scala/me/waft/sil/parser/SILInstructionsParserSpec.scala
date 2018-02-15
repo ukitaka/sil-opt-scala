@@ -24,7 +24,7 @@ class SILInstructionsParserSpec extends FlatSpec with Matchers
   "builtin instruction" should "be parsed well" in {
     val instruction = """builtin "xor_Int1"(%2 : $Builtin.Int1, %3 : $Builtin.Int1) : $Builtin.Int1"""
     val result = builtin.parse(instruction).get.value
-    result.name should be("xor_Int1")
+    result.functionName should be("xor_Int1")
     result.`type` should be(SILType("Builtin.Int1"))
   }
 

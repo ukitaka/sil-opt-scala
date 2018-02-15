@@ -6,24 +6,28 @@ import me.waft.sil.lang.instruction.{SILInstruction, SILTerminator}
 // Abstraction for SILInstructionDef and SILTerminator.
 // Both of them are considered as a statement of basic block.
 sealed trait SILStatement  {
+  def basicBlock: SILBasicBlock
+
   def isTerminator = this match {
-    case Terminator(_) => true
-    case InstructionDef(_) => false
+    case Terminator(_, _) => true
+    case InstructionDef(_, _) => false
   }
 
   def isInstructionDef = !isTerminator
 
   def instruction: SILInstruction = this match {
-    case Terminator(t) => t
-    case InstructionDef(i) => i.instruction
+    case Terminator(t, _) => t
+    case InstructionDef(i, _) => i.instruction
   }
 }
 
 object SILStatement {
-  case class InstructionDef(sILInstructionDef: SILInstructionDef) extends SILStatement
-  case class Terminator(terminator: SILTerminator) extends SILStatement
+  case class InstructionDef(instructionDef: SILInstructionDef, basicBlock: SILBasicBlock) extends SILStatement
+  case class Terminator(terminator: SILTerminator, basicBlock: SILBasicBlock) extends SILStatement
 
-  def apply(instructionDef: SILInstructionDef): SILStatement = InstructionDef(instructionDef)
-  def apply(terminator: SILTerminator): SILStatement = Terminator(terminator)
+  def apply(instructionDef: SILInstructionDef, basicBlock: SILBasicBlock): SILStatement =
+    InstructionDef(instructionDef, basicBlock)
+  def apply(terminator: SILTerminator, basicBlock: SILBasicBlock): SILStatement =
+    Terminator(terminator, basicBlock)
 }
 
