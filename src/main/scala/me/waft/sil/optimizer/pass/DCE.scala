@@ -55,7 +55,6 @@ object AggressiveDCE extends DCEPass {
   import me.waft.sil.optimizer.analysis.Implicits._
 
   def seemsUseful(statement: SILStatement): Boolean = statement.instruction match {
-    case BuiltIn(_, _, _, _) => true
     case Return(_) => true
     case Unreachable => true
     case Throw(_) => true

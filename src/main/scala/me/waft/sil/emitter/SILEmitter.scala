@@ -2,7 +2,7 @@ package me.waft.sil.emitter
 
 import me.waft.sil.lang._
 import me.waft.sil.lang.instruction.SILInstruction
-import me.waft.swift.lang.`type`.{FunctionType, NominalType, SwiftType, TupleType}
+import me.waft.swift.lang.`type`._
 
 import scalax.collection.edge.CBase.Attributes
 
@@ -17,6 +17,7 @@ object SILEmitter {
       emitSwiftType(argType) + " -> " + emitSwiftType(valueType) //TODO
     case NominalType(name) => name
     case TupleType(elements) => "(" + elements.map(emitSwiftType).mkString(", ") + ")"
+    case FunctionTypeArgument(_, t) => "(" + emitSwiftType(t) + ")"
 
   }
   def emitSILType(silType: SILType): String = "$" + emitSwiftType(silType.swiftType)

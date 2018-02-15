@@ -19,12 +19,7 @@ class AggressiveDCESpec extends FlatSpec with Matchers with SILFunctionParser {
       """.stripMargin
     val func = silFunction.parse(sil).get.value
     val bb = func.basicBlocks.head
-    println("------")
-    println( SILEmitter.emitSILFunction(func) )
-    println("------")
     val optimizedFunc = AggressiveDCE.eliminateDeadCode(func)
-    println( SILEmitter.emitSILFunction(optimizedFunc) )
-    println("------")
     val optimizedBb = optimizedFunc.basicBlocks.head
 
     // %1 is eliminated
@@ -34,5 +29,41 @@ class AggressiveDCESpec extends FlatSpec with Matchers with SILFunctionParser {
     // and %0 is eliminated
     bb.instructionDefs.exists(_.values.contains(SILValue("%0"))) should be(true)
     optimizedBb.instructionDefs.exists(_.values.contains(SILValue("%0"))) should be(false)
+  }
+
+  "@dead1" should "be optimized well" in {
+    val sil =
+      """sil @dead1 : $@convention(thin) (Int32, Int32) -> Int32 {
+        |bb0(%0 : $Int32, %1 : $Int32):
+        |  %3 = struct_extract %0 : $Int32, #Int32._value
+        |  %4 = struct_extract %1 : $Int32, #Int32._value
+        |  %5 = integer_literal $Builtin.Int1, -1
+        |  %6 = builtin "sadd_with_overflow_Int32"(%3 : $Builtin.Int32, %4 : $Builtin.Int32, %5 : $Builtin.Int1) : $(Builtin.Int32, Builtin.Int1)
+        |  %7 = tuple_extract %6 : $(Builtin.Int32, Builtin.Int1), 0
+        |  %8 = struct $Int32 (%7 : $Builtin.Int32)
+        |  return %0 : $Int32
+        |}
+      """.stripMargin
+
+    val optimizedSil =
+      """sil @dead1 : $@convention(thin) (Int32, Int32) -> Int32 {
+        |bb0(%0 : $Int32, %1 : $Int32):
+        |  return %0 : $Int32
+        |}
+      """.stripMargin
+
+    val func0 = silFunction.parse(sil).get.value
+    val func1 = silFunction.parse(optimizedSil).get.value
+    val func2 = AggressiveDCE.eliminateDeadCode(func0)
+
+    println("-original--------")
+    println(SILEmitter.emitSILFunction(func0))
+    println("-optimized--------")
+    println(SILEmitter.emitSILFunction(func2))
+    println("-expect--------")
+    println(SILEmitter.emitSILFunction(func1))
+
+
+    func1 shouldBe(func2)
   }
 }
