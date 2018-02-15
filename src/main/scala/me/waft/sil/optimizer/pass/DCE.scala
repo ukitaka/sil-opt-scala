@@ -98,7 +98,7 @@ object AggressiveDCE extends DCEPass {
     def removeUnusedDefs(bb: SILBasicBlock): SILBasicBlock = {
       SILBasicBlock(
         bb.label,
-        bb.instructionDefs.filterNot(i => live.contains(SILStatement(i))),
+        bb.instructionDefs.filter(i => live.contains(SILStatement(i))),
         bb.terminator
       )
     }

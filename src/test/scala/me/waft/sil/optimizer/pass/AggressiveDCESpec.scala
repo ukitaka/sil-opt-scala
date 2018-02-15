@@ -20,6 +20,8 @@ class AggressiveDCESpec extends FlatSpec with Matchers with SILFunctionParser {
     val func = silFunction.parse(sil).get.value
     val bb = func.basicBlocks.head
     println("------")
+    println( SILEmitter.emitSILFunction(func) )
+    println("------")
     val optimizedFunc = AggressiveDCE.eliminateDeadCode(func)
     println( SILEmitter.emitSILFunction(optimizedFunc) )
     println("------")
