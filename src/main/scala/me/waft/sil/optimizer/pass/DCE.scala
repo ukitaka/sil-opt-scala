@@ -15,33 +15,33 @@ trait DCEPass extends Pass {
 // Just eliminate unused instructions.
 object DCE extends DCEPass {
   def eliminateDeadCode(function: SILFunction) = {
-    val usage = SILValueUsage(function)
-    SILFunction(
+    val usage = SILValueUsage.from(function)
+    val eliminatedFunction = SILFunction(
       function.linkage,
       function.name,
       function.`type`,
       function.basicBlocks.map(bb => eliminateDeadCodeInBB(bb, usage))
     )
+    if (function == eliminatedFunction) {
+      function
+    } else {
+      eliminateDeadCode(eliminatedFunction)
+    }
   }
 
   def eliminateDeadCodeInBB(bb: SILBasicBlock, usage: SILValueUsage): SILBasicBlock = {
     if (usage.unusedValues(bb).isEmpty) {
       return bb
     }
-    val (eliminatedBB, eliminatedUsage) = removeUnusedDefs(bb, usage)
-    eliminateDeadCodeInBB(eliminatedBB, eliminatedUsage)
+    removeUnusedDefs(bb, usage)
   }
 
-  private def removeUnusedDefs(bb: SILBasicBlock,
-                              usage: SILValueUsage): (SILBasicBlock, SILValueUsage) = {
+  private def removeUnusedDefs(bb: SILBasicBlock, usage: SILValueUsage): SILBasicBlock = {
     val unusedDefs = usage.unusedValues(bb).flatMap(usage.valueDecl).toSet
-    (
-      SILBasicBlock(
-        bb.label,
-        bb.instructionDefs.filterNot(unusedDefs.contains),
-        bb.terminator
-      ),
-      usage
+    SILBasicBlock(
+      bb.label,
+      bb.instructionDefs.filterNot(unusedDefs.contains),
+      bb.terminator
     )
   }
 }
