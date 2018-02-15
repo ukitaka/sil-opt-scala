@@ -1,7 +1,7 @@
 package me.waft.sil.lang
 
 import me.waft.sil.lang.SILStatement.{InstructionDef, Terminator}
-import me.waft.sil.lang.instruction.SILTerminator
+import me.waft.sil.lang.instruction.{SILInstruction, SILTerminator}
 
 // Abstraction for SILInstructionDef and SILTerminator.
 // Both of them are considered as a statement of basic block.
@@ -12,6 +12,11 @@ sealed trait SILStatement  {
   }
 
   def isInstructionDef = !isTerminator
+
+  def instruction: SILInstruction = this match {
+    case Terminator(t) => t
+    case InstructionDef(i) => i.instruction
+  }
 }
 
 object SILStatement {

@@ -54,7 +54,7 @@ object DCE extends DCEPass {
 object AggressiveDCE extends DCEPass {
   import me.waft.sil.optimizer.analysis.Implicits._
 
-  def seemsUseful(inst: SILInstructionDef): Boolean = inst.instruction match {
+  def seemsUseful(statement: SILStatement): Boolean = statement.instruction match {
     case BuiltIn(_, _, _, _) => true
     case Return(_) => true
     case Unreachable => true
@@ -63,7 +63,7 @@ object AggressiveDCE extends DCEPass {
   }
 
   def eliminateDeadCode(function: SILFunction): SILFunction = {
-    val live = MutableSet[SILInstructionDef]()
+    val live = MutableSet[SILStatement]()
     val usage = SILValueUsage.from(function)
     val cfg = CFG(function)
     val cdg = Transform.controlDependenceGraph(
@@ -74,7 +74,7 @@ object AggressiveDCE extends DCEPass {
     )
 
     val _ = function.basicBlocks.foreach { bb =>
-      bb.instructionDefs.foreach { i =>
+      bb.statements.foreach { i =>
         if (seemsUseful(i)) {
           // 関数からの戻りなど
           live.add(i)
@@ -84,15 +84,13 @@ object AggressiveDCE extends DCEPass {
             .map(value => usage.valueDecl(value))
             .collect { case Some(i) => i }
             .foreach { i =>
-              live.add(i)
+              live.add(SILStatement(i))
             }
 
           // そのブロックが制御依存しているブロックのterminator
           cdg.get(bb).diSuccessors.foreach { bbNode =>
-//            live.add(bbNode.value.terminator)
+            live.add(SILStatement(bbNode.value.terminator))
           }
-
-
         }
       }
     }
