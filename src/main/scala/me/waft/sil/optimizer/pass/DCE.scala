@@ -14,29 +14,36 @@ trait DCEPass extends Pass {
 // Simple dead code elimination.
 // Just eliminate unused instructions.
 object DCE extends DCEPass {
-  def eliminateDeadCode(function: SILFunction) =
+  def eliminateDeadCode(function: SILFunction) = {
+    val usage = SILValueUsage(function)
     SILFunction(
       function.linkage,
       function.name,
       function.`type`,
-      function.basicBlocks.map(eliminateDeadCodeInBB)
+      function.basicBlocks.map(bb => eliminateDeadCodeInBB(bb, usage))
     )
-
-  def eliminateDeadCodeInBB(bb: SILBasicBlock): SILBasicBlock = {
-    val usage = SILValueUsage(bb)
-    if (usage.unusedValues.isEmpty) {
-      return bb
-    }
-    val unusedDefs = usage.unusedValues.flatMap(usage.valueDecl).toSet
-    eliminateDeadCodeInBB(removeUnusedDefs(bb, unusedDefs))
   }
 
-  private def removeUnusedDefs(bb: SILBasicBlock, unusedDefs: Set[SILInstructionDef]) =
-    SILBasicBlock(
-      bb.label,
-      bb.instructionDefs.filterNot(unusedDefs.contains),
-      bb.terminator
+  def eliminateDeadCodeInBB(bb: SILBasicBlock, usage: SILValueUsage): SILBasicBlock = {
+    if (usage.unusedValues(bb).isEmpty) {
+      return bb
+    }
+    val (eliminatedBB, eliminatedUsage) = removeUnusedDefs(bb, usage)
+    eliminateDeadCodeInBB(eliminatedBB, eliminatedUsage)
+  }
+
+  private def removeUnusedDefs(bb: SILBasicBlock,
+                              usage: SILValueUsage): (SILBasicBlock, SILValueUsage) = {
+    val unusedDefs = usage.unusedValues(bb).flatMap(usage.valueDecl).toSet
+    (
+      SILBasicBlock(
+        bb.label,
+        bb.instructionDefs.filterNot(unusedDefs.contains),
+        bb.terminator
+      ),
+      usage
     )
+  }
 }
 
 // Aggressive dead code elimination....

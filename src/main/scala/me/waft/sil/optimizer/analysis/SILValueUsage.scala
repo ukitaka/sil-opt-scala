@@ -1,30 +1,31 @@
 package me.waft.sil.optimizer.analysis
 
-import me.waft.sil.lang.{SILBasicBlock, SILInstructionDef, SILValue}
+import me.waft.sil.lang.{SILBasicBlock, SILFunction, SILInstructionDef, SILValue}
 
 import scala.collection.Set
 import scalax.collection.GraphPredef._
 import scalax.collection.{Graph, GraphEdge}
 
-case class SILValueUsage(bb: SILBasicBlock) {
+case class SILValueUsage(function: SILFunction) {
   import Implicits._
+  import SILValueUsage._
 
   type UsageGraph = Graph[SILValue, GraphEdge.DiEdge]
 
-  protected lazy val usageGraph: UsageGraph = analyseUsages(bb)
+  protected lazy val usageGraph: UsageGraph = analyseUsages(function)
 
   def valueDecl(value: SILValue): Option[SILInstructionDef] =
-    bb.instructionDefs.filter(_.values.contains(value)).headOption
+    function.basicBlocks.flatMap(bb => bb.instructionDefs).filter(_.values.contains(value)).headOption
 
-  lazy val unusedArgs: Set[SILValue] =
+  def unusedArgs(bb: SILBasicBlock): Set[SILValue] =
     usageGraph.nodes
       .filter(node =>
         bb.label.args.exists(_.value == node.value)
-          && usageGraph.filter(usageGraph.having(edge = _.target == node)).isEmpty
+          && node.diPredecessors.isEmpty
       )
       .map(_.value)
 
-  lazy val unusedValues: Set[SILValue] =
+  def unusedValues(bb: SILBasicBlock): Set[SILValue] =
     usageGraph.nodes
       .filter(node =>
         usageGraph.filter(usageGraph.having(edge = _.target == node)).isEmpty
@@ -33,15 +34,22 @@ case class SILValueUsage(bb: SILBasicBlock) {
       )
       .map(_.value)
 
-  private[analysis] def analyseUsages(bb: SILBasicBlock): UsageGraph = {
-    val nodes = ( bb.label.args.map(_.value) ++ bb.instructionDefs.flatMap(_.values) )
-      .map(n => Graph[SILValue, GraphEdge.DiEdge](n))
-    val edges = for {
-      d <- bb.instructionDefs
-      user <- d.values
-      uses <- d.instruction.allValues
-    } yield Graph(user ~> uses)
-    (nodes.reduceLeftOption(_ ++ _).getOrElse(Graph())
-        ++ edges.reduceLeftOption(_ ++ _).getOrElse(Graph()))
-  }
+}
+
+object SILValueUsage {
+  private[analysis] def analyseUsages(function: SILFunction): Graph[SILValue, GraphEdge.DiEdge] = {
+    import Implicits._
+    function.basicBlocks
+      .map { bb =>
+        val nodes = ( bb.label.args.map(_.value) ++ bb.instructionDefs.flatMap(_.values) )
+          .map(n => Graph[SILValue, GraphEdge.DiEdge](n))
+        val edges = for {
+          d <- bb.instructionDefs
+          user <- d.values
+          uses <- d.instruction.allValues
+        } yield Graph(user ~> uses)
+        (nodes.reduceLeftOption(_ ++ _).getOrElse(Graph())
+          ++ edges.reduceLeftOption(_ ++ _).getOrElse(Graph()))
+      }
+    }.reduce(_ ++ _)
 }
