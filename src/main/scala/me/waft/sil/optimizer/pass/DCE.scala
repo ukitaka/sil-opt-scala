@@ -1,9 +1,10 @@
 package me.waft.sil.optimizer.pass
 
 import me.waft.sil.lang._
+import me.waft.sil.lang.instruction.{BuiltIn, Return, Throw, Unreachable}
 import me.waft.sil.optimizer.analysis.SILValueUsage
 
-import scala.collection.mutable.{ Set => MutableSet }
+import scala.collection.mutable.{Set => MutableSet}
 import scala.collection.immutable.Set
 
 trait DCEPass extends Pass {
@@ -44,8 +45,12 @@ object DCE extends DCEPass {
 //
 object AggressiveDCE extends DCEPass {
 
-  def mayHaveSideEffect(inst: SILInstructionDef): Boolean = inst.instruction match {
-    case _ => false //TODO
+  def seemsUseful(inst: SILInstructionDef): Boolean = inst.instruction match {
+    case BuiltIn(_, _, _, _) => true
+    case Return(_) => true
+    case Unreachable => true
+    case Throw(_) => true
+    case _ => false
   }
 
   def eliminateDeadCode(function: SILFunction): SILFunction = {
@@ -53,8 +58,15 @@ object AggressiveDCE extends DCEPass {
 
     val _ = function.basicBlocks.foreach { bb =>
       bb.instructionDefs.foreach { i =>
-        if (!mayHaveSideEffect(i)) {
+        if (seemsUseful(i)) {
+          // 関数からの戻りなど
           live.add(i)
+
+          // 他の生きている文が使っている変数を定義する文
+
+          // 
+
+
         }
       }
     }

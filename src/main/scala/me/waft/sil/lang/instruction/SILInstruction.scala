@@ -38,3 +38,31 @@ case class Tuple(operands: Seq[SILOperand]) //TODO
 
 case class TupleExtract(operand: SILOperand, index: Int)
   extends SILInstruction("tuple_extract")
+
+sealed abstract class SILTerminator(name: String) extends SILInstruction(name)
+
+case object Unreachable extends SILTerminator("unreachable")
+
+case class Return(operand: SILOperand) extends SILTerminator("return")
+
+case class Throw(operand: SILOperand) extends SILTerminator("throw")
+
+// case class Yield() extends SILTerminator
+
+case object Unwind extends SILTerminator("unwind")
+
+case class Br(label: String, args: Seq[SILOperand]) extends SILTerminator("br")
+
+case class CondBr(value: SILValue,
+                  ifTrueLabel: String, ifTrueArgs: Seq[SILOperand],
+                  ifFalseLabel: String, ifFalseArgs: Seq[SILOperand]) extends SILTerminator("cond_br")
+
+// case class SwitchValue() extends SILTerminator
+// case class SelectValue() extends SILTerminator
+// case class SwitchEnum() extends SILTerminator
+// case class SwitchAddr() extends SILTerminator
+// case class DynamicMethodBr() extends SILTerminator
+// case class CheckedCastBr() extends SILTerminator
+// case class CheckedCastValueBr() extends SILTerminator
+// case class CheckedCastAddrBr() extends SILTerminator
+// case class TryApply() extends SILTerminator

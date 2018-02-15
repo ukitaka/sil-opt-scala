@@ -1,7 +1,7 @@
 package me.waft.sil.parser
 
 import me.waft.sil.lang._
-import me.waft.sil.lang.instruction.AllocStack
+import me.waft.sil.lang.instruction.{AllocStack, Return}
 import me.waft.swift.lang.`type`.NominalType
 import org.scalatest._
 

@@ -2,6 +2,7 @@ package me.waft.sil.parser
 
 import fastparse.noApi._
 import me.waft.sil.lang._
+import me.waft.sil.lang.instruction._
 
 trait SILTerminatorParser extends SILOperandParser with SILLabelParser {
   import WhiteSpaceApi._
