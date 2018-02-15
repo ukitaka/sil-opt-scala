@@ -110,10 +110,6 @@ object AggressiveDCE extends DCEPass {
       function.basicBlocks.map(bb => removeUnusedDefs(bb))
     )
 
-    println(eliminatedFunction)
-
-
-
     eliminatedFunction // TODO
   }
 

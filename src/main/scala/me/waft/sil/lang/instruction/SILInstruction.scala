@@ -3,7 +3,7 @@ package me.waft.sil.lang.instruction
 import me.waft.sil.lang.decl.SILDeclRef
 import me.waft.sil.lang.{SILOperand, SILSubstitution, SILType, SILValue}
 
-sealed abstract class SILInstruction(name: String)
+sealed abstract class SILInstruction(val name: String)
 
 case class AllocStack(`type`: SILType) extends SILInstruction("alloc_stack")
 
@@ -15,7 +15,7 @@ case class StructExtract(operand: SILOperand, declRef: SILDeclRef)
 case class IntegerLiteral(`type`: SILType, value: Int)
   extends SILInstruction("integer_literal")
 
-case class BuiltIn(name: String, substitutions: Seq[SILSubstitution], operands: Seq[SILOperand], `type`: SILType)
+case class BuiltIn(functionName: String, substitutions: Seq[SILSubstitution], operands: Seq[SILOperand], `type`: SILType)
   extends SILInstruction("builtin")
 
 case class Struct(`type`: SILType, operands: Seq[SILOperand])

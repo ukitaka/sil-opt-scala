@@ -1,5 +1,6 @@
 package me.waft.sil.optimizer.pass
 
+import me.waft.sil.emitter.SILEmitter
 import me.waft.sil.lang.SILValue
 import me.waft.sil.parser.SILFunctionParser
 import org.scalatest._
@@ -20,6 +21,7 @@ class AggressiveDCESpec extends FlatSpec with Matchers with SILFunctionParser {
     val bb = func.basicBlocks.head
     println("------")
     val optimizedFunc = AggressiveDCE.eliminateDeadCode(func)
+    println( SILEmitter.emitSILFunction(optimizedFunc) )
     println("------")
     val optimizedBb = optimizedFunc.basicBlocks.head
 
