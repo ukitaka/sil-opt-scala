@@ -2,7 +2,8 @@ package me.waft.sil.optimizer.pass
 
 import me.waft.sil.lang._
 import me.waft.sil.lang.instruction.{BuiltIn, Return, Throw, Unreachable}
-import me.waft.sil.optimizer.analysis.SILValueUsage
+import me.waft.sil.optimizer.analysis.{CFG, SILValueUsage}
+import me.waft.sil.optimizer.analysis.util.{CDG, Transform}
 
 import scala.collection.mutable.{Set => MutableSet}
 import scala.collection.immutable.Set
@@ -64,6 +65,13 @@ object AggressiveDCE extends DCEPass {
   def eliminateDeadCode(function: SILFunction): SILFunction = {
     val live = MutableSet[SILInstructionDef]()
     val usage = SILValueUsage.from(function)
+    val cfg = CFG(function)
+    val cdg = Transform.controlDependenceGraph(
+      cfg.graph,
+      function.entryBB,
+      function.canonicalExitBB,
+      SILBasicBlock.empty(function.entryBB)
+    )
 
     val _ = function.basicBlocks.foreach { bb =>
       bb.instructionDefs.foreach { i =>
@@ -80,6 +88,7 @@ object AggressiveDCE extends DCEPass {
             }
 
           // そのブロックが制御依存しているブロックのterminator
+
 
 
         }

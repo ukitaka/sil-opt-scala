@@ -11,5 +11,5 @@ trait SILBasicBlockParser extends Parser
   import WhiteSpaceApi._
 
   def basicBlock: P[SILBasicBlock] =
-    (silLabel ~ silInstructionDefs ~ silTerminator).map(SILBasicBlock.tupled)
+    (silLabel ~ silInstructionDefs ~ silTerminator).map((SILBasicBlock.apply _).tupled)
 }
