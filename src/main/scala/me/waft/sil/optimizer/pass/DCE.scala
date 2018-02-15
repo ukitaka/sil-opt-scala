@@ -107,9 +107,10 @@ object AggressiveDCE extends DCEPass {
       function.name,
       function.`type`,
       function.basicBlocks.map(bb => removeUnusedDefs(bb))
+        .filterNot(bb => bb.instructionDefs.isEmpty && !bb.terminator.isReturn)
     )
 
-    eliminatedFunction // TODO
+    eliminatedFunction
   }
 
 

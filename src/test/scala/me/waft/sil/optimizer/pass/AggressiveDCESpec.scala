@@ -88,28 +88,15 @@ class AggressiveDCESpec extends FlatSpec with Matchers with SILFunctionParser {
 
     val optimizedSil =
       """sil @dead2 : $@convention(thin) () -> () {
-        |bb0:
-        |  br bb1(undef : $Builtin.Int32, undef : $Builtin.Int32)
-        |bb1(%1 : $Builtin.Int32, %2 : $Builtin.Int32):
-        |  br bb3
-        |bb2:
-        |  br bb1(undef : $Builtin.Int32, undef : $Builtin.Int32)
         |bb3:
-        |  %5 = tuple ()
-        |  return %5 : $()
+        |  %18 = tuple ()
+        |  return %18 : $()
         |}
       """.stripMargin
 
     val func0 = silFunction.parse(sil).get.value
     val func1 = silFunction.parse(optimizedSil).get.value
     val func2 = AggressiveDCE.eliminateDeadCode(func0)
-
-    println("-original--------")
-//    println(SILEmitter.emitSILFunction(func0))
-    println("-optimized--------")
-//    println(SILEmitter.emitSILFunction(func2))
-    println("-expect--------")
-//    println(SILEmitter.emitSILFunction(func1))
 
     func1 shouldBe(func2)
   }

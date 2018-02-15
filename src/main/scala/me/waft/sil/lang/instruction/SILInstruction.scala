@@ -39,7 +39,12 @@ case class Tuple(operands: Seq[SILOperand]) //TODO
 case class TupleExtract(operand: SILOperand, index: Int)
   extends SILInstruction("tuple_extract")
 
-sealed abstract class SILTerminator(name: String) extends SILInstruction(name)
+sealed abstract class SILTerminator(name: String) extends SILInstruction(name) {
+  def isReturn: Boolean = this match {
+    case Return(_) => true
+    case _ => false
+  }
+}
 
 case object Unreachable extends SILTerminator("unreachable")
 
