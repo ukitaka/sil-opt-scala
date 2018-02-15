@@ -22,11 +22,14 @@ object SILInstructionEmitter {
     case Return(operand) => emitSILOperand(operand)
     case Throw(operand) => emitSILOperand(operand)
     case Unwind => ""
-    case Br(_, operands) => operands.map(emitSILOperand).mkString(", ")
-    case CondBr(cond, _, ifTrueArgs, _, ifFalseArgs) =>
+    case Br(label, operands) => label + "(" + operands.map(emitSILOperand).mkString(", ") + ")"
+    case CondBr(cond, ifTrueLabel, ifTrueArgs, ifFalseLabel, ifFalseArgs) =>
       emitSILValue(cond) + ", " +
-        ifTrueArgs.map(emitSILOperand).mkString(", ") +
-        ifFalseArgs.map(emitSILOperand).mkString(", ")
+        ifTrueLabel +
+        ifTrueArgs.map(emitSILOperand).mkString("(", ", ", ")") +
+        "," +
+        ifFalseLabel +
+        ifTrueArgs.map(emitSILOperand).mkString("(", ", ", ")")
   })
 
 }
