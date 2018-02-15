@@ -63,6 +63,7 @@ object AggressiveDCE extends DCEPass {
 
   def eliminateDeadCode(function: SILFunction): SILFunction = {
     val live = MutableSet[SILInstructionDef]()
+    val usage = SILValueUsage.from(function)
 
     val _ = function.basicBlocks.foreach { bb =>
       bb.instructionDefs.foreach { i =>
@@ -71,7 +72,12 @@ object AggressiveDCE extends DCEPass {
           live.add(i)
 
           // 他の生きている文が使っている変数を定義する文
-          // i.instruction.allValues
+          i.instruction.allValues
+            .map(value => usage.valueDecl(value))
+            .collect { case Some(i) => i }
+            .foreach { i =>
+              live.add(i)
+            }
 
           // そのブロックが制御依存しているブロックのterminator
 
