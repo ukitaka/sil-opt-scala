@@ -1,10 +1,9 @@
 package me.waft.sil.optimizer.pass
 
 import me.waft.sil.lang._
-import me.waft.sil.lang.instruction.{BuiltIn, Return, Throw, Unreachable}
+import me.waft.sil.lang.instruction.{Return, Throw, Unreachable}
 import me.waft.sil.optimizer.analysis.util.Transform
 import me.waft.sil.optimizer.analysis.{CFG, SILValueUsage}
-import me.waft.sil.optimizer.pass.DCE.eliminateDeadCodeInBB
 
 import scala.collection.mutable.{Set => MutableSet}
 
@@ -47,7 +46,7 @@ object DCE extends DCEPass {
   }
 }
 
-// Aggressive dead code elimination....
+// Aggressive dead code elimination.
 // Mark used basic blocks and instructions as `Live`, and
 // eliminate unmarked codes.
 //
@@ -72,24 +71,29 @@ object AggressiveDCE extends DCEPass {
       SILBasicBlock.empty(function.entryBB)
     )
 
-    val _ = function.basicBlocks.foreach { bb =>
-      bb.statements.foreach { i =>
-        if (seemsUseful(i)) {
-          // 関数からの戻りなど
-          live.add(i)
-
-          // 他の生きている文が使っている変数を定義する文
-          i.instruction.allValues
-            .map(value => usage.valueDecl(value))
-            .collect { case Some(i) => i }
-            .foreach { i =>
-              live.add(SILStatement(i))
-            }
-
-          // そのブロックが制御依存しているブロックのterminator
-          cdg.get(bb).diSuccessors.foreach { bbNode =>
-            live.add(SILStatement(bbNode.value.terminator))
+    function.basicBlocks.foreach { bb =>
+      bb.statements.foreach { statement =>
+        if (seemsUseful(statement)) {
+          if (live.add(statement)) {
+            propagateLiveness(statement, bb)
           }
+        }
+      }
+    }
+
+    def propagateLiveness(statement: SILStatement, bb: SILBasicBlock) = {
+      statement.instruction.allValues
+        .map(value => usage.valueDecl(value))
+        .collect { case Some(i) => i }
+        .foreach { i =>
+          if (live.add(SILStatement(i))) {
+            // propagateLiveness(statement, bb)
+          }
+        }
+
+      cdg.get(bb).diSuccessors.foreach { bbNode =>
+        if (live.add(SILStatement(bbNode.value.terminator))) {
+          // propagateLiveness(statement, bb)
         }
       }
     }

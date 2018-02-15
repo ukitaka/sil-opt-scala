@@ -9,7 +9,6 @@ import scalax.collection.Graph
 
 case class SILValueUsage(function: SILFunction, usageGraph: Graph[SILValue, GraphEdge.DiEdge]) {
   import Implicits._
-  import SILValueUsage._
 
   def valueDecl(value: SILValue): Option[SILInstructionDef] =
     function.basicBlocks.flatMap(bb => bb.instructionDefs).filter(_.values.contains(value)).headOption
