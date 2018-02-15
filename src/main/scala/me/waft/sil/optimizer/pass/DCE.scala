@@ -44,6 +44,7 @@ object DCE extends DCEPass {
 // eliminate unmarked codes.
 //
 object AggressiveDCE extends DCEPass {
+  import me.waft.sil.optimizer.analysis.Implicits._
 
   def seemsUseful(inst: SILInstructionDef): Boolean = inst.instruction match {
     case BuiltIn(_, _, _, _) => true
@@ -63,8 +64,9 @@ object AggressiveDCE extends DCEPass {
           live.add(i)
 
           // 他の生きている文が使っている変数を定義する文
+          // i.instruction.allValues
 
-          // 
+          // そのブロックが制御依存しているブロックのterminator
 
 
         }
