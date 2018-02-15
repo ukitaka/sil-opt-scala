@@ -2,11 +2,11 @@ package me.waft.sil.optimizer.pass
 
 import me.waft.sil.lang._
 import me.waft.sil.lang.instruction.{BuiltIn, Return, Throw, Unreachable}
+import me.waft.sil.optimizer.analysis.util.Transform
 import me.waft.sil.optimizer.analysis.{CFG, SILValueUsage}
-import me.waft.sil.optimizer.analysis.util.{CDG, Transform}
+import me.waft.sil.optimizer.pass.DCE.eliminateDeadCodeInBB
 
 import scala.collection.mutable.{Set => MutableSet}
-import scala.collection.immutable.Set
 
 trait DCEPass extends Pass {
   def eliminateDeadCode(function: SILFunction): SILFunction
@@ -95,17 +95,26 @@ object AggressiveDCE extends DCEPass {
       }
     }
 
-    println(live)
-
-    def markAsLive(value: SILValue, live: MutableSet[SILInstructionDef]) = {
-      ???
+    def removeUnusedDefs(bb: SILBasicBlock): SILBasicBlock = {
+      SILBasicBlock(
+        bb.label,
+        bb.instructionDefs.filterNot(i => live.contains(SILStatement(i))),
+        bb.terminator
+      )
     }
 
-    def definitionOfValue(value: SILValue): SILInstructionDef = {
-      ???
-    }
+    val eliminatedFunction = SILFunction(
+      function.linkage,
+      function.name,
+      function.`type`,
+      function.basicBlocks.map(bb => removeUnusedDefs(bb))
+    )
 
-    function // TODO
+    println(eliminatedFunction)
+
+
+
+    eliminatedFunction // TODO
   }
 
 

@@ -17,11 +17,6 @@ case class SILInstructionTraverse(private val instruction: SILInstruction) {
     case StrongRelease(operand) => Set(operand.value)
     case Tuple(operands) => operands.map(_.value).toSet
     case TupleExtract(operand, _) => Set(operand.value)
-  }
-}
-
-case class SILTerminatorTraverse(private val terminator: SILTerminator) {
-  def allValues: Set[SILValue] = terminator match {
     case Unreachable => Set()
     case Return(operand) => Set(operand.value)
     case Throw(operand) => Set(operand.value)
