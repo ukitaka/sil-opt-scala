@@ -16,8 +16,10 @@ class DCESpec extends FlatSpec with Matchers with SILFunctionParser {
         |  return %4 : $Int                                // id: %5
         |}
       """.stripMargin
-    val bb = silFunction.parse(sil).get.value.basicBlocks.head
-    val optimizedBb = DCE.eliminateDeadCodeInBB(bb)
+    val func = silFunction.parse(sil).get.value
+    val bb = func.basicBlocks.head
+    val optimizedFunc = DCE.eliminateDeadCode(func)
+    val optimizedBb = optimizedFunc.basicBlocks.head
 
     // %1 is eliminated
     bb.instructionDefs.exists(_.values.contains(SILValue("%1"))) should be(true)
