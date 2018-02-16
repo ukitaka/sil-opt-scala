@@ -25,12 +25,13 @@ case class SILFunctionAnalysis(function: SILFunction) {
   // PDT(Post Dominator Tree) of `function`
   lazy val PDT = postDominatorTree(CFG, function.entryBB)
 
-  // PDT(Post Dominator Tree) of `function`
+  // CDG(Control Dependence Graph) of `function`
   lazy val CDG = controlDependenceGraph(CFG,
                                         function.entryBB,
                                         function.canonicalExitBB,
                                         entryEmptyBB(function.entryBB))
 
+  // Temporary entry node for computing Control Dependence Graph.
   private[this] def entryEmptyBB(bb: SILBasicBlock): SILBasicBlock =
     SILBasicBlock(
       SILLabel("entry", bb.label.args),
