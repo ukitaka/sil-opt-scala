@@ -37,7 +37,7 @@ object DCE extends DCEPass {
 
   private def removeUnusedDefs(bb: SILBasicBlock, usage: SILValueUsage): SILBasicBlock = {
     val unusedDefs = usage.unusedValues(bb)
-      .flatMap(usage.valueDecl)
+      .flatMap(usage.function.declaredStatement)
       .collect { case SILStatement.InstructionDef(i, _) => i }
     SILBasicBlock(
       bb.label,
@@ -71,7 +71,6 @@ object AggressiveDCE extends DCEPass {
 
   def eliminateDeadCode(function: SILFunction): SILFunction = {
     val live = MutableSet[SILStatement]()
-    val usage = SILValueUsage.from(function)
     val cfg = CFG(function)
     val cdg = Transform.controlDependenceGraph(
       cfg.graph,
@@ -92,7 +91,7 @@ object AggressiveDCE extends DCEPass {
 
     def propagateLiveness(statement: SILStatement): Unit = {
       statement.instruction.allValues
-        .map(value => usage.valueDecl(value))
+        .map(value => function.declaredStatement(value))
         .collect { case Some(i) => i }
         .foreach { i =>
           if (live.add(i)) {

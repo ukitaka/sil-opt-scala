@@ -10,12 +10,6 @@ case class SILValueUsage(function: SILFunction, usageGraph: Graph[SILValue, Grap
 
   import Implicits._
 
-  def valueDecl(value: SILValue): Option[SILStatement] =
-    (for {
-      bb <- function.basicBlocks
-      i <- bb.instructionDefs if i.values.contains(value)
-    } yield SILStatement(i, bb)).headOption
-
   def unusedArgs(bb: SILBasicBlock): Set[SILValue] =
     usageGraph.nodes
       .filter(node =>
