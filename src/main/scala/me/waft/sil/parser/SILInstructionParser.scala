@@ -2,8 +2,7 @@ package me.waft.sil.parser
 
 import fastparse.noApi._
 import me.waft.core.parser.Parser
-import me.waft.sil.lang.instruction.SILInstruction
-import me.waft.sil.lang.{SILInstructionDef, SILValue}
+import me.waft.sil.lang.{SILInstruction, SILInstructionDef, SILValue}
 
 trait SILInstructionParser
   extends Parser

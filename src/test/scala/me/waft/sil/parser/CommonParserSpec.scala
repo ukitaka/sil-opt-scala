@@ -1,8 +1,7 @@
 package me.waft.sil.parser
 
 import me.waft.core.parser.Parser
-import me.waft.sil.lang.instruction.Return
-import me.waft.sil.lang.{SILOperand, SILType, SILValue}
+import me.waft.sil.lang.{Return, SILOperand, SILType, SILValue}
 import me.waft.swift.lang.`type`.NominalType
 import org.scalatest._
 

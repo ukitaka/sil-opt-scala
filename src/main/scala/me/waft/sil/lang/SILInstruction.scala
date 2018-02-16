@@ -1,7 +1,6 @@
-package me.waft.sil.lang.instruction
+package me.waft.sil.lang
 
 import me.waft.sil.lang.decl.SILDeclRef
-import me.waft.sil.lang.{SILOperand, SILSubstitution, SILType, SILValue}
 
 sealed abstract class SILInstruction(val name: String)
 

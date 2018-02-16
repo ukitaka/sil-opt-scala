@@ -1,7 +1,6 @@
 package me.waft.sil.optimizer.analysis
 
-import me.waft.sil.lang.instruction.SILInstruction
-import me.waft.sil.lang.{SILBasicBlock, SILInstructionDef}
+import me.waft.sil.lang.{SILBasicBlock, SILInstruction, SILInstructionDef}
 
 object Implicits {
   import scala.language.implicitConversions

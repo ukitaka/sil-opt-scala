@@ -1,7 +1,6 @@
 package me.waft.sil.emitter
 
-import me.waft.sil.lang._
-import me.waft.sil.lang.instruction.SILInstruction
+import me.waft.sil.lang.{SILInstruction, _}
 import me.waft.swift.lang.`type`._
 
 import scalax.collection.edge.CBase.Attributes

@@ -1,7 +1,8 @@
 package me.waft.sil.parser.instruction
 
 import fastparse.noApi._
-import me.waft.sil.lang.instruction.{Struct, StructExtract, Tuple, TupleExtract}
+import me.waft.sil.lang.{Struct, StructExtract, Tuple, TupleExtract}
+import me.waft.sil.lang.{Struct, Tuple, TupleExtract}
 import me.waft.sil.parser.{SILDeclRefParser, SILOperandParser, SILTypeParser}
 
 trait AggregateTypesParser extends SILDeclRefParser

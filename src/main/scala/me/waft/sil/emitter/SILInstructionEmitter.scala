@@ -1,6 +1,7 @@
 package me.waft.sil.emitter
 
-import me.waft.sil.lang.instruction._
+import me.waft.sil.lang.{SILInstruction, Unreachable, Unwind}
+import me.waft.sil.lang._
 
 object SILInstructionEmitter {
   import SILEmitter._

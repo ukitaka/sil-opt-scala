@@ -1,7 +1,6 @@
 package me.waft.sil.lang
 
 import me.waft.sil.lang.decl.SILDecl
-import me.waft.sil.lang.instruction.Return
 
 case class SILFunction(linkage: Option[SILLinkage], name: String,
                        `type`: SILType,

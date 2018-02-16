@@ -1,7 +1,7 @@
 package me.waft.sil.lang
 
 import me.waft.sil.lang.SILStatement.{InstructionDef, Terminator}
-import me.waft.sil.lang.instruction.{SILInstruction, SILTerminator}
+import me.waft.sil.lang.SILTerminator
 
 // Abstraction for SILInstructionDef and SILTerminator.
 // Both of them are considered as a statement of basic block.

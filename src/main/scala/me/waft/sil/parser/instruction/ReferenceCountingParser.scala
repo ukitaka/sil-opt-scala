@@ -1,7 +1,7 @@
 package me.waft.sil.parser.instruction
 
 import fastparse.noApi._
-import me.waft.sil.lang.instruction.StrongRelease
+import me.waft.sil.lang.StrongRelease
 import me.waft.sil.parser.SILOperandParser
 
 trait ReferenceCountingParser extends SILOperandParser {

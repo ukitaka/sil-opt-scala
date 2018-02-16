@@ -1,7 +1,8 @@
 package me.waft.sil.parser.instruction
 
 import fastparse.noApi._
-import me.waft.sil.lang.instruction.{Load, Store}
+import me.waft.sil.lang.{Load, Store}
+import me.waft.sil.lang.Load
 import me.waft.sil.parser.{SILOperandParser, SILValueParser}
 
 trait AccessingMemoryParser extends SILOperandParser with SILValueParser {

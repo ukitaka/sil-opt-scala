@@ -1,7 +1,7 @@
 package me.waft.sil.optimizer.analysis
 
 import me.waft.sil.lang._
-import me.waft.sil.lang.instruction.{SILInstruction, _}
+import me.waft.sil.lang.{_}
 
 case class SILInstructionTraverse(private val instruction: SILInstruction) {
    def allValues: Set[SILValue] = instruction match {

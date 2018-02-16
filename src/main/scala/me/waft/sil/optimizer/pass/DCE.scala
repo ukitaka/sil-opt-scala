@@ -1,7 +1,7 @@
 package me.waft.sil.optimizer.pass
 
 import me.waft.sil.lang._
-import me.waft.sil.lang.instruction.{Return, Throw, Unreachable}
+import me.waft.sil.lang.Throw
 import me.waft.sil.optimizer.analysis.util.Transform
 import me.waft.sil.optimizer.analysis.{CFG, SILValueUsage}
 
