@@ -1,6 +1,6 @@
 # sil-opt-scala
 
-Swift Intermediate Language parser and optimizer written in Scala.
+Swift Intermediate Language (SIL) parser and optimizer written in Scala.
 
 ## SIL Document
 
