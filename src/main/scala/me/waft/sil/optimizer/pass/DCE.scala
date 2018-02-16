@@ -123,5 +123,8 @@ object AggressiveDCE extends DCEPass {
 //   TOPLAS, v19, issue 3, 1997
 //   http://dx.doi.org/10.1145/256167.256217
 object SwiftDCE extends DCEPass {
-  def eliminateDeadCode(function: SILFunction): SILFunction = ???
+  def eliminateDeadCode(function: SILFunction): SILFunction = {
+    val analysis = SILFunctionAnalysis(function)
+    ???
+  }
 }
