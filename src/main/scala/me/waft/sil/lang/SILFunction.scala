@@ -9,11 +9,6 @@ case class SILFunction(linkage: Option[SILLinkage], name: String,
   val entryBB: SILBasicBlock = basicBlocks.head
 
   val canonicalExitBB: SILBasicBlock = basicBlocks
-    .filter { bb =>
-      bb.terminator match {
-        case Return(_) => true
-        case _ => false
-      }
-    }
+    .filter(_.terminator.isReturn)
     .headOption.getOrElse(basicBlocks.last)
 }
