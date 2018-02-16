@@ -99,7 +99,7 @@ class AggressiveDCESpec extends FlatSpec with Matchers with SILFunctionParser {
     func1 shouldBe (func2)
   }
 
-  "@dead3" should "be optimized well" in {
+  "Aggressive DCE" should "eliminate an infinity loop" in {
     val sil =
       """|sil @dead3 : $@convention(thin) () -> () {
          |bb0:
@@ -120,8 +120,7 @@ class AggressiveDCESpec extends FlatSpec with Matchers with SILFunctionParser {
       """.stripMargin
 
     val func0 = silFunction.parse(sil).get.value
-    //    val func1 = silFunction.parse(optimizedSil).get.value
-    //    val func2 = AggressiveDCE.eliminateDeadCode(func0)
-    //    func1 shouldBe(func2)
+    the[Exception] thrownBy silFunction.parse(optimizedSil).get.value
+    the[Exception] thrownBy AggressiveDCE.eliminateDeadCode(func0)
   }
 }
