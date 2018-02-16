@@ -1,7 +1,7 @@
 package me.waft.sil.optimizer.pass
 
 import me.waft.sil.lang.{Throw, _}
-import me.waft.sil.optimizer.analysis.util.Transform
+import me.waft.sil.optimizer.analysis.util.GraphTransformer
 import me.waft.sil.optimizer.analysis.{CFG, SILValueUsage}
 
 import scala.collection.mutable.{Set => MutableSet}
@@ -72,7 +72,7 @@ object AggressiveDCE extends DCEPass {
   def eliminateDeadCode(function: SILFunction): SILFunction = {
     val live = MutableSet[SILStatement]()
     val cfg = CFG(function)
-    val cdg = Transform.controlDependenceGraph(
+    val cdg = GraphTransformer.controlDependenceGraph(
       cfg.graph,
       function.entryBB,
       function.canonicalExitBB,
