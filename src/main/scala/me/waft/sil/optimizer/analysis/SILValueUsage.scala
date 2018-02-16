@@ -9,7 +9,13 @@ import Implicits._
 
 case class SILValueUsage(function: SILFunction,
                          usageGraph: Graph[SILValue, GraphEdge.DiEdge]) {
-  usageGraph.edges.foreach(println)
+
+  def allImmediateUsers(value: SILValue): Set[SILStatement] =
+    usageGraph
+      .get(value)
+      .diSuccessors
+      .map(value => function.declaredStatement(value))
+      .collect { case Some(statement) => statement }
 
   def unusedValues(bb: SILBasicBlock): Set[SILValue] =
     usageGraph.nodes
