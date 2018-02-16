@@ -1,6 +1,6 @@
 package me.waft.sil.optimizer.analysis
 
-import me.waft.sil.lang.{Br, SILBasicBlock, SILFunction, SILLabel}
+import me.waft.sil.lang._
 import me.waft.sil.optimizer.analysis.util.GraphTransformer
 
 import scalax.collection.GraphPredef._
@@ -30,6 +30,12 @@ case class SILFunctionAnalysis(function: SILFunction) {
                                         function.entryBB,
                                         function.canonicalExitBB,
                                         entryEmptyBB(function.entryBB))
+
+  def controlDependentBlocks(statement: SILStatement): Set[SILBasicBlock] =
+    controlDependentBlocks(statement.basicBlock)
+
+  def controlDependentBlocks(bb: SILBasicBlock): Set[SILBasicBlock] =
+    CDG.get(bb).diSuccessors.map(_.value)
 
   // Temporary entry node for computing Control Dependence Graph.
   private[this] def entryEmptyBB(bb: SILBasicBlock): SILBasicBlock =

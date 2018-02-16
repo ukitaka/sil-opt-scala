@@ -2,6 +2,7 @@ package me.waft.sil.optimizer.pass
 
 import me.waft.sil.lang.{Throw, _}
 import me.waft.sil.optimizer.analysis.{SILFunctionAnalysis, SILValueUsage}
+import me.waft.sil.optimizer.analysis.Implicits._
 
 import scala.collection.mutable.{Set => MutableSet}
 
@@ -27,15 +28,18 @@ object DCE extends DCEPass {
     }
   }
 
-  def eliminateDeadCodeInBB(bb: SILBasicBlock, usage: SILValueUsage): SILBasicBlock = {
+  def eliminateDeadCodeInBB(bb: SILBasicBlock,
+                            usage: SILValueUsage): SILBasicBlock = {
     if (usage.unusedValues(bb).isEmpty) {
       return bb
     }
     removeUnusedDefs(bb, usage)
   }
 
-  private def removeUnusedDefs(bb: SILBasicBlock, usage: SILValueUsage): SILBasicBlock = {
-    val unusedDefs = usage.unusedValues(bb)
+  private def removeUnusedDefs(bb: SILBasicBlock,
+                               usage: SILValueUsage): SILBasicBlock = {
+    val unusedDefs = usage
+      .unusedValues(bb)
       .flatMap(usage.function.declaredStatement)
       .collect { case SILStatement.InstructionDef(i, _) => i }
     SILBasicBlock(
@@ -49,24 +53,15 @@ object DCE extends DCEPass {
 // Aggressive dead code elimination.
 // Mark used basic blocks and instructions as `Live`, and
 // eliminate unmarked codes.
-//
 object AggressiveDCE extends DCEPass {
 
-  import me.waft.sil.optimizer.analysis.Implicits._
-
-  def seemsUseful(statement: SILStatement): Boolean = statement.instruction match {
-    case Return(_) => true
-    case Unreachable => true
-    case Throw(_) => true
-    case _ => false
-  }
-
-  def entryEmptyBB(bb: SILBasicBlock): SILBasicBlock =
-    SILBasicBlock(
-      SILLabel("entry", bb.label.args),
-      Seq(),
-      Br(bb.label.identifier, bb.label.args)
-    )
+  def seemsUseful(statement: SILStatement): Boolean =
+    statement.instruction match {
+      case Return(_)   => true
+      case Unreachable => true
+      case Throw(_)    => true
+      case _           => false
+    }
 
   def eliminateDeadCode(function: SILFunction): SILFunction = {
     val live = MutableSet[SILStatement]()
@@ -92,8 +87,7 @@ object AggressiveDCE extends DCEPass {
           }
         }
 
-      analysis.CDG.get(statement.basicBlock).diSuccessors.foreach { bbNode =>
-        val bb = bbNode.value
+      analysis.controlDependentBlocks(statement).foreach { bb =>
         if (live.add(SILStatement(bb.terminator, bb))) {
           propagateLiveness(statement)
         }
@@ -112,12 +106,10 @@ object AggressiveDCE extends DCEPass {
       function.linkage,
       function.name,
       function.`type`,
-      function.basicBlocks.map(bb => removeUnusedDefs(bb))
+      function.basicBlocks
+        .map(bb => removeUnusedDefs(bb))
         .filterNot(bb => bb.instructionDefs.isEmpty && !bb.terminator.isReturn)
     )
-
     eliminatedFunction
   }
-
-
 }
