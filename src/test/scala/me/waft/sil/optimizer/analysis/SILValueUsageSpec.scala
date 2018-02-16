@@ -35,6 +35,5 @@ class SILValueUsageSpec extends FlatSpec with Matchers with SILFunctionParser {
     ))
 
     usage.unusedValues(bb) should be(Set(SILValue("%2")))
-    usage.unusedArgs(bb) should be(Set(SILValue("%0")))
   }
 }

@@ -10,14 +10,6 @@ case class SILValueUsage(function: SILFunction, usageGraph: Graph[SILValue, Grap
 
   import Implicits._
 
-  def unusedArgs(bb: SILBasicBlock): Set[SILValue] =
-    usageGraph.nodes
-      .filter(node =>
-        bb.label.args.exists(_.value == node.value)
-          && node.diPredecessors.isEmpty
-      )
-      .map(_.value)
-
   def unusedValues(bb: SILBasicBlock): Set[SILValue] =
     usageGraph.nodes
       .filter(node =>
