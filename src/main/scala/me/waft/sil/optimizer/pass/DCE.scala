@@ -1,8 +1,7 @@
 package me.waft.sil.optimizer.pass
 
 import me.waft.sil.lang.{Throw, _}
-import me.waft.sil.optimizer.analysis.util.GraphTransformer
-import me.waft.sil.optimizer.analysis.{CFG, SILValueUsage}
+import me.waft.sil.optimizer.analysis.{SILFunctionAnalysis, SILValueUsage}
 
 import scala.collection.mutable.{Set => MutableSet}
 
@@ -71,13 +70,7 @@ object AggressiveDCE extends DCEPass {
 
   def eliminateDeadCode(function: SILFunction): SILFunction = {
     val live = MutableSet[SILStatement]()
-    val cfg = CFG(function)
-    val cdg = GraphTransformer.controlDependenceGraph(
-      cfg.graph,
-      function.entryBB,
-      function.canonicalExitBB,
-      entryEmptyBB(function.entryBB)
-    )
+    val analysis = SILFunctionAnalysis(function)
 
     function.basicBlocks.foreach { bb =>
       bb.statements.foreach { statement =>
@@ -99,7 +92,7 @@ object AggressiveDCE extends DCEPass {
           }
         }
 
-      cdg.get(statement.basicBlock).diSuccessors.foreach { bbNode =>
+      analysis.CDG.get(statement.basicBlock).diSuccessors.foreach { bbNode =>
         val bb = bbNode.value
         if (live.add(SILStatement(bb.terminator, bb))) {
           propagateLiveness(statement)
