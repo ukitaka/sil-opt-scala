@@ -7,12 +7,12 @@ class IdentifierParserSpec extends FlatSpec with Matchers with IdentifierParser 
   "SIL Identifier parser" should "work well" in {
     val id = "abc1234 "
     val result = identifier.parse(id).get.value
-    result should be ("abc1234")
+    result should be("abc1234")
   }
 
   "Swift Identifier parser" should "work well" in {
     val identifier = "abc1234 //"
     val result = swiftIdentifier.parse(identifier).get.value
-    result should be ("abc1234")
+    result should be("abc1234")
   }
 }

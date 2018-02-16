@@ -1,7 +1,7 @@
 package me.waft.sil.optimizer.analysis.util
 
-import scalax.collection.immutable.Graph
 import scalax.collection.GraphPredef._
+import scalax.collection.immutable.Graph
 
 case class LengauerTarjan[N](controlFlowGraph: DiGraph[N], entryNodeValue: N) {
 
@@ -59,7 +59,7 @@ case class LengauerTarjan[N](controlFlowGraph: DiGraph[N], entryNodeValue: N) {
         ancestors(dfstNode(v), false)
           .filter(u => dfNum(u) > dfNum(n))
           .map(a => cfgNode(a))
-          .map(u =>  semiDominator(u))
+          .map(u => semiDominator(u))
       }
     }
     candidates.minBy(node => dfNum(node.value))
@@ -81,12 +81,13 @@ case class LengauerTarjan[N](controlFlowGraph: DiGraph[N], entryNodeValue: N) {
 
     val y: CFGNodeT = {
       def recurseSuccessors(semiN: CFGNodeT, n: CFGNodeT): Set[CFGNodeT] = {
-          dfstNode(semiN).diSuccessors
-            .filter(y => dfNum(y.value) <= dfNum(n.value))
-            .flatMap { s =>
-              Set(cfgNode(s)) ++ recurseSuccessors(cfgNode(s), n)
-            }
+        dfstNode(semiN).diSuccessors
+          .filter(y => dfNum(y.value) <= dfNum(n.value))
+          .flatMap { s =>
+            Set(cfgNode(s)) ++ recurseSuccessors(cfgNode(s), n)
+          }
       }
+
       recurseSuccessors(semiN, n).minBy(s => dfNum(semiDominator(s)))
     }
 

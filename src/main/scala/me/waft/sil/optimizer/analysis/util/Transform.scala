@@ -1,7 +1,7 @@
 package me.waft.sil.optimizer.analysis.util
 
-import scalax.collection.{Graph, GraphEdge}
 import scalax.collection.GraphPredef._
+import scalax.collection.{Graph, GraphEdge}
 
 object Transform {
   def reverse[N](graph: Graph[N, GraphEdge.DiEdge]): Graph[N, GraphEdge.DiEdge] = Graph.from(

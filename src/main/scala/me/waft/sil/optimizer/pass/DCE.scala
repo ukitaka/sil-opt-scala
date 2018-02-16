@@ -1,7 +1,6 @@
 package me.waft.sil.optimizer.pass
 
-import me.waft.sil.lang._
-import me.waft.sil.lang.Throw
+import me.waft.sil.lang.{Throw, _}
 import me.waft.sil.optimizer.analysis.util.Transform
 import me.waft.sil.optimizer.analysis.{CFG, SILValueUsage}
 
@@ -53,6 +52,7 @@ object DCE extends DCEPass {
 // eliminate unmarked codes.
 //
 object AggressiveDCE extends DCEPass {
+
   import me.waft.sil.optimizer.analysis.Implicits._
 
   def seemsUseful(statement: SILStatement): Boolean = statement.instruction match {
@@ -96,14 +96,14 @@ object AggressiveDCE extends DCEPass {
         .collect { case Some(i) => i }
         .foreach { i =>
           if (live.add(i)) {
-             propagateLiveness(statement)
+            propagateLiveness(statement)
           }
         }
 
       cdg.get(statement.basicBlock).diSuccessors.foreach { bbNode =>
         val bb = bbNode.value
         if (live.add(SILStatement(bb.terminator, bb))) {
-           propagateLiveness(statement)
+          propagateLiveness(statement)
         }
       }
     }

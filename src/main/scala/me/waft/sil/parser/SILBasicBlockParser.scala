@@ -6,8 +6,8 @@ import me.waft.sil.lang.SILBasicBlock
 
 trait SILBasicBlockParser extends Parser
   with SILInstructionParser
-  with SILTerminatorParser
-{
+  with SILTerminatorParser {
+
   import WhiteSpaceApi._
 
   def basicBlock: P[SILBasicBlock] =

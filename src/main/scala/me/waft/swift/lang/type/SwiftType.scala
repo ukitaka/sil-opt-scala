@@ -1,6 +1,7 @@
 package me.waft.swift.lang.`type`
 
 sealed trait SwiftType
+
 /**
   * type → array-type
   * type → dictionary-type
@@ -15,14 +16,23 @@ sealed trait SwiftType
   * type → (type)
   */
 case class ArrayType(elementType: SwiftType) extends SwiftType
+
 case class DictionaryType(keyType: SwiftType, valueType: SwiftType) extends SwiftType
+
 case class TupleType(types: Seq[SwiftType]) extends SwiftType
+
 case class OptionalType(wrappedType: SwiftType) extends SwiftType
+
 case class ImplicitlyUnwrappedOptionalType(wrappedType: SwiftType) extends SwiftType
+
 case class ProtocolCompositionType(types: Seq[SwiftType]) extends SwiftType
+
 case class MetatypeType(instanceType: SwiftType) extends SwiftType
+
 case object AnyType extends SwiftType
+
 case object SelfType extends SwiftType
+
 case class ParenType(`type`: SwiftType) extends SwiftType
 
 case class FunctionType(attributes: Seq[Attribute], argType: SwiftType,

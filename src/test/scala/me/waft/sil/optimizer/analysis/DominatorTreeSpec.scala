@@ -4,8 +4,6 @@ import me.waft.sil.optimizer.analysis.util.Transform
 import me.waft.sil.parser.SILFunctionParser
 import org.scalatest._
 
-import scalax.collection.Graph
-
 class DominatorTreeSpec extends FlatSpec with Matchers with SILFunctionParser {
   "DT" should "work well" in {
     val sil =

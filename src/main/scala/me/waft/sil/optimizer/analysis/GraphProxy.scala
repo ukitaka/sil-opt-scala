@@ -1,8 +1,8 @@
 package me.waft.sil.optimizer.analysis
 
-import scalax.collection.{Graph, GraphBase, GraphEdge}
-import scalax.collection.GraphPredef.EdgeLikeIn
 import scala.language.higherKinds
+import scalax.collection.GraphPredef.EdgeLikeIn
+import scalax.collection.{Graph, GraphBase, GraphEdge}
 
 trait GraphProxy[N, E[X] <: EdgeLikeIn[X]] {
   type GraphT = Graph[N, E] with GraphBase[N, E]

@@ -9,13 +9,13 @@ class SILInstructionParserSpec extends FlatSpec with Matchers with SILInstructio
     val dog = NominalType("Dog")
     val sil = "alloc_stack $Dog"
     val result = silInstruction.parse(sil).get.value
-    result should be (AllocStack(SILType(dog)))
+    result should be(AllocStack(SILType(dog)))
   }
   "SIL instruction def parser" should "work well with alloc_stack" in {
     val sil = "%1 = alloc_stack $Dog"
     val dog = NominalType("Dog")
     val result = silInstructionDef.parse(sil).get.value
-    result.instruction should be (AllocStack(SILType(dog)))
-    result.values.head should be (SILValue("%1"))
+    result.instruction should be(AllocStack(SILType(dog)))
+    result.values.head should be(SILValue("%1"))
   }
 }

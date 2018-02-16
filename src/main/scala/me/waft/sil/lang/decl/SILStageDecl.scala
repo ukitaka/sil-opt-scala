@@ -2,11 +2,14 @@ package me.waft.sil.lang.decl
 
 sealed abstract class SILStageDecl(val name: String) extends SILDecl {
   def isRaw: Boolean = (this == SILStageDecl.Raw)
+
   def isCanonical: Boolean = (this == SILStageDecl.Canonical)
 }
 
 object SILStageDecl {
+
   case object Raw extends SILStageDecl("raw")
+
   case object Canonical extends SILStageDecl("canonical")
 
   def apply(name: String): SILStageDecl = name match {

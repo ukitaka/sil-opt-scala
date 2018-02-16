@@ -1,7 +1,6 @@
 package me.waft.sil.parser
 
-import me.waft.sil.lang._
-import me.waft.sil.lang.CondBr
+import me.waft.sil.lang.{CondBr, _}
 import org.scalatest._
 
 class SILTerminatorParserSpec extends FlatSpec with Matchers with SILTerminatorParser {

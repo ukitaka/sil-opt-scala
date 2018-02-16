@@ -5,6 +5,7 @@ import me.waft.sil.lang.IntegerLiteral
 import me.waft.sil.parser.SILTypeParser
 
 trait LiteralParser extends SILTypeParser {
+
   import WhiteSpaceApi._
 
   def integerLiteral: P[IntegerLiteral] =

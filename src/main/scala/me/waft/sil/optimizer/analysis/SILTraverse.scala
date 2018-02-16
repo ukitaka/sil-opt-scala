@@ -1,10 +1,9 @@
 package me.waft.sil.optimizer.analysis
 
 import me.waft.sil.lang._
-import me.waft.sil.lang.{_}
 
 case class SILInstructionTraverse(private val instruction: SILInstruction) {
-   def allValues: Set[SILValue] = instruction match {
+  def allValues: Set[SILValue] = instruction match {
     case AllocStack(_) => Set()
     case AllocBox(_) => Set()
     case StructExtract(operand, _) => Set(operand.value)
@@ -28,12 +27,12 @@ case class SILInstructionTraverse(private val instruction: SILInstruction) {
 }
 
 case class SILBasicBlockTraverse(private val bb: SILBasicBlock) {
- def allBranches(function: SILFunction): Set[SILBasicBlock] = bb.terminator match {
+  def allBranches(function: SILFunction): Set[SILBasicBlock] = bb.terminator match {
     case Br(label, _) =>
       function.basicBlocks.filter(_.label.identifier == label).toSet
     case CondBr(_, ifTrueLabel, _, ifFalseLabel, _) =>
       (function.basicBlocks.filter(_.label.identifier == ifTrueLabel)
-      ++ function.basicBlocks.filter(_.label.identifier == ifFalseLabel)).toSet
+        ++ function.basicBlocks.filter(_.label.identifier == ifFalseLabel)).toSet
     case _ => Set()
   }
 }

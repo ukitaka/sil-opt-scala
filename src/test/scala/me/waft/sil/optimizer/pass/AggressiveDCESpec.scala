@@ -1,6 +1,5 @@
 package me.waft.sil.optimizer.pass
 
-import me.waft.sil.emitter.SILEmitter
 import me.waft.sil.lang.SILValue
 import me.waft.sil.parser.SILFunctionParser
 import org.scalatest._
@@ -56,7 +55,7 @@ class AggressiveDCESpec extends FlatSpec with Matchers with SILFunctionParser {
     val func1 = silFunction.parse(optimizedSil).get.value
     val func2 = AggressiveDCE.eliminateDeadCode(func0)
 
-    func1 shouldBe(func2)
+    func1 shouldBe (func2)
   }
 
   "@dead2" should "be optimized well" in {
@@ -97,7 +96,7 @@ class AggressiveDCESpec extends FlatSpec with Matchers with SILFunctionParser {
     val func1 = silFunction.parse(optimizedSil).get.value
     val func2 = AggressiveDCE.eliminateDeadCode(func0)
 
-    func1 shouldBe(func2)
+    func1 shouldBe (func2)
   }
 
   "@dead3" should "be optimized well" in {
@@ -121,8 +120,8 @@ class AggressiveDCESpec extends FlatSpec with Matchers with SILFunctionParser {
       """.stripMargin
 
     val func0 = silFunction.parse(sil).get.value
-//    val func1 = silFunction.parse(optimizedSil).get.value
-//    val func2 = AggressiveDCE.eliminateDeadCode(func0)
-//    func1 shouldBe(func2)
+    //    val func1 = silFunction.parse(optimizedSil).get.value
+    //    val func2 = AggressiveDCE.eliminateDeadCode(func0)
+    //    func1 shouldBe(func2)
   }
 }

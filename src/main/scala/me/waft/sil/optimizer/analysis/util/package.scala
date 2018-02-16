@@ -1,7 +1,7 @@
 package me.waft.sil.optimizer.analysis
 
+import scalax.collection.mutable.{Graph => MutableGraph}
 import scalax.collection.{Graph, GraphBase, GraphEdge, GraphTraversal}
-import scalax.collection.mutable.{ Graph => MutableGraph }
 
 package object util {
   type DiGraph[N] = Graph[N, GraphEdge.DiEdge]

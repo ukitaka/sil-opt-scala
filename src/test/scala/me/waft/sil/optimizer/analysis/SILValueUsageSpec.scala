@@ -1,7 +1,7 @@
 package me.waft.sil.optimizer.analysis
 
 import me.waft.sil.lang.SILValue
-import me.waft.sil.parser.{SILBasicBlockParser, SILFunctionParser}
+import me.waft.sil.parser.SILFunctionParser
 import org.scalatest._
 
 import scalax.collection.Graph

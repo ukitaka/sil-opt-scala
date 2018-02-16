@@ -4,6 +4,7 @@ import fastparse.noApi._
 import me.waft.sil.lang.{SILLabel, SILOperand}
 
 trait SILLabelParser extends IdentifierParser with SILOperandParser with SILTypeParser {
+
   import WhiteSpaceApi._
 
   def silLabel: P[SILLabel] =

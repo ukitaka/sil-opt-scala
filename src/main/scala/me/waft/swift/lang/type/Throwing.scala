@@ -1,7 +1,9 @@
 package me.waft.swift.lang.`type`
 
 sealed trait Throwing
+
 case object Throws extends Throwing
+
 case object Rethrows extends Throwing
 
 object Throwing {

@@ -2,9 +2,9 @@ package me.waft.sil.parser
 
 import fastparse.noApi._
 import me.waft.sil.lang._
-import me.waft.sil.lang._
 
 trait SILTerminatorParser extends SILOperandParser with SILLabelParser {
+
   import WhiteSpaceApi._
 
   def silTerminator: P[SILTerminator] = unreachable | `return` | `throw` | unwind | br | condBr
@@ -22,7 +22,7 @@ trait SILTerminatorParser extends SILOperandParser with SILLabelParser {
       .map(Br.tupled)
 
   private[this] def condBr: P[CondBr] =
-    // condition
+  // condition
     ("cond_br" ~/ silValue ~ ","
       // if true
       ~ identifier
@@ -31,4 +31,5 @@ trait SILTerminatorParser extends SILOperandParser with SILLabelParser {
       // if false
       ~ identifier
       ~ (silOperand.repTC(1).parened).??
-    ) .map(CondBr.tupled)}
+      ).map(CondBr.tupled)
+}

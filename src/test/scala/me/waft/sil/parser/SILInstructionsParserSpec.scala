@@ -1,8 +1,8 @@
 package me.waft.sil.parser
 
-import me.waft.sil.parser.instruction.{AggregateTypesParser, AllocParser, FunctionApplicationParser, LiteralParser}
 import me.waft.sil.lang.decl.SILDeclRef
 import me.waft.sil.lang.{SILOperand, SILType, SILValue}
+import me.waft.sil.parser.instruction.{AggregateTypesParser, AllocParser, FunctionApplicationParser, LiteralParser}
 import org.scalatest._
 
 class SILInstructionsParserSpec extends FlatSpec with Matchers

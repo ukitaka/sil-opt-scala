@@ -7,6 +7,6 @@ class ImportDeclParserSpec extends FlatSpec with Matchers with ImportDeclParser 
   "ImportDecl parser" should "work well" in {
     val sil = "import SwiftShims"
     val result = importDecl.parse(sil).get.value
-    result should be (ImportDecl("SwiftShims"))
+    result should be(ImportDecl("SwiftShims"))
   }
 }

@@ -5,10 +5,12 @@ import me.waft.sil.lang.{BuiltIn, SILSubstitution}
 import me.waft.sil.parser._
 
 trait FunctionApplicationParser extends SILOperandParser with SILTypeParser {
+
   import WhiteSpaceApi._
 
   def silSubstitutionList: P[Seq[SILSubstitution]] =
     "<" ~ silSubstitution.repTC(1) ~ ">"
+
   def silSubstitution: P[SILSubstitution] =
     (nominalType ~ "=" ~ nominalType).map(SILSubstitution.tupled)
 
@@ -17,5 +19,5 @@ trait FunctionApplicationParser extends SILOperandParser with SILTypeParser {
       ~ stringLiteral
       ~ silSubstitutionList.??
       ~ silOperand.repTC(1).parened
-      ~ ":" ~ silType ).map(BuiltIn.tupled)
+      ~ ":" ~ silType).map(BuiltIn.tupled)
 }

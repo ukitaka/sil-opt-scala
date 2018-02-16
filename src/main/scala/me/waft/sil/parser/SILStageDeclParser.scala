@@ -5,6 +5,7 @@ import me.waft.core.parser.Parser
 import me.waft.sil.lang.decl.SILStageDecl
 
 trait SILStageDeclParser extends Parser {
+
   import WhiteSpaceApi._
 
   // sil-stage-decl ::= 'sil_stage' sil-stage

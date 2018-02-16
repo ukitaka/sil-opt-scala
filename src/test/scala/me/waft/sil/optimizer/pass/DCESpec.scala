@@ -49,12 +49,12 @@ class DCESpec extends FlatSpec with Matchers with SILFunctionParser {
         |bb0(%0 : $Int32, %1 : $Int32):
         |  return %0 : $Int32
         |}
-       """.stripMargin
+      """.stripMargin
 
     val func0 = silFunction.parse(sil).get.value
     val func1 = silFunction.parse(optimizedSil).get.value
     val func2 = DCE.eliminateDeadCode(func0)
 
-    func1 shouldBe(func2)
+    func1 shouldBe (func2)
   }
 }

@@ -3,10 +3,15 @@ package me.waft.sil.lang
 sealed abstract class SILLinkage(val name: String)
 
 case object Public extends SILLinkage("public")
+
 case object Hidden extends SILLinkage("hidden")
+
 case object Shared extends SILLinkage("shared")
+
 case object Private extends SILLinkage("private")
+
 case object PublicExternal extends SILLinkage("public_external")
+
 case object HiddenExternal extends SILLinkage("hidden_external")
 
 object SILLinkage {

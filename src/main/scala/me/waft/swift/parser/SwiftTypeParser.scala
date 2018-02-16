@@ -4,6 +4,7 @@ import fastparse.noApi._
 import me.waft.swift.lang.`type`._
 
 trait SwiftTypeParser extends SwiftIdentifierParser {
+
   import WhiteSpaceApi._
 
   def swiftType: P[SwiftType] = functionType | nominalType | tupleType
@@ -20,7 +21,7 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
       ~ functionTypeArgumentClause
       ~ throwing.?
       ~ "->"
-      ~/ (nominalType | tupleType) )
+      ~/ (nominalType | tupleType))
       .map(FunctionType.tupled)
 
   protected def functionTypeArgumentClause: P[TupleType] =

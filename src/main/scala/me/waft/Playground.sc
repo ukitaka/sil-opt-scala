@@ -1,7 +1,9 @@
 object LengauerTarjan {
   // Implement these three yourself
   def successors(v: Int): Iterable[Int] = ???
+
   def predecessors(v: Int): Iterable[Int] = ???
+
   def numNodes: Int = ???
 
   // Lifted from "Modern Compiler Implementation in Java", 2nd ed. chapter 19.2

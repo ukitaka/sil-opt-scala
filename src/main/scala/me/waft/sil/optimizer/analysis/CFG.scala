@@ -7,6 +7,7 @@ import scalax.collection.GraphPredef._
 import scalax.collection.immutable.Graph
 
 case class CFG(function: SILFunction) extends DiGraphProxy[SILBasicBlock] {
+
   import Implicits._
 
   lazy val graph: GraphT = Graph.from(

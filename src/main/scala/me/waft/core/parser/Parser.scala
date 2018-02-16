@@ -1,6 +1,7 @@
 package me.waft.core.parser
 
 trait Parser {
+
   import fastparse.all._
 
   def intLiteral: P[Int] =
@@ -8,15 +9,15 @@ trait Parser {
 
   def stringLiteral: P[String] = ("\"" ~ (!"\"" ~ AnyChar).rep.! ~ "\"")
 
-  val newline = P( "\n" | "\r\n" | "\r" | "\f")
+  val newline = P("\n" | "\r\n" | "\r" | "\f")
 
-  val whitespace = P( " " | "\t" | newline)
+  val whitespace = P(" " | "\t" | newline)
 
-  val comment = P( "//" ~/ (!"\n" ~ AnyChar).rep ~/ ("\n" | End))
+  val comment = P("//" ~/ (!"\n" ~ AnyChar).rep ~/ ("\n" | End))
 
   val whitespaces = (whitespace | comment).rep
 
-  val trailingComma: P0 = P( ("," ~ whitespaces ~ newline).? )
+  val trailingComma: P0 = P(("," ~ whitespaces ~ newline).?)
 
   private val WL0 = NoTrace(whitespaces)
 
@@ -34,11 +35,13 @@ trait Parser {
     def ?? = ?.map(_.getOrElse(Seq.empty))
   }
 
-  class Wrapper(WL: P0){
+  class Wrapper(WL: P0) {
+
     import scala.language.implicitConversions
 
     implicit def parserApi[T, V](p0: T)(implicit c: T => P[V]): WhitespaceApi0[V] =
       new WhitespaceApi0[V](p0, WL)
+
     implicit def parserForSeq[T](p0: P[Seq[T]]): WhitespaceApiSeq[T] =
       new WhitespaceApiSeq[T](p0, WL)
   }

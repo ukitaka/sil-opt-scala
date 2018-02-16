@@ -14,7 +14,7 @@ class GraphSpec extends FlatSpec with Matchers {
   // %4 = op %2
   // %5 = op %2
   "graph" should "work well" in {
-    val g = Graph(0, 3~>1, 3~>2, 4~>2, 5~>2)
+    val g = Graph(0, 3 ~> 1, 3 ~> 2, 4 ~> 2, 5 ~> 2)
     g.find(4) should be(Some(4))
     val e = g.edges.filter(e => e.source == 4).head
     e.source should be(4)
@@ -25,7 +25,7 @@ class GraphSpec extends FlatSpec with Matchers {
     g.filter((i: Int) => i % 2 == 0) should be(Graph(0, 4 ~> 2))
     g.filter(g.having(_ == 2)) should be(Graph(2))
     g.filter(g.having(node = _ == 2)) should be(Graph(2))
-    g.filter(g.having(edge = _ contains 2)) should be(Graph(3~>2, 4~>2, 5~>2))
+    g.filter(g.having(edge = _ contains 2)) should be(Graph(3 ~> 2, 4 ~> 2, 5 ~> 2))
   }
 
   "graph 2" should "work well" in {
@@ -46,16 +46,16 @@ class GraphSpec extends FlatSpec with Matchers {
     val node1 = g.get("1")
     val node2 = g.get("2")
 
-    node1.hasPredecessors shouldBe(true)
-    node1.diPredecessors shouldBe(Set("r"))
-    node1.hasSuccessors shouldBe(true)
-    node1.diSuccessors shouldBe(Set("2"))
-    node1.neighbors shouldBe(Set("r", "2"))
+    node1.hasPredecessors shouldBe (true)
+    node1.diPredecessors shouldBe (Set("r"))
+    node1.hasSuccessors shouldBe (true)
+    node1.diSuccessors shouldBe (Set("2"))
+    node1.neighbors shouldBe (Set("r", "2"))
 
-    node2.hasPredecessors shouldBe(true)
-    node2.diPredecessors shouldBe(Set("1", "7"))
-    node2.hasSuccessors shouldBe(true)
-    node2.diSuccessors shouldBe(Set("3", "4"))
+    node2.hasPredecessors shouldBe (true)
+    node2.diPredecessors shouldBe (Set("1", "7"))
+    node2.hasSuccessors shouldBe (true)
+    node2.diSuccessors shouldBe (Set("3", "4"))
 
     val nodeR = g.get("r")
     import g.ExtendedNodeVisitor

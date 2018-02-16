@@ -1,12 +1,14 @@
 package me.waft.sil.optimizer.analysis.util
 
-import scalax.collection.GraphTraversal.DepthFirst
+import scala.collection.mutable.{Map => MutableMap}
 import scalax.collection.GraphPredef._
-import scalax.collection.mutable.{Graph => MutableGraph}
-import scala.collection.mutable.{ Map => MutableMap }
+import scalax.collection.GraphTraversal.DepthFirst
 import scalax.collection.immutable.Graph
+import scalax.collection.mutable.{Graph => MutableGraph}
 
-case class DepthFirstSpanningTree[N](graph: DiGraph[N], entryNodeValue: N) { self =>
+case class DepthFirstSpanningTree[N](graph: DiGraph[N], entryNodeValue: N) {
+  self =>
+
   import graph.ExtendedNodeVisitor
 
   val entryNode = graph.get(entryNodeValue)
@@ -22,7 +24,7 @@ case class DepthFirstSpanningTree[N](graph: DiGraph[N], entryNodeValue: N) { sel
       ExtendedNodeVisitor((node, count, _, _) => {
         if (node.hasPredecessors) {
           val predecessor = node.diPredecessors.find(n => _dfNum.contains(n.value)).get
-          graph.add( predecessor.value ~> node.value )
+          graph.add(predecessor.value ~> node.value)
         }
         _dfNum(node.value) = count
         graph.add(node.value)

@@ -5,9 +5,10 @@ import me.waft.core.parser.Parser
 import me.waft.sil.lang.SILLinkage
 
 trait SILLinkageParser extends Parser {
+
   import WhiteSpaceApi._
 
   def silLinkage: P[SILLinkage] =
     ("public" | "hidden" | "shared" | "private" |
-      "public_external" | "hidden_external" ).!.map(SILLinkage.apply)
+      "public_external" | "hidden_external").!.map(SILLinkage.apply)
 }

@@ -1,10 +1,11 @@
 package me.waft.sil.emitter
 
-import me.waft.sil.lang.{SILInstruction, Unreachable, Unwind}
-import me.waft.sil.lang._
+import me.waft.sil.lang.{SILInstruction, Unreachable, Unwind, _}
 
 object SILInstructionEmitter {
+
   import SILEmitter._
+
   //TODO: This implementation is just for debug.
   def emitSILInstruction(inst: SILInstruction): String = (inst.name + " ") + (inst match {
     case AllocStack(t) => emitSILType(t)
