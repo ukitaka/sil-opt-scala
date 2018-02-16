@@ -7,8 +7,6 @@ import scalax.collection.immutable.Graph
 import scalax.collection.mutable.{Graph => MutableGraph}
 
 case class DepthFirstSpanningTree[N](graph: DiGraph[N], entryNodeValue: N) {
-  self =>
-
   import graph.ExtendedNodeVisitor
 
   val entryNode = graph.get(entryNodeValue)
