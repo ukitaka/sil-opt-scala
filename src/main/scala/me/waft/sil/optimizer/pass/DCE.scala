@@ -62,6 +62,13 @@ object AggressiveDCE extends DCEPass {
     case _ => false
   }
 
+  def entryEmptyBB(bb: SILBasicBlock): SILBasicBlock =
+    SILBasicBlock(
+      SILLabel("entry", bb.label.args),
+      Seq(),
+      Br(bb.label.identifier, bb.label.args)
+    )
+
   def eliminateDeadCode(function: SILFunction): SILFunction = {
     val live = MutableSet[SILStatement]()
     val usage = SILValueUsage.from(function)
@@ -70,7 +77,7 @@ object AggressiveDCE extends DCEPass {
       cfg.graph,
       function.entryBB,
       function.canonicalExitBB,
-      SILBasicBlock.empty(function.entryBB)
+      entryEmptyBB(function.entryBB)
     )
 
     function.basicBlocks.foreach { bb =>
