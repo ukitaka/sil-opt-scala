@@ -7,11 +7,11 @@ object Implicits {
   import scala.language.implicitConversions
 
   implicit def silBasicBlockTraverse(bb: SILBasicBlock) =
-    SILBasicBlockTraverse(bb)
+    SILBasicBlockTraverser(bb)
 
   implicit def silInstructionTraverse(instruction: SILInstruction) =
-    SILInstructionTraverse(instruction)
+    SILInstructionTraverser(instruction)
 
   implicit def silInstructionDefTraverse(instructionDef: SILInstructionDef) =
-    SILInstructionTraverse(instructionDef.instruction)
+    SILInstructionTraverser(instructionDef.instruction)
 }

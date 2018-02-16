@@ -2,7 +2,7 @@ package me.waft.sil.optimizer.analysis
 
 import me.waft.sil.lang._
 
-case class SILInstructionTraverse(private val instruction: SILInstruction) {
+case class SILInstructionTraverser(private val instruction: SILInstruction) {
   def allValues: Set[SILValue] = instruction match {
     case AllocStack(_) => Set()
     case AllocBox(_) => Set()
@@ -26,7 +26,7 @@ case class SILInstructionTraverse(private val instruction: SILInstruction) {
   }
 }
 
-case class SILBasicBlockTraverse(private val bb: SILBasicBlock) {
+case class SILBasicBlockTraverser(private val bb: SILBasicBlock) {
   def allBranches(function: SILFunction): Set[SILBasicBlock] = bb.terminator match {
     case Br(label, _) =>
       function.basicBlocks.filter(_.label.identifier == label).toSet
