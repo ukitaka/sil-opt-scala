@@ -113,3 +113,15 @@ object AggressiveDCE extends DCEPass {
     eliminatedFunction
   }
 }
+
+// DCE that has logic like a swift compiler uses.
+// This is also similar to AggressiveDCE, but there are some differences.
+// - Do not compute control dependence graph completely.
+// - Do no eliminate infinity loop.
+// See:
+//   Optimal control dependence and the Roman chariots problem
+//   TOPLAS, v19, issue 3, 1997
+//   http://dx.doi.org/10.1145/256167.256217
+object SwiftDCE extends DCEPass {
+  def eliminateDeadCode(function: SILFunction): SILFunction = ???
+}
