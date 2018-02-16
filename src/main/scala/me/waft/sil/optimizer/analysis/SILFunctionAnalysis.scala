@@ -25,6 +25,14 @@ case class SILFunctionAnalysis(function: SILFunction) {
   // PDT(Post Dominator Tree) of `function`
   lazy val PDT = postDominatorTree(CFG, function.entryBB)
 
+  def properlyDominates(bb: SILBasicBlock, pred: SILBasicBlock): Boolean = {
+    if (bb == pred) {
+      false
+    } else {
+      PDT.get(pred).pathTo(PDT.get(bb)).isDefined
+    }
+  }
+
   // CDG(Control Dependence Graph) of `function`
   lazy val CDG = controlDependenceGraph(CFG,
                                         function.entryBB,

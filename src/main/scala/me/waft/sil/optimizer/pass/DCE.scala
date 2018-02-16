@@ -4,7 +4,8 @@ import me.waft.sil.lang.{Throw, _}
 import me.waft.sil.optimizer.analysis.{SILFunctionAnalysis, SILValueUsage}
 import me.waft.sil.optimizer.analysis.Implicits._
 
-import scala.collection.mutable.{Set => MutableSet}
+import scala.collection.mutable.{Set => MutableSet, Map => MutableMap }
+import scalax.collection.GraphTraversal.BreadthFirst
 
 trait DCEPass extends Pass {
   def eliminateDeadCode(function: SILFunction): SILFunction
@@ -125,6 +126,42 @@ object AggressiveDCE extends DCEPass {
 object SwiftDCE extends DCEPass {
   def eliminateDeadCode(function: SILFunction): SILFunction = {
     val analysis = SILFunctionAnalysis(function)
+
+    val CFG = analysis.CFG
+    import CFG._
+
+    type Level = Int
+    case class LeveledBB(bb: SILBasicBlock, level: Int)
+    case class ControllingInfo(self: LeveledBB, predecessors: Set[LeveledBB], minLevel: Int)
+
+    val levelMap: MutableMap[SILBasicBlock, Level] = MutableMap()
+
+    // compute levels
+    CFG.get(function.entryBB).innerNodeTraverser.withKind(BreadthFirst)
+      .foreach {
+        ExtendedNodeVisitor((node, _, level, _) => {
+          levelMap.put(node.value, level)
+        })
+      }
+
+    val controllingInfoMap: MutableMap[SILBasicBlock, ControllingInfo] = MutableMap()
+
+    // compute predecessors
+    CFG.get(function.entryBB).innerNodeTraverser.withKind(BreadthFirst)
+      .foreach { node =>
+          val leveledPredecessors =
+            node.diPredecessors
+              .filterNot(n => analysis.properlyDominates(node.value, n.value))
+              .map(n => LeveledBB(n.value, levelMap(n.value)))
+          val controllingInfo = ControllingInfo(
+            LeveledBB(node.value, levelMap(node.value)),
+            leveledPredecessors,
+            leveledPredecessors.minBy(_.level).level
+          )
+          controllingInfoMap.put(node.value, controllingInfo)
+      }
+
+
     ???
   }
 }
