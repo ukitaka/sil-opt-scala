@@ -61,7 +61,7 @@ class GraphSpec extends FlatSpec with Matchers {
     import g.ExtendedNodeVisitor
 
     nodeR.innerNodeTraverser.withKind(DepthFirst).foreach {
-      ExtendedNodeVisitor((node, count, depth, informer) => {
+      ExtendedNodeVisitor((node, _, depth, _) => {
         if (node.value == "7") {
           depth should be(5)
         }
