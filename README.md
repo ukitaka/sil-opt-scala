@@ -1,4 +1,4 @@
-# sil-scala
+# sil-opt-scala
 
 Swift Intermediate Language parser and optimizer written in Scala.
 
