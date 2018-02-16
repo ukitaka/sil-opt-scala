@@ -90,7 +90,7 @@ object AggressiveDCE extends DCEPass {
     }
 
     def propagateLiveness(statement: SILStatement): Unit = {
-      statement.instruction.allValues
+      statement.instruction.usingValues
         .map(value => function.declaredStatement(value))
         .collect { case Some(i) => i }
         .foreach { i =>

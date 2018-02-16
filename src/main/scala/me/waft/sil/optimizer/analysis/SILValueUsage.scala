@@ -5,37 +5,44 @@ import me.waft.sil.lang._
 import scala.collection.Set
 import scalax.collection.{Graph, GraphEdge}
 import scalax.collection.GraphPredef._
+import Implicits._
 
-case class SILValueUsage(function: SILFunction, usageGraph: Graph[SILValue, GraphEdge.DiEdge]) {
-
-  import Implicits._
+case class SILValueUsage(function: SILFunction,
+                         usageGraph: Graph[SILValue, GraphEdge.DiEdge]) {
+  usageGraph.edges.foreach(println)
 
   def unusedValues(bb: SILBasicBlock): Set[SILValue] =
     usageGraph.nodes
-      .filter(node =>
-        usageGraph.filter(usageGraph.having(edge = _.target == node)).isEmpty
-          && !bb.label.args.exists(_.value == node.value)
-          && !bb.terminator.allValues.exists(_ == node.value)
-      )
+      .filterNot(_.hasPredecessors)
+      .filterNot(_ == SILValue.undef)
       .map(_.value)
 }
 
 object SILValueUsage {
-  def from(function: SILFunction): SILValueUsage = SILValueUsage(function, analyseUsages(function))
+  import SILStatement._
 
-  private[analysis] def analyseUsages(function: SILFunction): Graph[SILValue, GraphEdge.DiEdge] = {
-    import Implicits._
-    function.basicBlocks
-      .map { bb =>
-        val nodes = (bb.label.args.map(_.value) ++ bb.instructionDefs.flatMap(_.values))
-          .map(n => Graph[SILValue, GraphEdge.DiEdge](n))
-        val edges = for {
-          d <- bb.instructionDefs
-          user <- d.values
-          uses <- d.instruction.allValues
-        } yield Graph(user ~> uses)
-        (nodes.reduceLeftOption(_ ++ _).getOrElse(Graph())
-          ++ edges.reduceLeftOption(_ ++ _).getOrElse(Graph()))
-      }
-  }.reduce(_ ++ _)
+  def from(function: SILFunction): SILValueUsage =
+    SILValueUsage(function, analyseUsages(function))
+
+  private[analysis] def analyseUsages(
+      function: SILFunction): Graph[SILValue, GraphEdge.DiEdge] = {
+    val nodes = function.basicBlocks.flatMap(_.allValues)
+
+    val edges =
+      for {
+        statement <- function.statements
+        declaredValue <- statement.declaringValues
+        usingValue <- statement.usingValues
+      } yield (declaredValue ~> usingValue)
+
+    // Values in a terminator are always used by basic block.
+    // Describe this by inserting undef as a predecessors of value.
+    val terminatorEdges =
+      for {
+        terminator <- function.statements.collect { case Terminator(t, _) => t }
+        usingValue <- terminator.usingValues
+      } yield (SILValue.undef ~> usingValue)
+
+    Graph.from(nodes, edges ++ terminatorEdges)
+  }
 }

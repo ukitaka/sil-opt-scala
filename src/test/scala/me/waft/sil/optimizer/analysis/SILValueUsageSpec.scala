@@ -26,6 +26,7 @@ class SILValueUsageSpec extends FlatSpec with Matchers with SILFunctionParser {
     val graph = usage.usageGraph
 
     graph should be(Graph(
+      SILValue.undef ~> SILValue("%6"),
       SILValue("%6") ~> SILValue("%5"),
       SILValue("%5") ~> SILValue("%4"),
       SILValue("%5") ~> SILValue("%3"),
@@ -34,6 +35,6 @@ class SILValueUsageSpec extends FlatSpec with Matchers with SILFunctionParser {
       SILValue("%0")
     ))
 
-    usage.unusedValues(bb) should be(Set(SILValue("%2")))
+    usage.unusedValues(bb) should be(Set(SILValue("%2"), SILValue("%0")))
   }
 }

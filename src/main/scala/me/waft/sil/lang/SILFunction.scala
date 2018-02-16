@@ -15,6 +15,8 @@ case class SILFunction(linkage: Option[SILLinkage],
     .headOption
     .getOrElse(basicBlocks.last)
 
+  val statements: Seq[SILStatement] = basicBlocks.flatMap(_.statements)
+
   def declaredStatement(value: SILValue): Option[SILStatement] =
     (for {
       bb <- basicBlocks
