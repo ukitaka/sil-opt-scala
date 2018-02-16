@@ -191,3 +191,5 @@ project/plugins/project/
 
 # End of https://www.gitignore.io/api/sbt,scala,python,ansible,intellij
 
+# macOS
+.DS_Store
