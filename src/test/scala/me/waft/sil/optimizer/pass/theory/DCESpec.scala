@@ -1,6 +1,5 @@
 package me.waft.sil.optimizer.pass.theory
 
-import me.waft.sil.lang.SILValue
 import me.waft.sil.parser.SILFunctionParser
 import org.scalatest._
 
