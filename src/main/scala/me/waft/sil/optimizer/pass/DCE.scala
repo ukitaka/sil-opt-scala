@@ -5,53 +5,117 @@ import me.waft.sil.optimizer.analysis.SILFunctionAnalysis
 
 import scala.collection.mutable.{Map => MutableMap, Set => MutableSet}
 import scalax.collection.GraphTraversal.BreadthFirst
+import me.waft.sil.optimizer.analysis.Implicits._
 
-// - Do not compute control dependence graph completely.
-// - Do no eliminate infinity loop.
-// See:
-//   Optimal control dependence and the Roman chariots problem
-//   TOPLAS, v19, issue 3, 1997
-//   http://dx.doi.org/10.1145/256167.256217
-object DCE extends SILFunctionTransform {
-  def run(function: SILFunction): SILFunction = eliminateDeadCode(function)
+case class LeveledBB(bb: SILBasicBlock, level: Int)
 
-  def eliminateDeadCode(function: SILFunction): SILFunction = {
-    val analysis = SILFunctionAnalysis(function)
+case class ControllingInfo(self: LeveledBB,
+                           predecessors: Set[LeveledBB],
+                           minLevel: Int)
 
-    val CFG = analysis.CFG
-    import CFG._
+case class DCE(function: SILFunction) {
+  type Level = Int
 
-    type Level = Int
-    case class LeveledBB(bb: SILBasicBlock, level: Int)
-    case class ControllingInfo(self: LeveledBB, predecessors: Set[LeveledBB], minLevel: Int)
+  val analysis = SILFunctionAnalysis(function)
 
-    val levelMap: MutableMap[SILBasicBlock, Level] = MutableMap()
+  val live = MutableSet[SILStatement]()
 
-    // compute levels
-    CFG.get(function.entryBB).innerNodeTraverser.withKind(BreadthFirst)
+  val CFG = analysis.CFG
+
+  val levelMap: MutableMap[SILBasicBlock, Level] = MutableMap()
+
+  val controllingInfoMap: MutableMap[SILBasicBlock, ControllingInfo] =
+    MutableMap()
+
+  import CFG._
+
+  def eliminateDeadCode: SILFunction = {
+    computeLevels
+    computePredecessors
+    markLive()
+
+    SILFunction(
+      function.linkage,
+      function.name,
+      function.`type`,
+      function.basicBlocks
+        .map(bb => removeUnusedDefs(bb))
+        .filterNot(bb => bb.instructionDefs.isEmpty && !bb.terminator.isReturn)
+    )
+  }
+
+  def seemsUseful(statement: SILStatement): Boolean =
+    statement.instruction match {
+      case Return(_)   => true
+      case Unreachable => true
+      case Throw(_)    => true
+      case _           => false
+    }
+
+  def markLive(): Unit =
+    function.basicBlocks.foreach { bb =>
+      bb.statements.foreach { statement =>
+        if (seemsUseful(statement)) {
+          if (live.add(statement)) {
+            propagateLiveness(statement)
+          }
+        }
+      }
+    }
+
+  def propagateLiveness(statement: SILStatement): Unit = {
+    statement.instruction.usingValues
+      .map(value => function.declaredStatement(value))
+      .collect { case Some(i) => i }
+      .foreach { i =>
+        if (live.add(i)) {
+          propagateLiveness(statement)
+        }
+      }
+    analysis.controlDependentBlocks(statement).foreach { bb =>
+      if (live.add(SILStatement(bb.terminator, bb))) {
+        propagateLiveness(statement)
+      }
+    }
+  }
+
+  def computeLevels =
+    CFG
+      .get(function.entryBB)
+      .innerNodeTraverser
+      .withKind(BreadthFirst)
       .foreach {
         ExtendedNodeVisitor((node, _, level, _) => {
           levelMap.put(node.value, level)
         })
       }
 
-    val controllingInfoMap: MutableMap[SILBasicBlock, ControllingInfo] = MutableMap()
-
-    // compute predecessors
-    CFG.get(function.entryBB).innerNodeTraverser.withKind(BreadthFirst)
+  def computePredecessors =
+    CFG
+      .get(function.entryBB)
+      .innerNodeTraverser
+      .withKind(BreadthFirst)
       .foreach { node =>
-          val leveledPredecessors =
-            node.diPredecessors
-              .filterNot(n => analysis.properlyDominates(node.value, n.value))
-              .map(n => LeveledBB(n.value, levelMap(n.value)))
-          val controllingInfo = ControllingInfo(
-            LeveledBB(node.value, levelMap(node.value)),
-            leveledPredecessors,
-            leveledPredecessors.minBy(_.level).level
-          )
-          controllingInfoMap.put(node.value, controllingInfo)
+        val leveledPredecessors =
+          node.diPredecessors
+            .filterNot(n => analysis.properlyDominates(node.value, n.value))
+            .map(n => LeveledBB(n.value, levelMap(n.value)))
+        val controllingInfo = ControllingInfo(
+          LeveledBB(node.value, levelMap(node.value)),
+          leveledPredecessors,
+          leveledPredecessors.minBy(_.level).level
+        )
+        controllingInfoMap.put(node.value, controllingInfo)
       }
 
-    ???
-  }
+  def removeUnusedDefs(bb: SILBasicBlock): SILBasicBlock =
+    SILBasicBlock(
+      bb.label,
+      bb.instructionDefs.filter(i => live.contains(SILStatement(i, bb))),
+      bb.terminator
+    )
+}
+
+object DCE extends SILFunctionTransform {
+  def run(function: SILFunction): SILFunction = DCE(function).eliminateDeadCode
 }
