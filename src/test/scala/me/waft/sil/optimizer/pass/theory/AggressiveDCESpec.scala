@@ -1,4 +1,4 @@
-package me.waft.sil.optimizer.pass
+package me.waft.sil.optimizer.pass.theory
 
 import me.waft.sil.lang.SILValue
 import me.waft.sil.parser.SILFunctionParser
@@ -18,7 +18,7 @@ class AggressiveDCESpec extends FlatSpec with Matchers with SILFunctionParser {
       """.stripMargin
     val func = silFunction.parse(sil).get.value
     val bb = func.basicBlocks.head
-    val optimizedFunc = AggressiveDCE.eliminateDeadCode(func)
+    val optimizedFunc = AggressiveDCE.run(func)
     val optimizedBb = optimizedFunc.basicBlocks.head
 
     // %1 is eliminated
@@ -53,7 +53,7 @@ class AggressiveDCESpec extends FlatSpec with Matchers with SILFunctionParser {
 
     val func0 = silFunction.parse(sil).get.value
     val func1 = silFunction.parse(optimizedSil).get.value
-    val func2 = AggressiveDCE.eliminateDeadCode(func0)
+    val func2 = AggressiveDCE.run(func0)
 
     func1 shouldBe (func2)
   }
@@ -94,7 +94,7 @@ class AggressiveDCESpec extends FlatSpec with Matchers with SILFunctionParser {
 
     val func0 = silFunction.parse(sil).get.value
     val func1 = silFunction.parse(optimizedSil).get.value
-    val func2 = AggressiveDCE.eliminateDeadCode(func0)
+    val func2 = AggressiveDCE.run(func0)
 
     func1 shouldBe (func2)
   }
@@ -121,6 +121,6 @@ class AggressiveDCESpec extends FlatSpec with Matchers with SILFunctionParser {
 
     val func0 = silFunction.parse(sil).get.value
     the[Exception] thrownBy silFunction.parse(optimizedSil).get.value
-    the[Exception] thrownBy AggressiveDCE.eliminateDeadCode(func0)
+    the[Exception] thrownBy AggressiveDCE.run(func0)
   }
 }
