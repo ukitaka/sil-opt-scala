@@ -1,4 +1,5 @@
-import me.waft.sil.optimizer.pass.DCE
+package me.waft.sil.optimizer.pass
+
 import me.waft.sil.parser.SILFunctionParser
 import org.scalatest._
 
@@ -26,8 +27,9 @@ class DCESpec extends FlatSpec with Matchers with SILFunctionParser {
 
     val func0 = silFunction.parse(sil).get.value
     val func1 = silFunction.parse(optimizedSil).get.value
-//    val func2 = DCE.run(func0)
-//    func1 shouldBe (func2)
+    val func2 = DCE.run(func0)
+
+    func1 shouldBe (func2)
   }
 
   "@dead2" should "be optimized well" in {
@@ -66,8 +68,9 @@ class DCESpec extends FlatSpec with Matchers with SILFunctionParser {
 
     val func0 = silFunction.parse(sil).get.value
     val func1 = silFunction.parse(optimizedSil).get.value
-//    val func2 = DCE.run(func0)
-//    func1 shouldBe (func2)
+    val func2 = DCE.run(func0)
+
+    func1 shouldBe (func2)
   }
 
   "Aggressive DCE" should "eliminate an infinity loop" in {
@@ -91,7 +94,7 @@ class DCESpec extends FlatSpec with Matchers with SILFunctionParser {
       """.stripMargin
 
     val func0 = silFunction.parse(sil).get.value
-//    the[Exception] thrownBy silFunction.parse(optimizedSil).get.value
-//    the[Exception] thrownBy DCE.run(func0)
+    the[Exception] thrownBy silFunction.parse(optimizedSil).get.value
+    the[Exception] thrownBy DCE.run(func0)
   }
 }
