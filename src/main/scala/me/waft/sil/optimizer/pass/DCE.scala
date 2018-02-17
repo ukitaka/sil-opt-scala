@@ -6,9 +6,6 @@ import me.waft.sil.optimizer.analysis.SILFunctionAnalysis
 
 import scala.collection.mutable.{Set => MutableSet}
 
-// Aggressive dead code elimination.
-// Mark used basic blocks and instructions as `Live`, and
-// eliminate unmarked codes.
 case class DCE(function: SILFunction) {
   val analysis = SILFunctionAnalysis(function)
   val live = MutableSet[SILStatement]()
@@ -29,7 +26,6 @@ case class DCE(function: SILFunction) {
       function.`type`,
       function.basicBlocks
         .map(bb => removeUnusedDefs(bb))
-        .filterNot(bb => bb.instructionDefs.isEmpty && !bb.terminator.isReturn)
     )
   }
 
