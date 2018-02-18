@@ -8,18 +8,21 @@ import scala.collection.mutable.{Set => MutableSet}
 
 case class DCE(function: SILFunction) {
   val analysis = SILFunctionAnalysis(function)
-  val live = MutableSet[SILStatement]()
+  val CFG = analysis.CFG
+  val liveArgs = MutableSet[SILValue]()
+  val liveStatements = MutableSet[SILStatement]()
 
   def seemsUseful(statement: SILStatement): Boolean =
     statement.instruction match {
-      case Return(_) => true
+      case Return(_)   => true
       case Unreachable => true
-      case Throw(_) => true
-      case _ => false
+      case Throw(_)    => true
+      case _           => false
     }
 
   def eliminateDeadCode(): SILFunction = {
     markLive()
+    println(liveArgs)
     SILFunction(
       function.linkage,
       function.name,
@@ -33,7 +36,7 @@ case class DCE(function: SILFunction) {
     function.basicBlocks.foreach { bb =>
       bb.statements.foreach { statement =>
         if (seemsUseful(statement)) {
-          if (live.add(statement)) {
+          if (liveStatements.add(statement)) {
             propagateLiveness(statement)
           }
         }
@@ -41,16 +44,32 @@ case class DCE(function: SILFunction) {
     }
 
   def propagateLiveness(statement: SILStatement): Unit = {
+    if (liveStatements.contains(statement)) {
+      return
+    }
     statement.instruction.usingValues
-      .map(value => function.declaredStatement(value))
-      .collect { case Some(i) => i }
-      .foreach { i =>
-        if (live.add(i)) {
-          propagateLiveness(statement)
+      .map(value => (value, function.declaredStatement(value)))
+      .foreach { v =>
+        v match {
+          case (v, None) => {
+            if(liveArgs.add(v)) {
+              CFG.get(statement.basicBlock).diPredecessors.map { p =>
+                val s = SILStatement(p.terminator, p.value)
+                if (liveStatements.add(s)) {
+                  propagateLiveness(s)
+                }
+
+              }
+            }
+          }
+          case (_, Some(i)) =>
+            if (liveStatements.add(i)) {
+              propagateLiveness(statement)
+            }
         }
       }
     analysis.controlDependentBlocks(statement).foreach { bb =>
-      if (live.add(SILStatement(bb.terminator, bb))) {
+      if (liveStatements.add(SILStatement(bb.terminator, bb))) {
         propagateLiveness(statement)
       }
     }
@@ -59,7 +78,8 @@ case class DCE(function: SILFunction) {
   def removeUnusedDefs(bb: SILBasicBlock): SILBasicBlock =
     SILBasicBlock(
       bb.label,
-      bb.instructionDefs.filter(i => live.contains(SILStatement(i, bb))),
+      bb.instructionDefs.filter(i =>
+        liveStatements.contains(SILStatement(i, bb))),
       bb.terminator
     )
 }

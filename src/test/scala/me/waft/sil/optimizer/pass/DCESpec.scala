@@ -78,6 +78,7 @@ class DCESpec extends FlatSpec with Matchers with SILFunctionParser {
 
     val func0 = silFunction.parse(sil).get.value
     val func1 = silFunction.parse(optimizedSil).get.value
+    println("[liveArgs]---------------")
     val func2 = DCE.run(func0)
 
 //    println("[original]--------------")
