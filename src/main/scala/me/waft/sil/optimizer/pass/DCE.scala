@@ -12,6 +12,7 @@ case class DCE(function: SILFunction) {
   val CFG = analysis.CFG
   val liveArgs = MutableSet[SILValue]()
   val liveStatements = MutableSet[SILStatement]()
+  def liveBlocks = liveStatements.map(_.basicBlock)
 
   def seemsUseful(statement: SILStatement): Boolean =
     statement.instruction match {
@@ -80,6 +81,15 @@ case class DCE(function: SILFunction) {
         liveStatements.contains(SILStatement(i, bb))),
       SILUndefReplacer(liveArgs.toSet).replaceToUndef(bb.terminator)
     )
+
+  def nearestUsefulPostDominator(bb: SILBasicBlock): SILBasicBlock = {
+    val predecessor = analysis.PDT.get(bb).diPredecessors.head
+    if (liveBlocks.contains(predecessor.value)) {
+      predecessor.value
+    } else {
+      nearestUsefulPostDominator(predecessor.value)
+    }
+  }
 }
 
 object DCE extends SILFunctionTransform {
