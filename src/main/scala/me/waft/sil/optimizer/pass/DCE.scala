@@ -1,10 +1,9 @@
 package me.waft.sil.optimizer.pass
 
-import me.waft.sil.emitter.SILEmitter
 import me.waft.sil.lang.{Throw, _}
-import me.waft.sil.optimizer.util.Implicits._
 import me.waft.sil.optimizer.analysis.SILFunctionAnalysis
 import me.waft.sil.optimizer.pass.util.{SILFunctionValueRenamer, SILUndefReplacer}
+import me.waft.sil.optimizer.util.Implicits._
 
 import scala.collection.mutable.{Set => MutableSet}
 
@@ -31,14 +30,7 @@ case class DCE(function: SILFunction) {
       function.basicBlocks
         .map(bb => removeUnusedDefs(bb))
     )
-
-    println("--------")
-    println( SILEmitter.emitSILFunction(function) )
-    println("--------")
-    println( SILEmitter.emitSILFunction(optimized) )
-    println("--------")
     SILFunctionValueRenamer.renameValues(optimized)
-//    optimized
   }
 
   def markLive(): Unit =
@@ -53,9 +45,6 @@ case class DCE(function: SILFunction) {
     }
 
   def propagateLiveness(statement: SILStatement): Unit = {
-    if (liveStatements.contains(statement)) {
-      return
-    }
     statement.instruction.usingValues
       .map(value => (value, function.declaredStatement(value)))
       .foreach { v =>
