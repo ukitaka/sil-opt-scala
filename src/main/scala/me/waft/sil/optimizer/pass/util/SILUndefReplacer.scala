@@ -2,7 +2,8 @@ package me.waft.sil.optimizer.pass.util
 
 import me.waft.sil.lang._
 
-case class SILValueRenamer(liveValues: Set[SILValue]) {
+// Replace unused value to undef
+case class SILUndefReplacer(liveValues: Set[SILValue]) {
   def replaceToUndef(value: SILValue): SILValue =
     liveValues.find(_ == value).getOrElse(SILValue.undef)
 
