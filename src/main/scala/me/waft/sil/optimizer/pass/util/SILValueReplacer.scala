@@ -6,7 +6,7 @@ object SILValueReplacer {
   def replaceValuesInOperand(operand: SILOperand)(f: SILValue => SILValue): SILOperand =
     SILOperand(f(operand.value), operand.`type`)
 
-  def replaceValueInInstruction(inst: SILInstruction)(f: SILValue => SILValue): SILInstruction = {
+  def replaceValuesInInstruction(inst: SILInstruction)(f: SILValue => SILValue): SILInstruction = {
     val r = { (op: SILOperand) => replaceValuesInOperand(op)(f) }
     inst match {
       case AllocStack(_)                   => inst
@@ -35,20 +35,27 @@ object SILValueReplacer {
     }
   }
 
-  def replaceValueInTerminator(terminator: SILTerminator)(f: SILValue => SILValue): SILTerminator =
-    replaceValueInInstruction(terminator)(f).asInstanceOf[SILTerminator]
+  def replaceValuesInTerminator(terminator: SILTerminator)(f: SILValue => SILValue): SILTerminator =
+    replaceValuesInInstruction(terminator)(f).asInstanceOf[SILTerminator]
 
   def replaceValueInInstructionDef(instDef: SILInstructionDef)(f: SILValue => SILValue): SILInstructionDef =
-    SILInstructionDef(instDef.values.map(f), replaceValueInInstruction(instDef.instruction)(f))
+    SILInstructionDef(instDef.values.map(f), replaceValuesInInstruction(instDef.instruction)(f))
 
-  def replaceValueInLabel(label: SILLabel)(f: SILValue => SILValue): SILLabel = {
+  def replaceValuesInLabel(label: SILLabel)(f: SILValue => SILValue): SILLabel = {
     val r = { (op: SILOperand) => replaceValuesInOperand(op)(f) }
     SILLabel(label.identifier, label.args.map(r))
   }
 
-  def replaceValuesInBasicBlock(f: SILValue => SILValue, bb: SILBasicBlock) = SILBasicBlock(
-    replaceValueInLabel(bb.label)(f),
+  def replaceValuesInBasicBlock(bb: SILBasicBlock)(f: SILValue => SILValue) = SILBasicBlock(
+    replaceValuesInLabel(bb.label)(f),
     bb.instructionDefs.map(i => replaceValueInInstructionDef(i)(f)),
-    replaceValueInTerminator(bb.terminator)(f)
+    replaceValuesInTerminator(bb.terminator)(f)
+  )
+
+  def replaceValuesInFunction(function: SILFunction)(f: SILValue => SILValue) = SILFunction(
+    function.linkage,
+    function.name,
+    function.`type`,
+    function.basicBlocks.map(bb => replaceValuesInBasicBlock(bb)(f))
   )
 }

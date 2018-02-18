@@ -1,8 +1,10 @@
 package me.waft.sil.optimizer.pass
 
+import me.waft.sil.emitter.SILEmitter
 import me.waft.sil.lang.{Throw, _}
 import me.waft.sil.optimizer.util.Implicits._
 import me.waft.sil.optimizer.analysis.SILFunctionAnalysis
+import me.waft.sil.optimizer.pass.util.{SILFunctionValueRenamer, SILUndefReplacer}
 
 import scala.collection.mutable.{Set => MutableSet}
 
@@ -22,14 +24,21 @@ case class DCE(function: SILFunction) {
 
   def eliminateDeadCode(): SILFunction = {
     markLive()
-    println(liveArgs)
-    SILFunction(
+    val optimized = SILFunction(
       function.linkage,
       function.name,
       function.`type`,
       function.basicBlocks
         .map(bb => removeUnusedDefs(bb))
     )
+
+    println("--------")
+    println( SILEmitter.emitSILFunction(function) )
+    println("--------")
+    println( SILEmitter.emitSILFunction(optimized) )
+    println("--------")
+    SILFunctionValueRenamer.renameValues(optimized)
+//    optimized
   }
 
   def markLive(): Unit =
@@ -80,7 +89,7 @@ case class DCE(function: SILFunction) {
       bb.label,
       bb.instructionDefs.filter(i =>
         liveStatements.contains(SILStatement(i, bb))),
-      bb.terminator
+      SILUndefReplacer(liveArgs.toSet).replaceToUndef(bb.terminator)
     )
 }
 
