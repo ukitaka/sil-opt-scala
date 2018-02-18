@@ -23,7 +23,7 @@ case class SILFunctionAnalysis(function: SILFunction) {
   )
 
   // PDT(Post Dominator Tree) of `function`
-  lazy val PDT = postDominatorTree(CFG, function.entryBB)
+  lazy val PDT = postDominatorTree(CFG, function.canonicalExitBB)
 
   def properlyDominates(bb: SILBasicBlock, pred: SILBasicBlock): Boolean = {
     if (bb == pred) {

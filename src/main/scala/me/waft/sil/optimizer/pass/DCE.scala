@@ -2,7 +2,7 @@ package me.waft.sil.optimizer.pass
 
 import me.waft.sil.lang.{Throw, _}
 import me.waft.sil.optimizer.analysis.SILFunctionAnalysis
-import me.waft.sil.optimizer.pass.util.{SILFunctionValueRenamer, SILUndefReplacer}
+import me.waft.sil.optimizer.pass.rewrite.{SILFunctionValueRenamer, SILUndefReplacer}
 import me.waft.sil.optimizer.util.Implicits._
 
 import scala.collection.mutable.{Set => MutableSet}
