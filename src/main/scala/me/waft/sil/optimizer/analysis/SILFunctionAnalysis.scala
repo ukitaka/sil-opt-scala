@@ -8,7 +8,7 @@ import scalax.collection.immutable.Graph
 
 case class SILFunctionAnalysis(function: SILFunction) {
   import GraphTransformer._
-  import Implicits._
+  import me.waft.sil.optimizer.util.Implicits._
 
   // SILValue usage
   lazy val valueUsage = SILValueUsage.from(function)

@@ -1,7 +1,7 @@
 package me.waft.sil.optimizer.pass
 
 import me.waft.sil.lang.{Throw, _}
-import me.waft.sil.optimizer.analysis.Implicits._
+import me.waft.sil.optimizer.util.Implicits._
 import me.waft.sil.optimizer.analysis.SILFunctionAnalysis
 
 import scala.collection.mutable.{Set => MutableSet}

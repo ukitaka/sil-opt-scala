@@ -5,7 +5,7 @@ import me.waft.sil.lang._
 import scala.collection.Set
 import scalax.collection.{Graph, GraphEdge}
 import scalax.collection.GraphPredef._
-import Implicits._
+import me.waft.sil.optimizer.util.Implicits._
 
 case class SILValueUsage(function: SILFunction,
                          usageGraph: Graph[SILValue, GraphEdge.DiEdge]) {

@@ -1,4 +1,4 @@
-package me.waft.sil.optimizer.analysis
+package me.waft.sil.optimizer.util
 
 import me.waft.sil.lang._
 
@@ -57,4 +57,9 @@ case class SILStatementTraverser(private val statement: SILStatement) {
     case Terminator(terminator, _) =>
       SILInstructionTraverser(terminator).usingValues
   }
+}
+
+case class SILFunctionTraverser(private val function: SILFunction) {
+  def allValues(): Set[SILValue] =
+    function.basicBlocks.map(SILBasicBlockTraverser).flatMap(_.allValues).toSet
 }

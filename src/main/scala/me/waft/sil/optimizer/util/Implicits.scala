@@ -1,6 +1,6 @@
-package me.waft.sil.optimizer.analysis
+package me.waft.sil.optimizer.util
 
-import me.waft.sil.lang.{SILBasicBlock, SILInstruction, SILInstructionDef, SILStatement}
+import me.waft.sil.lang._
 
 object Implicits {
 
@@ -17,4 +17,7 @@ object Implicits {
 
   implicit def silStatementTraverser(statement: SILStatement) =
     SILStatementTraverser(statement)
+
+  implicit def silFunctionTraverser(function: SILFunction) =
+    SILFunctionTraverser(function)
 }
