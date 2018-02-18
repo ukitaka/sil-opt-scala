@@ -3,8 +3,9 @@ package me.waft.sil.optimizer.analysis
 import me.waft.sil.lang._
 import me.waft.sil.optimizer.analysis.util.GraphTransformer
 
+import scalax.collection.Graph
+import scalax.collection.GraphEdge
 import scalax.collection.GraphPredef._
-import scalax.collection.immutable.Graph
 
 case class SILFunctionAnalysis(function: SILFunction) {
   import GraphTransformer._
@@ -52,4 +53,22 @@ case class SILFunctionAnalysis(function: SILFunction) {
       Seq(),
       Br(bb.label.identifier, bb.label.args)
     )
+
+  def hasInfiniteLoops: Boolean = {
+    //TODO: This implementation is messy.
+    function.basicBlocks.exists { bb =>
+      bb.terminator match {
+        case Br(label, _) => bb.label.identifier == label
+        case _ => false
+      }
+    }
+  }
+
+  def dumpGraph(graph: Graph[SILBasicBlock, GraphEdge.DiEdge]): Unit = {
+    val g = Graph.from(
+      graph.nodes.map(_.value.label.identifier),
+      graph.edges.map(e => e.from.value.label.identifier ~> e.to.value.label.identifier)
+    )
+    println(g)
+  }
 }

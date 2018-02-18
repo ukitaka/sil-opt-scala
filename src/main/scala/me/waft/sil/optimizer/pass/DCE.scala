@@ -23,15 +23,20 @@ case class DCE(function: SILFunction) {
     }
 
   def eliminateDeadCode(): SILFunction = {
-    markLive()
-    val optimized = SILFunction(
-      function.linkage,
-      function.name,
-      function.`type`,
-      function.basicBlocks
-        .map(bb => removeUnusedDefs(bb))
-    )
-    SILFunctionValueRenamer.renameValues(optimized)
+    if (analysis.hasInfiniteLoops) {
+      // If function has infinite loops, we cannot optimize this function.
+      function
+    } else {
+      markLive()
+      val optimized = SILFunction(
+        function.linkage,
+        function.name,
+        function.`type`,
+        function.basicBlocks
+          .map(bb => removeUnusedDefs(bb))
+      )
+      SILFunctionValueRenamer.renameValues(optimized)
+    }
   }
 
   def markLive(): Unit =

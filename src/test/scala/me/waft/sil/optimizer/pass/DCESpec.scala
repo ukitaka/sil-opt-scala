@@ -1,5 +1,6 @@
 package me.waft.sil.optimizer.pass
 
+import me.waft.sil.optimizer.analysis.SILFunctionAnalysis
 import me.waft.sil.parser.SILFunctionParser
 import org.scalatest._
 
@@ -80,7 +81,7 @@ class DCESpec extends FlatSpec with Matchers with SILFunctionParser {
     func1 shouldBe (func2)
   }
 
-  "Aggressive DCE" should "eliminate an infinity loop" in {
+  "DCE" should "not eliminate an infinity loop" in {
     val sil =
       """|sil @dead3 : $@convention(thin) () -> () {
          |bb0:
@@ -89,19 +90,23 @@ class DCESpec extends FlatSpec with Matchers with SILFunctionParser {
          |  %0 = integer_literal $Builtin.Int32, 0
          |  br bb1
          |}
-         |
       """.stripMargin
 
-    // AggressiveDCE eliminates a infinite loop.
+    // Same as original sil. This means DCE in Swift compiler does not eliminate infinite loop
+    // even if optimizer knows it is dead block.
     val optimizedSil =
-      """
-        |sil @dead3 : $@convention(thin) () -> () {
-        |
-        |}
+      """|sil @dead3 : $@convention(thin) () -> () {
+         |bb0:
+         |  br bb1
+         |bb1:
+         |  %0 = integer_literal $Builtin.Int32, 0
+         |  br bb1
+         |}
       """.stripMargin
 
-//    val func0 = silFunction.parse(sil).get.value
-//    the[Exception] thrownBy silFunction.parse(optimizedSil).get.value
-//    the[Exception] thrownBy DCE.run(func0)
+    val func0 = silFunction.parse(sil).get.value
+    SILFunctionAnalysis(func0).hasInfiniteLoops should be(true)
+    val func1 = silFunction.parse(optimizedSil).get.value
+    func0 should be(func1)
   }
 }
