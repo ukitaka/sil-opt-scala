@@ -33,45 +33,43 @@ case class DCE(function: SILFunction) {
         function.name,
         function.`type`,
         function.basicBlocks
-          .map(bb => removeUnusedDefs(bb))
+          .map(bb => removeUnusedCodes(bb))
       )
       SILFunctionValueRenamer.renameValues(optimized)
     }
   }
 
   def markLive(): Unit =
-    function.basicBlocks.foreach { bb =>
-      bb.statements.foreach { statement =>
-        if (seemsUseful(statement)) {
-          if (liveStatements.add(statement)) {
-            propagateLiveness(statement)
-          }
-        }
-      }
+    function.basicBlocks
+      .flatMap(_.statements)
+      .filter(seemsUseful)
+      .foreach(markStatementLive)
+
+  def markStatementLive(statement: SILStatement): Unit =
+    if (liveStatements.add(statement)) {
+      propagateLiveness (statement)
     }
 
   def propagateLiveness(statement: SILStatement): Unit = {
+    // Mark statement that declares values as `live`.
     statement.instruction.usingValues
-      .map(value => (value, function.declaredStatement(value)))
-      .foreach { v =>
-        v match {
-          case (v, None) => {
-            if(liveArgs.add(v)) {
-              CFG.get(statement.basicBlock).diPredecessors.map { p =>
-                val s = SILStatement(p.terminator, p.value)
-                if (liveStatements.add(s)) {
-                  propagateLiveness(s)
-                }
+      .map(function.declaredStatement)
+      .collect { case Some(s) => s }
+      .foreach(markStatementLive)
 
-              }
-            }
+    // Mark arguments that declares values as `live`, and
+    // also marks predecessors's terminator `live`.
+    statement.instruction.usingValues
+      .filter(value => function.declaredStatement(value).isEmpty)
+      .foreach { value =>
+        if(liveArgs.add(value)) {
+          CFG.get(statement.basicBlock).diPredecessors.map { p =>
+            markStatementLive(SILStatement(p.terminator, p.value))
           }
-          case (_, Some(i)) =>
-            if (liveStatements.add(i)) {
-              propagateLiveness(statement)
-            }
         }
       }
+
+    // Mark block that this block is control-dependent on as `live`
     analysis.controlDependentBlocks(statement).foreach { bb =>
       if (liveStatements.add(SILStatement(bb.terminator, bb))) {
         propagateLiveness(statement)
@@ -79,7 +77,7 @@ case class DCE(function: SILFunction) {
     }
   }
 
-  def removeUnusedDefs(bb: SILBasicBlock): SILBasicBlock =
+  def removeUnusedCodes(bb: SILBasicBlock): SILBasicBlock =
     SILBasicBlock(
       bb.label,
       bb.instructionDefs.filter(i =>
