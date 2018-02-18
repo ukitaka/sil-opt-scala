@@ -18,6 +18,11 @@ sealed trait SILStatement {
     case Terminator(t, _) => t
     case InstructionDef(i, _) => i.instruction
   }
+
+  def declaringValues: Seq[SILValue] = this match {
+    case Terminator(_, _) => Seq()
+    case InstructionDef(i, _) => i.values
+  }
 }
 
 object SILStatement {
