@@ -10,17 +10,13 @@ object SILFunctionValueRenamer {
   private def valueNumber(value: SILValue): Int = value.name.tail.toInt
 
   def renameValues(function: SILFunction) = {
-    val targetValues =
-      function.allValues.filter(isRenameable).toSeq.sortBy(valueNumber)
-    println(s"[allvalues in ${function.name}]------")
-    println(function.allValues())
-    // TODO: terminator分をincrementする必要がある。
-    val valueMap: Map[SILValue, SILValue] =
-      ((0 until targetValues.size).map(SILValue.number) zip targetValues)
-        .map(kv => Map(kv._2 -> kv._1))
-        .reduce(_ ++ _)
-    println(s"[valueMap in ${function.name}]------")
-    println(valueMap)
+    val valueMap = function.basicBlocks.map(_.allValues)
+      .map(_.filter(isRenameable).toSeq.sortBy(valueNumber))
+      .flatMap(_ :+ SILValue.undef)
+      .zipWithIndex
+      .filterNot(_._1 == SILValue.undef)
+      .map { case (value ,index) => Map(value -> SILValue.number(index)) }
+      .reduce(_ ++ _)
 
     SILValueReplacer.replaceValuesInFunction(function) { v =>
       if (v == SILValue.undef) {
