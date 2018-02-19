@@ -104,34 +104,32 @@ class DCESpec extends FlatSpec with Matchers with SILFunctionParser {
     val sil =
     """|sil @control_dependent : $() {
        |bb0:
-       |  br bb1
+       |  %0 = integer_literal $Int1, 1
+       |  cond_br %0, bb1, bb2
        |bb1:
-       |  %1 = integer_literal $Int1, 1
-       |  cond_br %1, bb2, bb3
+       |  %2 = integer_literal $Int, 3
+       |	br bb3(%2 : $Int)
        |bb2:
-       |	br bb1
-       |bb3:
        |  %4 = integer_literal $Int, 3
-       |  br bb4(%4 : $Int)
-       |bb4(%6 : $Int):
+       |  br bb3(%4 : $Int)
+       |bb3(%6 : $Int):
        |	return %6 : $Int
        |}
     """.stripMargin
 
-    // FIXME: %1 should be eliminated.
+    // FIXME: %0 should be eliminated.
     val optimizedSil =
       """|sil @control_dependent : $() {
          |bb0:
-         |  br bb1
+         |  %0 = integer_literal $Int1, 1
+         |  br bb2
          |bb1:
-         |  %1 = integer_literal $Int1, 1
-         |  br bb3
+         |  %2 = integer_literal $Int, 3
+         |	br bb3(%2 : $Int)
          |bb2:
-         |	br bb1
-         |bb3:
          |  %4 = integer_literal $Int, 3
-         |  br bb4(%4 : $Int)
-         |bb4(%6 : $Int):
+         |  br bb3(%4 : $Int)
+         |bb3(%6 : $Int):
          |	return %6 : $Int
          |}
       """.stripMargin
