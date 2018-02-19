@@ -107,6 +107,31 @@ class DCESpec extends FlatSpec with Matchers with SILFunctionParser {
     val func0 = silFunction.parse(sil).get.value
     SILFunctionAnalysis(func0).hasInfiniteLoops should be(true)
     val func1 = silFunction.parse(optimizedSil).get.value
-    func0 should be(func1)
+    val func2 = DCE.run(func0)
+    func0 should be(func2)
+  }
+
+  "DCE" should "work well with control-dependent node" in {
+    val sil =
+    """|sil @control_dependent : $() {
+       |bb0:
+       |  br bb1
+       |bb1:
+       |  %1 = integer_literal $Int1, 1
+       |  %2 = integer_literal $Int, 2
+       |  cond_br %1, bb2, bb4(%2 : $Int)
+       |bb2:
+       |	br bb3
+       |bb3:
+       |  %5 = integer_literal $Int, 1
+       |	br bb4(%5 : $Int)
+       |bb4(%7 : $Int):
+       |	return %7 : $Int
+       |}
+    """.stripMargin
+
+    val func0 = silFunction.parse(sil).get.value
+//    val func1 = silFunction.parse(optimizedSil).get.value
+    val func2 = DCE.run(func0)
   }
 }
