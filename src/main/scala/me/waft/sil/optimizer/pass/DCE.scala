@@ -14,14 +14,6 @@ case class DCE(function: SILFunction) {
   val liveStatements = MutableSet[SILStatement]()
   def liveBlocks = liveStatements.map(_.basicBlock)
 
-  def seemsUseful(statement: SILStatement): Boolean =
-    statement.instruction match {
-      case Return(_)   => true
-      case Unreachable => true
-      case Throw(_)    => true
-      case _           => false
-    }
-
   def eliminateDeadCode(): SILFunction = {
     if (analysis.hasInfiniteLoops) {
       // If function has infinite loops, we cannot optimize this function.
@@ -39,6 +31,14 @@ case class DCE(function: SILFunction) {
     }
   }
 
+  def seemsUseful(statement: SILStatement): Boolean =
+    statement.instruction match {
+      case Return(_)   => true
+      case Unreachable => true
+      case Throw(_)    => true
+      case _           => false
+    }
+
   def markLive(): Unit =
     function.basicBlocks
       .flatMap(_.statements)
@@ -48,6 +48,13 @@ case class DCE(function: SILFunction) {
   def markStatementLive(statement: SILStatement): Unit =
     if (liveStatements.add(statement)) {
       propagateLiveness (statement)
+    }
+
+  def markArgLive(statement: SILStatement)(arg: SILValue): Unit =
+    if(liveArgs.add(arg)) {
+      CFG.get(statement.basicBlock).diPredecessors.map { p =>
+        markStatementLive(SILStatement(p.terminator, p.value))
+      }
     }
 
   def propagateLiveness(statement: SILStatement): Unit = {
@@ -61,20 +68,12 @@ case class DCE(function: SILFunction) {
     // also marks predecessors's terminator `live`.
     statement.instruction.usingValues
       .filter(value => function.declaredStatement(value).isEmpty)
-      .foreach { value =>
-        if(liveArgs.add(value)) {
-          CFG.get(statement.basicBlock).diPredecessors.map { p =>
-            markStatementLive(SILStatement(p.terminator, p.value))
-          }
-        }
-      }
+      .foreach(markArgLive(statement))
 
     // Mark block that this block is control-dependent on as `live`
-    analysis.controlDependentBlocks(statement).foreach { bb =>
-      if (liveStatements.add(SILStatement(bb.terminator, bb))) {
-        propagateLiveness(statement)
-      }
-    }
+    analysis.controlDependentBlocks(statement)
+      .map(bb => SILStatement(bb.terminator, bb))
+      .foreach(markStatementLive)
   }
 
   def removeUnusedCodes(bb: SILBasicBlock): SILBasicBlock =
