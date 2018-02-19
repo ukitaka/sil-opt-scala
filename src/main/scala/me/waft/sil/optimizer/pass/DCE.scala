@@ -2,7 +2,10 @@ package me.waft.sil.optimizer.pass
 
 import me.waft.sil.lang.{Throw, _}
 import me.waft.sil.optimizer.analysis.SILFunctionAnalysis
-import me.waft.sil.optimizer.pass.rewrite.{SILFunctionValueRenamer, SILUndefReplacer}
+import me.waft.sil.optimizer.pass.rewrite.{
+  SILFunctionValueRenamer,
+  SILUndefReplacer
+}
 import me.waft.sil.optimizer.util.Implicits._
 
 import scala.collection.mutable.{Set => MutableSet}
@@ -47,13 +50,15 @@ case class DCE(function: SILFunction) {
 
   def markStatementLive(statement: SILStatement): Unit =
     if (liveStatements.add(statement)) {
-      propagateLiveness (statement)
+      propagateLiveness(statement)
     }
 
   def markArgLive(statement: SILStatement)(arg: SILValue): Unit =
-    if(liveArgs.add(arg)) {
-      CFG.get(statement.basicBlock).diPredecessors.map { p =>
-        markStatementLive(SILStatement(p.terminator, p.value))
+    if (liveArgs.add(arg)) {
+      CFG.get(statement.basicBlock).diPredecessors.foreach { p =>
+        val statement = SILStatement(p.terminator, p.value)
+        markStatementLive(statement)
+        p.terminator.usingValues.foreach(markArgLive(statement))
       }
     }
 
@@ -71,7 +76,8 @@ case class DCE(function: SILFunction) {
       .foreach(markArgLive(statement))
 
     // Mark block that this block is control-dependent on as `live`
-    analysis.controlDependentBlocks(statement)
+    analysis
+      .controlDependentBlocks(statement)
       .map(bb => SILStatement(bb.terminator, bb))
       .foreach(markStatementLive)
   }
@@ -81,26 +87,36 @@ case class DCE(function: SILFunction) {
       bb.label,
       bb.instructionDefs.filter(i =>
         liveStatements.contains(SILStatement(i, bb))),
-      replaceBranchWithJump(SILUndefReplacer(liveArgs.toSet).replaceToUndef(bb.terminator), nearestUsefulPostDominator(bb))
+      replaceBranchWithJump(
+        SILUndefReplacer(liveArgs.toSet).replaceToUndef(bb.terminator),
+        nearestUsefulPostDominator(bb))
     )
 
-  def replaceBranchWithJump(terminator: SILTerminator, block: SILBasicBlock) :SILTerminator = terminator match {
-    case CondBr(_, ifTrueLabel, ifTrueArgs, ifFalseLabel, ifFalseArgs) => if (ifTrueLabel == block.label.identifier) {
-      Br(ifTrueLabel, ifTrueArgs)
-    } else {
-      Br(ifFalseLabel, ifFalseArgs)
+  def replaceBranchWithJump(terminator: SILTerminator,
+                            block: SILBasicBlock): SILTerminator =
+    terminator match {
+      case CondBr(_, ifTrueLabel, ifTrueArgs, ifFalseLabel, ifFalseArgs) =>
+        if (ifTrueLabel == block.label.identifier) {
+          Br(ifTrueLabel, ifTrueArgs)
+        } else {
+          Br(ifFalseLabel, ifFalseArgs)
+        }
+      case _ => terminator
     }
-    case _ => terminator
-  }
 
   def nearestUsefulPostDominator(bb: SILBasicBlock): SILBasicBlock = {
-    analysis.PDT.get(bb).diPredecessors.headOption.map {predecessor =>
-      if (liveBlocks.contains(predecessor.value)) {
-        predecessor.value
-      } else {
-        nearestUsefulPostDominator(predecessor.value)
+    analysis.PDT
+      .get(bb)
+      .diPredecessors
+      .headOption
+      .map { predecessor =>
+        if (liveBlocks.contains(predecessor.value)) {
+          predecessor.value
+        } else {
+          nearestUsefulPostDominator(predecessor.value)
+        }
       }
-    }.getOrElse(bb)
+      .getOrElse(bb)
   }
 }
 

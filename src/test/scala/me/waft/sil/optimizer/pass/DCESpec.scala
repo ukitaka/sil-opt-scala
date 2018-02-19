@@ -94,19 +94,8 @@ class DCESpec extends FlatSpec with Matchers with SILFunctionParser {
 
     // Same as original sil. This means DCE in Swift compiler does not eliminate infinite loop
     // even if optimizer knows it is dead block.
-    val optimizedSil =
-      """|sil @dead3 : $@convention(thin) () -> () {
-         |bb0:
-         |  br bb1
-         |bb1:
-         |  %0 = integer_literal $Builtin.Int32, 0
-         |  br bb1
-         |}
-      """.stripMargin
-
     val func0 = silFunction.parse(sil).get.value
     SILFunctionAnalysis(func0).hasInfiniteLoops should be(true)
-    val func1 = silFunction.parse(optimizedSil).get.value
     val func2 = DCE.run(func0)
     func0 should be(func2)
   }
@@ -130,8 +119,28 @@ class DCESpec extends FlatSpec with Matchers with SILFunctionParser {
        |}
     """.stripMargin
 
+    // FIXME: %1 should be eliminated.
+    val optimizedSil =
+      """|sil @control_dependent : $() {
+         |bb0:
+         |  br bb1
+         |bb1:
+         |  %1 = integer_literal $Int1, 1
+         |  %2 = integer_literal $Int, 2
+         |  br bb4(%2 : $Int)
+         |bb2:
+         |	br bb3
+         |bb3:
+         |  %5 = integer_literal $Int, 1
+         |	br bb4(%5 : $Int)
+         |bb4(%7 : $Int):
+         |	return %7 : $Int
+         |}
+      """.stripMargin
+
     val func0 = silFunction.parse(sil).get.value
-//    val func1 = silFunction.parse(optimizedSil).get.value
+    val func1 = silFunction.parse(optimizedSil).get.value
     val func2 = DCE.run(func0)
+    func1 should be(func2)
   }
 }
