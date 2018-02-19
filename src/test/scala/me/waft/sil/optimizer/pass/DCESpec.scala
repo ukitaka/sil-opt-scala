@@ -107,15 +107,14 @@ class DCESpec extends FlatSpec with Matchers with SILFunctionParser {
        |  br bb1
        |bb1:
        |  %1 = integer_literal $Int1, 1
-       |  %2 = integer_literal $Int, 2
-       |  cond_br %1, bb2, bb4(%2 : $Int)
+       |  cond_br %1, bb2, bb3
        |bb2:
-       |	br bb3
+       |	br bb1
        |bb3:
-       |  %5 = integer_literal $Int, 1
-       |	br bb4(%5 : $Int)
-       |bb4(%7 : $Int):
-       |	return %7 : $Int
+       |  %4 = integer_literal $Int, 3
+       |  br bb4(%4 : $Int)
+       |bb4(%6 : $Int):
+       |	return %6 : $Int
        |}
     """.stripMargin
 
@@ -126,15 +125,14 @@ class DCESpec extends FlatSpec with Matchers with SILFunctionParser {
          |  br bb1
          |bb1:
          |  %1 = integer_literal $Int1, 1
-         |  %2 = integer_literal $Int, 2
-         |  br bb4(%2 : $Int)
+         |  br bb3
          |bb2:
-         |	br bb3
+         |	br bb1
          |bb3:
-         |  %5 = integer_literal $Int, 1
-         |	br bb4(%5 : $Int)
-         |bb4(%7 : $Int):
-         |	return %7 : $Int
+         |  %4 = integer_literal $Int, 3
+         |  br bb4(%4 : $Int)
+         |bb4(%6 : $Int):
+         |	return %6 : $Int
          |}
       """.stripMargin
 
