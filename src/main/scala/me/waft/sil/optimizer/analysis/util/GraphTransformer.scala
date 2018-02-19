@@ -36,9 +36,9 @@ object GraphTransformer {
 
     // CDG
     Graph.from(
-      pdf.keys,
-      pdf.flatMap { case (y, dfn) =>
-        dfn.map(x => x ~> y)
+      pdf.keys.filterNot(_ == newEntryNodeValue),
+      pdf.filterNot(_ == newEntryNodeValue).flatMap { case (y, dfn) =>
+        dfn.filterNot(_ == newEntryNodeValue).map(x => x ~> y)
       }
     )
   }
