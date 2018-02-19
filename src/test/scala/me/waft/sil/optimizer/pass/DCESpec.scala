@@ -122,7 +122,7 @@ class DCESpec extends FlatSpec with Matchers with SILFunctionParser {
       """|sil @control_dependent : $() {
          |bb0:
          |  %0 = integer_literal $Int1, 1
-         |  br bb2
+         |  cond_br %0, bb1, bb2
          |bb1:
          |  %2 = integer_literal $Int, 3
          |	br bb3(%2 : $Int)

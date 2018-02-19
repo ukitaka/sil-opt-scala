@@ -89,20 +89,27 @@ case class DCE(function: SILFunction) {
         liveStatements.contains(SILStatement(i, bb))),
       replaceBranchWithJump(
         SILUndefReplacer(liveArgs.toSet).replaceToUndef(bb.terminator),
-        nearestUsefulPostDominator(bb))
+        bb
+      )
     )
 
   def replaceBranchWithJump(terminator: SILTerminator,
-                            block: SILBasicBlock): SILTerminator =
-    terminator match {
-      case CondBr(_, ifTrueLabel, ifTrueArgs, ifFalseLabel, ifFalseArgs) =>
-        if (ifTrueLabel == block.label.identifier) {
-          Br(ifTrueLabel, ifTrueArgs)
-        } else {
-          Br(ifFalseLabel, ifFalseArgs)
-        }
-      case _ => terminator
+                            block: SILBasicBlock): SILTerminator = {
+    if (liveStatements.contains(SILStatement(terminator, block))) {
+      terminator
+    } else {
+      val jumpTo = nearestUsefulPostDominator(block)
+      terminator match {
+        case CondBr(_, ifTrueLabel, ifTrueArgs, ifFalseLabel, ifFalseArgs) =>
+          if (ifTrueLabel == jumpTo.label.identifier) {
+            Br(ifTrueLabel, ifTrueArgs)
+          } else {
+            Br(ifFalseLabel, ifFalseArgs)
+          }
+        case _ => terminator
+      }
     }
+  }
 
   def nearestUsefulPostDominator(bb: SILBasicBlock): SILBasicBlock = {
     analysis.PDT
