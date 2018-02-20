@@ -2,7 +2,7 @@ package me.waft.sil.optimizer.pass
 
 import me.waft.sil.lang.{Throw, _}
 import me.waft.sil.optimizer.analysis.SILFunctionAnalysis
-import me.waft.sil.optimizer.pass.rewrite.{
+import me.waft.sil.optimizer.rewrite.{
   SILFunctionValueRenamer,
   SILUndefReplacer
 }
