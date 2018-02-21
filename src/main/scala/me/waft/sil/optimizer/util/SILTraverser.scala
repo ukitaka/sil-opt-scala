@@ -41,6 +41,12 @@ case class SILBasicBlockTraverser(private val bb: SILBasicBlock) {
           ++ function.basicBlocks.filter(_.label.identifier == ifFalseLabel)).toSet
       case _ => Set()
     }
+
+  def mapStatement(f: SILStatement => SILStatement): SILBasicBlock = SILBasicBlock(
+    bb.label,
+    bb.instructionDefs.map(i => SILStatement.apply(i, bb)).map(f).map(_.getInstructionDef),
+    f(SILStatement(bb.terminator, bb)).getTerminator
+  )
 }
 
 case class SILStatementTraverser(private val statement: SILStatement) {
@@ -62,4 +68,18 @@ case class SILStatementTraverser(private val statement: SILStatement) {
 case class SILFunctionTraverser(private val function: SILFunction) {
   def allValues(): Set[SILValue] =
     function.basicBlocks.map(SILBasicBlockTraverser).flatMap(_.allValues).toSet
+
+  def mapBB(f: SILBasicBlock => SILBasicBlock) = SILFunction(
+      function.linkage,
+      function.name,
+      function.`type`,
+      function.basicBlocks.map(f)
+  )
+
+  def mapStatementWithBB(f: (SILStatement, SILBasicBlock) => SILStatement) = SILFunction(
+      function.linkage,
+      function.name,
+      function.`type`,
+      function.basicBlocks.map(bb => SILBasicBlockTraverser(bb).mapStatement(s => f(s, bb)))
+  )
 }

@@ -23,6 +23,16 @@ sealed trait SILStatement {
     case Terminator(_, _) => Seq()
     case InstructionDef(i, _) => i.values
   }
+
+  def getInstructionDef: SILInstructionDef = this match {
+    case InstructionDef(i, _) => i
+    case _ => throw new NoSuchElementException(s"${this} is not instruction def")
+  }
+
+  def getTerminator: SILTerminator = this match {
+    case Terminator(t, _) => t
+    case _ => throw new NoSuchElementException(s"${this} is not terminator")
+  }
 }
 
 object SILStatement {

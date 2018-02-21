@@ -13,7 +13,7 @@ case class CSE(function: SILFunction) {
   def eliminateCommonSubexpression: SILFunction = {
     val available: Available = Map()
     val replace: Replace = Map()
-    val (newAvailable, newReplace) = function.basicBlocks.foldLeft(available, replace) {
+    val (_, newReplace) = function.basicBlocks.foldLeft(available, replace) {
       case ((a, r), bb) =>
         eliminate(bb, a, r)
     }
