@@ -1,4 +1,4 @@
-package me.waft.sil.optimizer.pass.rewrite
+package me.waft.sil.optimizer.rewrite
 
 import me.waft.sil.lang.{SILFunction, SILValue}
 import me.waft.sil.optimizer.util.Implicits._
