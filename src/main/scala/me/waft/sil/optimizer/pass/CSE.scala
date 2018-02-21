@@ -2,26 +2,53 @@ package me.waft.sil.optimizer.pass
 
 import me.waft.sil.lang._
 import me.waft.sil.optimizer.analysis.SILFunctionAnalysis
+import me.waft.sil.optimizer.rewrite.SILValueReplacer
 
 case class CSE(function: SILFunction) {
   type Available = Map[SILInstruction, SILValue]
+  type Replace = Map[SILValue, SILValue]
 
   lazy val analysis = SILFunctionAnalysis(function)
 
-  def eliminateCommonSubexpression: SILFunction = ???
+  def eliminateCommonSubexpression: SILFunction = {
+    val available: Available = Map()
+    val replace: Replace = Map()
+    val (newAvailable, newReplace) = function.basicBlocks.foldLeft(available, replace) {
+      case ((a, r), bb) =>
+        eliminate(bb, a, r)
+    }
+    SILFunction(
+      function.linkage,
+      function.name,
+      function.`type`,
+      function.basicBlocks
+        .map { bb =>
+          SILValueReplacer.replaceValuesInBasicBlock(bb)(newReplace) // TODO: remove unused statements
+        }
+    )
+  }
 
   def eliminate(bb: SILBasicBlock,
-                available: Available): (SILBasicBlock, Available) = ???
+                available: Available,
+                replace: Replace): (Available, Replace) =
+    bb.instructionDefs.foldLeft(available, replace) {
+      case ((a, r), i) =>
+        eliminate(i, a, r)
+    }
 
   def eliminate(instructionDef: SILInstructionDef,
-                available: Available): (Option[SILInstructionDef], Available) =
+                available: Available,
+                replace: Replace): (Available, Replace) =
     if (available.contains(instructionDef.instruction)) {
-      (None, available)
+      (available,
+       replace ++ instructionDef.values
+         .map(_ -> available(instructionDef.instruction))
+         .toMap)
     } else {
-      (Some(instructionDef),
-       available ++ instructionDef.values
-         .map(v => Map(instructionDef.instruction -> v))
-         .reduce(_ ++ _))
+      (available ++ instructionDef.values
+         .map(v => instructionDef.instruction -> v)
+         .toMap,
+       replace)
     }
 
 }
