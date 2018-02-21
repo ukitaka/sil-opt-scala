@@ -47,6 +47,12 @@ case class SILBasicBlockTraverser(private val bb: SILBasicBlock) {
     bb.instructionDefs.map(i => SILStatement.apply(i, bb)).map(f).map(_.getInstructionDef),
     f(SILStatement(bb.terminator, bb)).getTerminator
   )
+
+  def filterInstructionDef(f: SILInstructionDef => Boolean): SILBasicBlock = SILBasicBlock(
+    bb.label,
+    bb.instructionDefs.filter(f),
+    bb.terminator
+  )
 }
 
 case class SILStatementTraverser(private val statement: SILStatement) {
@@ -76,10 +82,17 @@ case class SILFunctionTraverser(private val function: SILFunction) {
       function.basicBlocks.map(f)
   )
 
-  def mapStatementWithBB(f: (SILStatement, SILBasicBlock) => SILStatement) = SILFunction(
+  def mapStatement(f: SILStatement => SILStatement) = SILFunction(
       function.linkage,
       function.name,
       function.`type`,
-      function.basicBlocks.map(bb => SILBasicBlockTraverser(bb).mapStatement(s => f(s, bb)))
+      function.basicBlocks.map(bb => SILBasicBlockTraverser(bb).mapStatement(f))
+  )
+
+  def filterInstructionDef(f: SILInstructionDef => Boolean): SILFunction = SILFunction(
+    function.linkage,
+    function.name,
+    function.`type`,
+    function.basicBlocks.map(SILBasicBlockTraverser).map(_.filterInstructionDef(f))
   )
 }

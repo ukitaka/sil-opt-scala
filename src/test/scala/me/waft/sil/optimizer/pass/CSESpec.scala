@@ -1,15 +1,17 @@
 package me.waft.sil.optimizer.pass
 
+import me.waft.sil.emitter.SILEmitter
 import me.waft.sil.parser.SILFunctionParser
 import org.scalatest.{FlatSpec, Matchers}
 
 class CSESpec extends FlatSpec with Matchers with SILFunctionParser {
-  val optimizer = ignore // it
+  val optimizer = it
 
   optimizer should "optimize @test0 well" in {
     val sil =
       """|sil @test0 : $@convention(thin) () -> (Builtin.Int8, Builtin.Int8, Builtin.Int16,
          |                           Builtin.Int8) {
+         |bb0:
          |    %0 = integer_literal $Builtin.Int8, 8
          |    %1 = integer_literal $Builtin.Int8, 8
          |    %2 = integer_literal $Builtin.Int16, 8
