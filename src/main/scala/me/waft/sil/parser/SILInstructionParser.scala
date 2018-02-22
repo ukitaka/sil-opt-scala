@@ -13,6 +13,7 @@ trait SILInstructionParser
     with instruction.FunctionApplicationParser
     with instruction.AccessingMemoryParser
     with instruction.ProtocolParser
+    with instruction.DynamicDispatchParser
     with instruction.ReferenceCountingParser {
 
   import WhiteSpaceApi._
@@ -32,5 +33,6 @@ trait SILInstructionParser
     allocStack | allocBox | struct | structExtract | integerLiteral |
       builtin | projectBox | store | load |
       strongRelease | tuple | tupleExtract |
-      openExistentialAddr | openExistentialValue | openExistentialRef | openExistentialMetatype
+      openExistentialAddr | openExistentialValue | openExistentialRef | openExistentialMetatype |
+      witnessMethod
 }
