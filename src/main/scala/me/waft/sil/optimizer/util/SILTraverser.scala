@@ -23,6 +23,18 @@ case class SILInstructionTraverser(private val instruction: SILInstruction) {
     case Br(_, operands)                 => operands.map(_.value).toSet
     case CondBr(cond, _, ifTrueArgs, _, ifFalseArgs) =>
       ((cond +: ifTrueArgs.map(_.value)) ++ ifFalseArgs.map(_.value)).toSet
+    case DestroyAddr(operand) => Set(operand.value)
+    case OpenExistentialAddr(_, operand, _) =>
+      Set(operand.value)
+    case OpenExistentialValue(operand, _) =>
+      Set(operand.value)
+    case OpenExistentialRef(operand, _) =>
+      Set(operand.value)
+    case OpenExistentialMetatype(operand, _) =>
+      Set(operand.value)
+    case WitnessMethod(_, _, _) =>
+      Set() //FIXME: maybe witness_method includes sil value
+    case Apply(_, value, _, args, _) => Set(value) ++ args.toSet
   }
 }
 
