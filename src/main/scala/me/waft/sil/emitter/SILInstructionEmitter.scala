@@ -1,5 +1,6 @@
 package me.waft.sil.emitter
 
+import me.waft.sil.lang.decl.SILDeclRef
 import me.waft.sil.lang.{SILInstruction, Unreachable, Unwind, _}
 
 object SILInstructionEmitter {
@@ -32,6 +33,23 @@ object SILInstructionEmitter {
         "," +
         ifFalseLabel +
         ifTrueArgs.map(emitSILOperand).mkString("(", ", ", ")")
+    case DestroyAddr(operand) => emitSILOperand(operand)
+    case OpenExistentialAddr(allowedAccess, operand, silType) =>
+      allowedAccess.name + " " + emitSILOperand(operand) + " to " + emitSILType(silType)
+    case OpenExistentialValue(operand, silType) =>
+        emitSILOperand(operand) + " to " + emitSILType(silType)
+    case OpenExistentialRef(operand, silType) =>
+      emitSILOperand(operand) + " to " + emitSILType(silType)
+    case OpenExistentialMetatype(operand, silType) =>
+      emitSILOperand(operand) + " to " + emitSILType(silType)
+    case WitnessMethod(archetype, declRef, funcType) =>
+      emitSILType(archetype) + ", " + declRef.declRef //TODO emil sil declRef
+        " : " + emitSILType(funcType)
+    case Apply(noThrow, value, substitutions, args, silType) =>
+      (if(noThrow) "nothrow" else "") +
+        " " + emitSILValue(value) + //TODO: substitutions
+        " " + args.map(emitSILValue).mkString(", ") +
+        " " + emitSILType(silType)
   })
 
 }
