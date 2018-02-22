@@ -41,7 +41,7 @@ Swift Intermediate Language (SIL) parser and optimizer written in Scala.
 - [ ] mark_function_escape
 - [ ] mark_uninitialized_behavior
 - [ ] copy_addr
-- [ ] destroy_addr
+- [x] destroy_addr
 - [ ] index_addr
 - [ ] tail_addr
 - [ ] index_raw_pointer
@@ -86,11 +86,11 @@ Swift Intermediate Language (SIL) parser and optimizer written in Scala.
 - [ ] objc_method
 - [ ] super_method
 - [ ] objc_super_method
-- [ ] witness_method
+- [x] witness_method
 
 ### Function Application
 
-- [ ] apply
+- [x] apply
 - [ ] begin_apply
 - [ ] abort_apply
 - [ ] end_apply
@@ -143,12 +143,12 @@ Swift Intermediate Language (SIL) parser and optimizer written in Scala.
 - [ ] init_existential_value
 - [ ] deinit_existential_addr
 - [ ] deinit_existential_value
-- [ ] open_existential_addr
-- [ ] open_existential_value
+- [x] open_existential_addr
+- [x] open_existential_value
 - [ ] init_existential_ref
-- [ ] open_existential_ref
+- [x] open_existential_ref
 - [ ] init_existential_metatype
-- [ ] open_existential_metatype
+- [x] open_existential_metatype
 - [ ] alloc_existential_box
 - [ ] project_existential_box
 - [ ] open_existential_box
