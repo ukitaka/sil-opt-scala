@@ -1,7 +1,7 @@
 package me.waft.sil.parser.instruction
 
 import fastparse.noApi._
-import me.waft.sil.lang.{BuiltIn, SILSubstitution}
+import me.waft.sil.lang.{Apply, BuiltIn, SILSubstitution}
 import me.waft.sil.parser._
 
 trait FunctionApplicationParser extends SILOperandParser with SILTypeParser {
@@ -20,4 +20,11 @@ trait FunctionApplicationParser extends SILOperandParser with SILTypeParser {
       ~ silSubstitutionList.??
       ~ silOperand.repTC(1).parened
       ~ ":" ~ silType).map(BuiltIn.tupled)
+
+  private def noThrow: P[Boolean] = P("nothrow").!.?.map(_.isDefined)
+
+  def functionApply: P[Apply] =
+    ("apply" ~ noThrow ~ silValue ~ silSubstitutionList.?? ~ silValue
+      .repTC(1)
+      .parened ~ ":" ~ silType).map(Apply.tupled)
 }
