@@ -31,8 +31,8 @@ trait SILInstructionParser
 
   def silInstruction: P[SILInstruction] =
     allocStack | allocBox | struct | structExtract | integerLiteral |
-      builtin | projectBox | store | load |
-      strongRelease | tuple | tupleExtract | functionApply
+      builtin | projectBox | store | load | destoryAddr |
+      strongRelease | tuple | tupleExtract | functionApply |
       openExistentialAddr | openExistentialValue | openExistentialRef | openExistentialMetatype |
       witnessMethod
 }
