@@ -2,11 +2,10 @@ package me.waft.sil.parser
 
 import me.waft.sil.lang.decl.SILDeclRef
 import me.waft.sil.lang.{SILOperand, SILType, SILValue}
-import me.waft.sil.parser.instruction.{AggregateTypesParser, AllocParser, FunctionApplicationParser, LiteralParser}
 import org.scalatest._
 
-class SILInstructionsParserSpec extends FlatSpec with Matchers
-  with AggregateTypesParser with AllocParser with LiteralParser with FunctionApplicationParser {
+class SILInstructionsParserSpec extends FlatSpec with Matchers with SILInstructionParser {
+
   "struct_extract instruction" should "be parsed well" in {
     val instruction = "struct_extract %0 : $Bool, #Bool._value"
     val result = structExtract.parse(instruction).get.value
@@ -39,6 +38,12 @@ class SILInstructionsParserSpec extends FlatSpec with Matchers
     val instruction = "tuple ()"
     val result = tuple.parse(instruction).get.value
     result.operands should be(Seq.empty)
+  }
+
+  "witness_method instruction" should "be parsed well" in {
+    val instruction = """witness_method $@opened("1E467EB8-D5C5-11E5-8C0E-A82066121073") Pingable, #Pingable.ping!1, %2 : $*@opened("1E467EB8-D5C5-11E5-8C0E-A82066121073") Pingable : $@convention(witness_method: Pingable) <τ_0_0 where τ_0_0 : Pingable> (@in_guaranteed τ_0_0) -> ()"""
+    val result = witnessMethod.parse(instruction).get.value
+    result.name should be("witness_method")
   }
 
 }
