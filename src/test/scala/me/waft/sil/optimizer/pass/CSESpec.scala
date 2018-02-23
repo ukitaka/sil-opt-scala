@@ -130,6 +130,44 @@ class CSESpec extends FlatSpec with Matchers with SILFunctionParser {
       optimized should be(expected)
   }
 
+  ignore should "optimize @CSE_Existential_Simple" in {
+    val sil =
+      """|sil hidden @CSE_Existential_Simple : $@convention(thin) (@in Pingable) -> () {
+         |bb0(%0 : $*Pingable):
+         |  debug_value_addr %0 : $*Pingable  // let x      // id: %1
+         |  %2 = open_existential_addr immutable_access %0 : $*Pingable to $*@opened("1E467EB8-D5C5-11E5-8C0E-A82066121073") Pingable // users: %3, %4
+         |  %3 = witness_method $@opened("1E467EB8-D5C5-11E5-8C0E-A82066121073") Pingable, #Pingable.ping!1, %2 : $*@opened("1E467EB8-D5C5-11E5-8C0E-A82066121073") Pingable : $@convention(witness_method: Pingable) <τ_0_0 where τ_0_0 : Pingable> (@in_guaranteed τ_0_0) -> () // user: %4
+         |  %4 = apply %3<@opened("1E467EB8-D5C5-11E5-8C0E-A82066121073") Pingable>(%2) : $@convention(witness_method: Pingable) <τ_0_0 where τ_0_0 : Pingable> (@in_guaranteed τ_0_0) -> ()
+         |  %5 = open_existential_addr immutable_access %0 : $*Pingable to $*@opened("1E4687DC-D5C5-11E5-8C0E-A82066121073") Pingable // users: %6, %7
+         |  %6 = witness_method $@opened("1E4687DC-D5C5-11E5-8C0E-A82066121073") Pingable, #Pingable.ping!1, %5 : $*@opened("1E4687DC-D5C5-11E5-8C0E-A82066121073") Pingable : $@convention(witness_method: Pingable) <τ_0_0 where τ_0_0 : Pingable> (@in_guaranteed τ_0_0) -> () // user: %7
+         |  %7 = apply %6<@opened("1E4687DC-D5C5-11E5-8C0E-A82066121073") Pingable>(%5) : $@convention(witness_method: Pingable) <τ_0_0 where τ_0_0 : Pingable> (@in_guaranteed τ_0_0) -> ()
+         |  destroy_addr %0 : $*Pingable                    // id: %8
+         |  %9 = tuple ()                                   // user: %10
+         |  return %9 : $()                                 // id: %10
+         |}
+         |
+      """.stripMargin
 
+    val optimizedSil =
+      """|sil hidden @CSE_Existential_Simple : $@convention(thin) (@in Pingable) -> () {
+         |bb0(%0 : $*Pingable):
+         |  debug_value_addr %0 : $*Pingable                // id: %1
+         |  %2 = open_existential_addr immutable_access %0 : $*Pingable to $*@opened("1E467EB8-D5C5-11E5-8C0E-A82066121073") Pingable // users: %7, %7, %4, %4, %3
+         |  %3 = witness_method $@opened("1E467EB8-D5C5-11E5-8C0E-A82066121073") Pingable, #Pingable.ping!1 : <Self where Self : Pingable> (Self) -> () -> (), %2 : $*@opened("1E467EB8-D5C5-11E5-8C0E-A82066121073") Pingable : $@convention(witness_method: Pingable) <τ_0_0 where τ_0_0 : Pingable> (@in_guaranteed τ_0_0) -> () // type-defs: %2; users: %7, %4
+         |  %4 = apply %3<@opened("1E467EB8-D5C5-11E5-8C0E-A82066121073") Pingable>(%2) : $@convention(witness_method: Pingable) <τ_0_0 where τ_0_0 : Pingable> (@in_guaranteed τ_0_0) -> () // type-defs: %2
+         |  %5 = open_existential_addr immutable_access %0 : $*Pingable to $*@opened("1E4687DC-D5C5-11E5-8C0E-A82066121073") Pingable // user: %6
+         |  %6 = witness_method $@opened("1E4687DC-D5C5-11E5-8C0E-A82066121073") Pingable, #Pingable.ping!1 : <Self where Self : Pingable> (Self) -> () -> (), %5 : $*@opened("1E4687DC-D5C5-11E5-8C0E-A82066121073") Pingable : $@convention(witness_method: Pingable) <τ_0_0 where τ_0_0 : Pingable> (@in_guaranteed τ_0_0) -> () // type-defs: %5
+         |  %7 = apply %3<@opened("1E467EB8-D5C5-11E5-8C0E-A82066121073") Pingable>(%2) : $@convention(witness_method: Pingable) <τ_0_0 where τ_0_0 : Pingable> (@in_guaranteed τ_0_0) -> () // type-defs: %2
+         |  destroy_addr %0 : $*Pingable                    // id: %8
+         |  %9 = tuple ()                                   // user: %10
+         |  return %9 : $()                                 // id: %10
+         |}
+      """.stripMargin
+
+    val original = silFunction.parse(sil).get.value
+    val expected = silFunction.parse(optimizedSil).get.value
+    val optimized = CSE.run(original)
+    optimized should be(expected)
+  }
 
 }
