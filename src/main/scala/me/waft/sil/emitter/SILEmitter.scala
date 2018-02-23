@@ -17,7 +17,8 @@ object SILEmitter {
     case TupleType(elements) =>
       "(" + elements.map(emitSwiftType).mkString(", ") + ")"
     case FunctionTypeArgument(_, t) => "(" + emitSwiftType(t) + ")"
-    case AnnotatedType(a, t)        => "(" + emitSwiftType(t) + ")"
+    case AnnotatedType(attributes, t) =>
+      attributes.map(emitSwiftTypeAttribute).mkString(" ") + emitSwiftType(t)
   }
 
   def emitSwiftTypeAttribute(attribute: Attribute): String =
