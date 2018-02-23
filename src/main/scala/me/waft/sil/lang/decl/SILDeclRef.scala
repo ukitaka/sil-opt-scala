@@ -1,6 +1,8 @@
 package me.waft.sil.lang.decl
 
-case class SILDeclRef(declRef: String, subref: Option[SILDeclSubref])
+import me.waft.swift.lang.`type`.SwiftType
+
+case class SILDeclRef(declRef: String, subref: Option[SILDeclSubref], functionType: Option[SwiftType])
 
 case class SILDeclSubref(subrefPart: Option[SILDeclSubrefPart],
                          uncurryLevel: Option[SILDeclUncurryLevel],

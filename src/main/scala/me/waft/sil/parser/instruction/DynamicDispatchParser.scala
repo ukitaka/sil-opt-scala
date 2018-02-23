@@ -8,6 +8,6 @@ trait DynamicDispatchParser extends SILOperandParser with SILDeclRefParser {
   import WhiteSpaceApi._
 
   def witnessMethod: P[WitnessMethod] =
-    ("witness_method" ~ silType ~ "," ~ silDeclRef ~ ":" ~ silType)
+    ("witness_method" ~ silType ~ "," ~ silDeclRef ~ "," ~ silOperand ~ ":" ~ silType)
       .map(WitnessMethod.tupled)
 }

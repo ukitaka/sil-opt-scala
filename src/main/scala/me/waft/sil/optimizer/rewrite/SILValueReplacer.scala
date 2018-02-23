@@ -45,8 +45,8 @@ object SILValueReplacer {
         OpenExistentialRef(r(operand), silType)
       case OpenExistentialMetatype(operand, silType) =>
         OpenExistentialMetatype(r(operand), silType)
-      case WitnessMethod(archetype, declRef, funcType) =>
-        WitnessMethod(archetype, declRef, funcType)
+      case WitnessMethod(archetype, declRef, operand, funcType) =>
+        WitnessMethod(archetype, declRef, r(operand), funcType)
       case Apply(noThrow, value, substitutions, args, silType) =>
         Apply(noThrow, f(value), substitutions, args.map(f), silType)
     }

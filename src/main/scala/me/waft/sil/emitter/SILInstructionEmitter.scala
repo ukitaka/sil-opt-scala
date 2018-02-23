@@ -41,9 +41,9 @@ object SILInstructionEmitter {
       emitSILOperand(operand) + " to " + emitSILType(silType)
     case OpenExistentialMetatype(operand, silType) =>
       emitSILOperand(operand) + " to " + emitSILType(silType)
-    case WitnessMethod(archetype, declRef, funcType) =>
-      emitSILType(archetype) + ", " + declRef.declRef //TODO emil sil declRef
-        " : " + emitSILType(funcType)
+    case WitnessMethod(archetype, declRef, operand, funcType) =>
+      emitSILType(archetype) + ", " + declRef.declRef + //TODO emil sil declRef
+      emitSILOperand(operand) + " : " + emitSILType(funcType)
     case Apply(noThrow, value, substitutions, args, silType) =>
       (if(noThrow) "nothrow" else "") +
         " " + emitSILValue(value) + //TODO: substitutions

@@ -55,8 +55,9 @@ case class OpenExistentialRef(operand: SILOperand, `type`: SILType)
 case class OpenExistentialMetatype(operand: SILOperand, `type`: SILType)
     extends SILInstruction("open_existential_metatype")
 
-case class WitnessMethod(archetype: SILType,
+case class WitnessMethod(lookupType: SILType,
                          declRef: SILDeclRef,
+                         operand: SILOperand,
                          funcType: SILType)
     extends SILInstruction("witness_method")
 

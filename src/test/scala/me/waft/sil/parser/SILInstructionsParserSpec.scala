@@ -10,7 +10,7 @@ class SILInstructionsParserSpec extends FlatSpec with Matchers with SILInstructi
     val instruction = "struct_extract %0 : $Bool, #Bool._value"
     val result = structExtract.parse(instruction).get.value
     result.operand should be(SILOperand(SILValue("%0"), SILType("Bool")))
-    result.declRef should be(SILDeclRef("Bool._value", None))
+    result.declRef should be(SILDeclRef("Bool._value", None, None))
   }
 
   "integer_literal instruction" should "be parsed well" in {
