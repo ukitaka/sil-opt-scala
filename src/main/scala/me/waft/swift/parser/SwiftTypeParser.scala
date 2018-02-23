@@ -7,7 +7,8 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
 
   import WhiteSpaceApi._
 
-  def swiftType: P[SwiftType] = functionType | protocolCompositionType | nominalType | tupleType
+  def swiftType: P[SwiftType] =
+    functionType | protocolCompositionType | annotatedType | nominalType | tupleType
 
   def nominalType: P[NominalType] =
     swiftIdentifier.rep(1, ".").!.map(NominalType)
@@ -22,6 +23,9 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
     (nominalType ~ "&" ~ nominalType).map {
       case (t1, t2) => ProtocolCompositionType(Seq(t1, t2))
     }
+
+  protected def annotatedType: P[AnnotatedType] =
+    (attributes ~ nominalType).map(AnnotatedType.tupled)
 
   protected def functionType: P[FunctionType] =
     (attributes.?.map(_.getOrElse(Seq.empty))
@@ -58,6 +62,6 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
 
   private[this] def balancedTokens: P[Seq[String]] = balancedToken.rep(1)
 
-  private[this] def balancedToken: P[String] = swiftIdentifier //TODO
+  private[this] def balancedToken: P[String] = swiftIdentifier | stringLiteral //TODO
 
 }
