@@ -7,14 +7,21 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
 
   import WhiteSpaceApi._
 
-  def swiftType: P[SwiftType] = functionType | nominalType | tupleType
+  def swiftType: P[SwiftType] = functionType | protocolCompositionType | nominalType | tupleType
 
   def nominalType: P[NominalType] =
     swiftIdentifier.rep(1, ".").!.map(NominalType)
 
   // TODO: Support only `(NominalType ...)` for now.
-  def tupleType: P[TupleType] = ("(" ~ nominalType.repTC(0) ~ ")")
-    .map(TupleType.apply)
+  def tupleType: P[TupleType] =
+    ("(" ~ nominalType.repTC(0) ~ ")")
+      .map(TupleType.apply)
+
+  // TODO: Support only case of A & B, cannot parse type in the form of A & B & C for now.
+  protected def protocolCompositionType: P[ProtocolCompositionType] =
+    (nominalType ~ "&" ~ nominalType).map {
+      case (t1, t2) => ProtocolCompositionType(Seq(t1, t2))
+    }
 
   protected def functionType: P[FunctionType] =
     (attributes.?.map(_.getOrElse(Seq.empty))
@@ -34,7 +41,8 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
     (attributes.?? ~ nominalType) //TODO: Suppor only nominal / tuple type for now
       .map(FunctionTypeArgument.tupled)
 
-  private[this] def throwing: P[Throwing] = P("throws" | "rethrows").!.map(Throwing.apply _)
+  private[this] def throwing: P[Throwing] =
+    P("throws" | "rethrows").!.map(Throwing.apply _)
 
   // attributes
 
@@ -45,7 +53,8 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
 
   private[this] def attributeName: P[String] = swiftIdentifier
 
-  private[this] def attributeArgumentClause: P[Seq[String]] = balancedTokens.parened
+  private[this] def attributeArgumentClause: P[Seq[String]] =
+    balancedTokens.parened
 
   private[this] def balancedTokens: P[Seq[String]] = balancedToken.rep(1)
 
