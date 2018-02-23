@@ -44,3 +44,18 @@ case class FunctionTypeArgument(attributes: Seq[Attribute], `type`: SwiftType) e
   * type → type-identifier
   */
 case class NominalType(name: String) extends SwiftType
+
+/**
+  * This is a workaround of type-annotation.
+  *
+  * According to the SIL document, sil-type is defined as sigil + swift type.
+  *
+  *  sil-type ::= '$' '*'? generic-parameter-list? type
+  *
+  * But actually emitted sil-type includes annotations, e.g. $@opened("1B68354A-4796-11E6-B7DF-B8E856428C60") Proto.
+  * So for now consider type-annotation as type exceptionally.
+  *
+  * type-annotation → ':' attributes? 'inout'? type
+  *
+  */
+case class AnnotatedType(attributes: Seq[Attribute], `type`: SwiftType) extends SwiftType

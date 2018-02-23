@@ -80,4 +80,9 @@ class SwiftTypeParserSpec extends FlatSpec with Matchers with SwiftTypeParser {
     result.attributes.head.name should be("convention")
     result.attributes.head.balancedTokens.head should be("thin")
   }
+
+  "" should "be parse well with @opened attribution" in {
+    val swiftType = """@opened("1B68354A-4796-11E6-B7DF-B8E856428C60") Proto"""
+    val result = nominalType.parse(swiftType).get.value
+  }
 }
