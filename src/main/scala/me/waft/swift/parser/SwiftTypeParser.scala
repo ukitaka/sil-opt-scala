@@ -22,7 +22,7 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
 
   // TODO: Support only `(NominalType ...)` for now.
   def tupleType: P[TupleType] =
-    ("(" ~ nominalType.repTC(0) ~ ")")
+    ("(" ~ (nominalType | annotatedType).repTC(0) ~ ")")
       .map(TupleType.apply)
 
   // TODO: Support only case of A & B, cannot parse type in the form of A & B & C for now.
