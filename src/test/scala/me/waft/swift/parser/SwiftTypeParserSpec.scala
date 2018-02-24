@@ -110,7 +110,7 @@ class SwiftTypeParserSpec extends FlatSpec with Matchers with SwiftTypeParser {
 
     val argType =
       FunctionTypeArgument(Seq(Attribute("in_guaranteed", Seq())),
-        NominalType("τ_0_0"))
+                           NominalType("τ_0_0"))
 
     val an = """(@in_guaranteed τ_0_0)"""
     val res4 = functionTypeArgumentClause.parse(an).get.value
@@ -121,9 +121,21 @@ class SwiftTypeParserSpec extends FlatSpec with Matchers with SwiftTypeParser {
     res5.argType should be(TupleType(Seq(argType)))
     res5.valueType should be(TupleType(Seq()))
 
-    val s = """@convention(witness_method: Pingable) <τ_0_0 where τ_0_0 : Pingable> (@in_guaranteed τ_0_0) -> ()"""
+    val s =
+      """@convention(witness_method: Pingable) <τ_0_0 where τ_0_0 : Pingable> (@in_guaranteed τ_0_0) -> ()"""
     val result = genericFunctionType.parse(s).get.value
     result.argType should be(TupleType(Seq(argType)))
+    result.valueType should be(TupleType(Seq()))
+  }
+
+  "Tuple type that includes annotated type" should "be parsed well" in {
+    val t = "@convention(thin) (@guaranteed Proto, Bool) -> ()"
+    val result = functionType.parse(t).get.value
+    result.argType should be(
+      TupleType(
+        Seq(FunctionTypeArgument(Seq(Attribute("guaranteed", Seq())),
+                                 NominalType("Proto")),
+            FunctionTypeArgument(Seq(), NominalType(("Bool"))))))
     result.valueType should be(TupleType(Seq()))
   }
 }
