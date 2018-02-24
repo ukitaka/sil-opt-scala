@@ -40,7 +40,7 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
       ~ functionTypeArgumentClause
       ~ throwing.?
       ~ "->"
-      ~/ (curriedFunctionReturnType | tupleType | nominalType))
+      ~/ (curriedFunctionReturnType | annotatedType | nominalType | tupleType))
       .map(GenericFunctionType.tupled)
 
   protected def functionType: P[FunctionType] =
@@ -48,7 +48,7 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
       ~ functionTypeArgumentClause
       ~ throwing.?
       ~ "->"
-      ~/ (curriedFunctionReturnType | nominalType | tupleType))
+      ~/ (curriedFunctionReturnType | annotatedType | nominalType | tupleType))
       .map(FunctionType.tupled)
 
   //TODO: Workaround for function type in the form of A -> B -> C.

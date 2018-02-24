@@ -65,4 +65,10 @@ class SILInstructionsParserSpec extends FlatSpec with Matchers with SILInstructi
     result.name should be("open_existential_ref")
   }
 
+  "class_method instruction" should "be parsed well" in {
+    val instruction = """class_method %10 : $Ping, #Ping.ping!1 : (Ping) -> () -> Ping, $@convention(method) (@guaranteed Ping) -> @owned Ping"""
+    val result = classMethod.parse(instruction).get.value
+    result.name should be("class_method")
+  }
+
 }
