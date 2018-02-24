@@ -10,7 +10,7 @@ trait SILDeclRefParser extends IdentifierParser with SwiftTypeParser {
   import WhiteSpaceApi._
 
   def silDeclRef: P[SILDeclRef] =
-    ("#" ~ silDeclRefIdentifier ~ silDeclSubref.? ~ swiftType.?)
+    ("#" ~ silDeclRefIdentifier ~ silDeclSubref.? ~ (":" ~ swiftType).?)
       .map(SILDeclRef.tupled)
 
   def silDeclRefIdentifier: P[String] = (identifier ~ (".".! ~ identifier)).!

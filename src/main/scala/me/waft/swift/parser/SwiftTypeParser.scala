@@ -12,7 +12,8 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
   import WhiteSpaceApi._
 
   def swiftType: P[SwiftType] =
-    genericFunctionType | functionType | protocolCompositionType | annotatedType | nominalType | tupleType
+    selfType | genericFunctionType | functionType |
+      protocolCompositionType | annotatedType | nominalType | tupleType
 
   def nominalType: P[NominalType] =
     swiftIdentifier.rep(1, ".").!.map(NominalType)
