@@ -40,7 +40,7 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
       ~ functionTypeArgumentClause
       ~ throwing.?
       ~ "->"
-      ~/ (nominalType | tupleType))
+      ~/ (curriedFunctionReturnType | tupleType | nominalType))
       .map(GenericFunctionType.tupled)
 
   protected def functionType: P[FunctionType] =
@@ -48,8 +48,19 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
       ~ functionTypeArgumentClause
       ~ throwing.?
       ~ "->"
-      ~/ (nominalType | tupleType))
+      ~/ (curriedFunctionReturnType | nominalType | tupleType))
       .map(FunctionType.tupled)
+
+  //TODO: Workaround for function type in the form of A -> B -> C.
+  // This matches `B -> C` in the part of function type `A -> B -> C`.
+  //TODO: Support A -> B -> C -> D ...
+  private def curriedFunctionReturnType: P[FunctionType] =
+    (
+      (nominalType | tupleType | selfType) ~ "->" ~ (nominalType | tupleType | selfType)
+    ).map {
+      case (argType, returnType) =>
+        FunctionType(Seq(), argType, None, returnType)
+    }
 
   protected def functionTypeArgumentClause: P[TupleType] =
     functionTypeArgumentList.parened.map(TupleType)
@@ -88,15 +99,18 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
     ("<" ~ genericParameterList ~ genericWhereClause.?? ~ ">")
       .map(g => GenericParameter.apply(g._1, g._2)) // TODO: For some reason, cannot use `.tupled`.
 
-  private[this] def genericParameterList: P[Seq[SwiftType]] = genericParameter.repTC(1)
+  private[this] def genericParameterList: P[Seq[SwiftType]] =
+    genericParameter.repTC(1)
 
   private[this] def genericParameter: P[SwiftType] = nominalType //TODO
 
-  private[this] def genericWhereClause: P[Seq[Requirement]] = "where" ~ requirementList
+  private[this] def genericWhereClause: P[Seq[Requirement]] =
+    "where" ~ requirementList
 
   private[this] def requirementList: P[Seq[Requirement]] = requirement.repTC(1)
 
-  private[this] def requirement: P[Requirement] = conformanceRequirement | sameTypeRequirement
+  private[this] def requirement: P[Requirement] =
+    conformanceRequirement | sameTypeRequirement
 
   private[this] def conformanceRequirement: P[Requirement] =
     ((nominalType | selfType) ~ ":" ~ nominalType)
