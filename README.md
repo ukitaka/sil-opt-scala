@@ -162,7 +162,7 @@ Swift Intermediate Language (SIL) parser and optimizer written in Scala.
 
 ### Unchecked Conversions
 
-- [ ] upcast
+- [x] upcast
 - [ ] address_to_pointer
 - [ ] pointer_to_address
 - [ ] unchecked_ref_cast

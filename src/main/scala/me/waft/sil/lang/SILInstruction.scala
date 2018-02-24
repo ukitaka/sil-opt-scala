@@ -57,6 +57,8 @@ case class OpenExistentialRef(operand: SILOperand, `type`: SILType)
 case class OpenExistentialMetatype(operand: SILOperand, `type`: SILType)
     extends SILInstruction("open_existential_metatype")
 
+case class Upcast(operand: SILOperand, to: SILType) extends SILInstruction("upcast")
+
 case class DebugValue(operand: SILOperand) extends SILInstruction("debug_value")
 
 case class DebugValueAddr(operand: SILOperand) extends SILInstruction("debug_value_addr")

@@ -38,6 +38,7 @@ case class SILInstructionTraverser(private val instruction: SILInstruction) {
     case DebugValue(operand) => Set(operand.value)
     case DebugValueAddr(operand) => Set(operand.value)
     case DeallocStack(operand) => Set(operand.value)
+    case Upcast(operand, _) => Set(operand.value)
   }
 }
 
