@@ -32,7 +32,7 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
     }
 
   protected def annotatedType: P[AnnotatedType] =
-    (attributes ~ nominalType).map(AnnotatedType.tupled)
+    (attributes ~ (protocolCompositionType | nominalType)).map(AnnotatedType.tupled)
 
   protected def genericFunctionType: P[GenericFunctionType] =
     (attributes.?.map(_.getOrElse(Seq.empty))
@@ -69,7 +69,7 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
     functionTypeArgument.repTC(0)
 
   protected def functionTypeArgument: P[FunctionTypeArgument] =
-    (attributes.?? ~ nominalType) //TODO: Suppor only nominal / tuple type for now
+    (attributes.?? ~ (protocolCompositionType | nominalType)) //TODO: Suppor only nominal / tuple type for now
       .map(FunctionTypeArgument.tupled)
 
   private[this] def throwing: P[Throwing] =
@@ -102,7 +102,7 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
   private[this] def genericParameterList: P[Seq[SwiftType]] =
     genericParameter.repTC(1)
 
-  private[this] def genericParameter: P[SwiftType] = nominalType //TODO
+  private[this] def genericParameter: P[SwiftType] = protocolCompositionType | nominalType //TODO
 
   private[this] def genericWhereClause: P[Seq[Requirement]] =
     "where" ~ requirementList

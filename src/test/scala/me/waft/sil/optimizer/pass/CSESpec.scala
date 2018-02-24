@@ -236,7 +236,7 @@ class CSESpec extends FlatSpec with Matchers with SILFunctionParser {
     optimized should be(expected)
   }
 
-  it should "not optimize @dont_cse_open_existential_ref" in {
+  ignore should "not optimize @dont_cse_open_existential_ref" in {
     val sil =
       """|sil @dont_cse_open_existential_ref : $@convention(thin) (@guaranteed Proto & Ping) -> @owned Ping {
          |bb0(%0 : $Proto & Ping):

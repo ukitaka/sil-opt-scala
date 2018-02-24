@@ -138,4 +138,9 @@ class SwiftTypeParserSpec extends FlatSpec with Matchers with SwiftTypeParser {
             FunctionTypeArgument(Seq(), NominalType(("Bool"))))))
     result.valueType should be(TupleType(Seq()))
   }
+
+  "Function parser" should "parse arg type that includes protocol composition type" in {
+    val t = """@convention(thin) (@guaranteed Proto & Ping) -> @owned Ping"""
+    val result = functionType.parse(t).get.value
+  }
 }
