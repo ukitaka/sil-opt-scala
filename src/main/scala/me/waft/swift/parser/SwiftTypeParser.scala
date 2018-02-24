@@ -62,6 +62,7 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
 
   private[this] def balancedTokens: P[Seq[String]] = balancedToken.rep(1)
 
-  private[this] def balancedToken: P[String] = swiftIdentifier | stringLiteral //TODO
-
+  private[this] def balancedToken: P[String] =
+    ("witness_method" ~ ":" ~ swiftIdentifier).! | //TODO
+    swiftIdentifier | stringLiteral
 }
