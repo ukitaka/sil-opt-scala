@@ -2,12 +2,7 @@ package me.waft.swift.parser
 
 import fastparse.core.Parsed
 import me.waft.swift.lang.`type`.GenericParameter.ConformanceRequirement
-import me.waft.swift.lang.`type`.{
-  Attribute,
-  FunctionTypeArgument,
-  NominalType,
-  TupleType
-}
+import me.waft.swift.lang.`type`._
 import org.scalatest._
 
 class SwiftTypeParserSpec extends FlatSpec with Matchers with SwiftTypeParser {
@@ -109,7 +104,26 @@ class SwiftTypeParserSpec extends FlatSpec with Matchers with SwiftTypeParser {
     res2.requirements.head should be(
       ConformanceRequirement(NominalType("τ_0_0"), NominalType("Pingable")))
 
-//    val s = """$@convention(witness_method: Pingable) <τ_0_0 where τ_0_0 : Pingable> (@in_guaranteed τ_0_0) -> ()"""
-//    val result = functionType.parse(s).get.value
+    val attr2 = """@in_guaranteed"""
+    val res3 = attributes.parse(attr2).get.value.head
+    res3.name should be("in_guaranteed")
+
+    val argType =
+      FunctionTypeArgument(Seq(Attribute("in_guaranteed", Seq())),
+        NominalType("τ_0_0"))
+
+    val an = """(@in_guaranteed τ_0_0)"""
+    val res4 = functionTypeArgumentClause.parse(an).get.value
+    res4.types.head should be(argType)
+
+    val func = """(@in_guaranteed τ_0_0) -> ()"""
+    val res5 = functionType.parse(func).get.value
+    res5.argType should be(TupleType(Seq(argType)))
+    res5.valueType should be(TupleType(Seq()))
+
+    val s = """@convention(witness_method: Pingable) <τ_0_0 where τ_0_0 : Pingable> (@in_guaranteed τ_0_0) -> ()"""
+    val result = genericFunctionType.parse(s).get.value
+    result.argType should be(TupleType(Seq(argType)))
+    result.valueType should be(TupleType(Seq()))
   }
 }

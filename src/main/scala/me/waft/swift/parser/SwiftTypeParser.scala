@@ -12,7 +12,7 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
   import WhiteSpaceApi._
 
   def swiftType: P[SwiftType] =
-    functionType | protocolCompositionType | annotatedType | nominalType | tupleType
+    genericFunctionType | functionType | protocolCompositionType | annotatedType | nominalType | tupleType
 
   def nominalType: P[NominalType] =
     swiftIdentifier.rep(1, ".").!.map(NominalType)
@@ -32,6 +32,15 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
 
   protected def annotatedType: P[AnnotatedType] =
     (attributes ~ nominalType).map(AnnotatedType.tupled)
+
+  protected def genericFunctionType: P[GenericFunctionType] =
+    (attributes.?.map(_.getOrElse(Seq.empty))
+      ~ genericParameterClause
+      ~ functionTypeArgumentClause
+      ~ throwing.?
+      ~ "->"
+      ~/ (nominalType | tupleType))
+      .map(GenericFunctionType.tupled)
 
   protected def functionType: P[FunctionType] =
     (attributes.?.map(_.getOrElse(Seq.empty))
@@ -59,7 +68,7 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
   protected def attributes: P[Seq[Attribute]] = attribute.rep(1)
 
   protected def attribute: P[Attribute] =
-    ("@" ~ attributeName ~ attributeArgumentClause).map(Attribute.tupled)
+    ("@" ~ attributeName ~ attributeArgumentClause.??).map(Attribute.tupled)
 
   private[this] def attributeName: P[String] = swiftIdentifier
 
@@ -78,15 +87,18 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
     ("<" ~ genericParameterList ~ genericWhereClause.?? ~ ">")
       .map(g => GenericParameter.apply(g._1, g._2)) // TODO: For some reason, cannot use `.tupled`.
 
-  private[this] def genericParameterList: P[Seq[SwiftType]] = genericParameter.repTC(1)
+  private[this] def genericParameterList: P[Seq[SwiftType]] =
+    genericParameter.repTC(1)
 
   private[this] def genericParameter: P[SwiftType] = nominalType //TODO
 
-  private[this] def genericWhereClause: P[Seq[Requirement]] = "where" ~ requirementList
+  private[this] def genericWhereClause: P[Seq[Requirement]] =
+    "where" ~ requirementList
 
   private[this] def requirementList: P[Seq[Requirement]] = requirement.repTC(1)
 
-  private[this] def requirement: P[Requirement] = conformanceRequirement | sameTypeRequirement
+  private[this] def requirement: P[Requirement] =
+    conformanceRequirement | sameTypeRequirement
 
   private[this] def conformanceRequirement: P[Requirement] =
     ((nominalType | selfType) ~ ":" ~ nominalType)
