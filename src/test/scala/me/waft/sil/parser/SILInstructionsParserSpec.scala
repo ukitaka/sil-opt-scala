@@ -59,4 +59,10 @@ class SILInstructionsParserSpec extends FlatSpec with Matchers with SILInstructi
     result.name should be("apply")
   }
 
+  "open_existential_ref instruction" should "be parsed well" in {
+    val instruction = """open_existential_ref %0 : $Proto to $@opened("1B68354A-4796-11E6-B7DF-B8E856428C60") Proto""""
+    val result = openExistentialRef.parse(instruction).get.value
+    result.name should be("open_existential_ref")
+  }
+
 }

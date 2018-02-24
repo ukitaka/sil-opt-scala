@@ -19,7 +19,7 @@ trait ProtocolParser extends SILOperandParser {
       .map(OpenExistentialValue.tupled)
 
   def openExistentialRef: P[OpenExistentialRef] =
-    ("open_existential_value" ~ silOperand ~ "to" ~ silType)
+    ("open_existential_ref" ~ silOperand ~ "to" ~ silType)
       .map(OpenExistentialRef.tupled)
 
   def openExistentialMetatype: P[OpenExistentialMetatype] =
