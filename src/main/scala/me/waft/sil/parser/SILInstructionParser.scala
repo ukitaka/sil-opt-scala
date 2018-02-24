@@ -36,5 +36,5 @@ trait SILInstructionParser
       builtin | projectBox | store | load | destoryAddr |
       strongRelease | tuple | tupleExtract | functionApply |
       openExistentialAddr | openExistentialValue | openExistentialRef | openExistentialMetatype |
-      witnessMethod | debugValue | debugValueAddr | upcast
+      classMethod | witnessMethod | debugValue | debugValueAddr | upcast
 }

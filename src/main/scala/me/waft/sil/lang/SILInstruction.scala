@@ -63,6 +63,11 @@ case class DebugValue(operand: SILOperand) extends SILInstruction("debug_value")
 
 case class DebugValueAddr(operand: SILOperand) extends SILInstruction("debug_value_addr")
 
+case class ClassMethod(operand: SILOperand,
+                       declRef: SILDeclRef,
+                       funcType: SILType)
+  extends SILInstruction("class_method")
+
 case class WitnessMethod(lookupType: SILType,
                          declRef: SILDeclRef,
                          operand: SILOperand,

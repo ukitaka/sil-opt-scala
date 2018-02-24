@@ -41,6 +41,9 @@ object SILInstructionEmitter {
       emitSILOperand(operand) + " to " + emitSILType(silType)
     case OpenExistentialMetatype(operand, silType) =>
       emitSILOperand(operand) + " to " + emitSILType(silType)
+    case ClassMethod(operand, declRef, funcType) =>
+      emitSILOperand(operand) + ", " + declRef.declRef + //TODO emil sil declRef
+        " : " + emitSILType(funcType)
     case WitnessMethod(archetype, declRef, operand, funcType) =>
       emitSILType(archetype) + ", " + declRef.declRef + //TODO emil sil declRef
       emitSILOperand(operand) + " : " + emitSILType(funcType)

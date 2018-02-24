@@ -82,7 +82,7 @@ Swift Intermediate Language (SIL) parser and optimizer written in Scala.
 
 ### Dynamic Dispatch
 
-- [ ] class_method
+- [x] class_method
 - [ ] objc_method
 - [ ] super_method
 - [ ] objc_super_method

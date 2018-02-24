@@ -32,8 +32,8 @@ case class SILInstructionTraverser(private val instruction: SILInstruction) {
       Set(operand.value)
     case OpenExistentialMetatype(operand, _) =>
       Set(operand.value)
-    case WitnessMethod(_, _, _, _) =>
-      Set() //FIXME: maybe witness_method includes sil value
+    case WitnessMethod(_, _, operand, _) => Set(operand.value)
+    case ClassMethod(operand, _, _) => Set(operand.value)
     case Apply(_, value, _, args, _) => Set(value) ++ args.toSet
     case DebugValue(operand) => Set(operand.value)
     case DebugValueAddr(operand) => Set(operand.value)
