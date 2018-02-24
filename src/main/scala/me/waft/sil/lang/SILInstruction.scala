@@ -8,6 +8,8 @@ case class AllocStack(`type`: SILType) extends SILInstruction("alloc_stack")
 
 case class AllocBox(`type`: SILType) extends SILInstruction("alloc_box")
 
+case class DeallocStack(operand: SILOperand) extends SILInstruction("dealloc_stack")
+
 case class StructExtract(operand: SILOperand, declRef: SILDeclRef)
     extends SILInstruction("struct_extract")
 

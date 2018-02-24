@@ -17,7 +17,7 @@ Swift Intermediate Language (SIL) parser and optimizer written in Scala.
 - [x] alloc_box
 - [ ] alloc_value_buffer
 - [ ] alloc_global
-- [ ] dealloc_stack
+- [x] dealloc_stack
 - [ ] dealloc_box
 - [x] project_box
 - [ ] dealloc_ref

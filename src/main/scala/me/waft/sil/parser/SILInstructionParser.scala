@@ -7,7 +7,7 @@ import me.waft.sil.lang.{SILInstruction, SILInstructionDef, SILValue}
 trait SILInstructionParser
     extends Parser
     with SILValueParser
-    with instruction.AllocParser
+    with instruction.AllocationAndDeallocationParser
     with instruction.AggregateTypesParser
     with instruction.LiteralParser
     with instruction.FunctionApplicationParser
@@ -31,7 +31,7 @@ trait SILInstructionParser
       .map(SILInstructionDef.tupled)
 
   def silInstruction: P[SILInstruction] =
-    allocStack | allocBox | struct | structExtract | integerLiteral |
+    allocStack | deallocStack | allocBox | struct | structExtract | integerLiteral |
       builtin | projectBox | store | load | destoryAddr |
       strongRelease | tuple | tupleExtract | functionApply |
       openExistentialAddr | openExistentialValue | openExistentialRef | openExistentialMetatype |

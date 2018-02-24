@@ -51,6 +51,7 @@ object SILInstructionEmitter {
         " " + emitSILType(silType)
     case DebugValue(operand) => emitSILOperand(operand)
     case DebugValueAddr(operand) => emitSILOperand(operand)
+    case DeallocStack(operand) => emitSILOperand(operand)
   })
 
 }

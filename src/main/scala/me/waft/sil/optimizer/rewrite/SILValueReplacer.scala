@@ -51,6 +51,7 @@ object SILValueReplacer {
         Apply(noThrow, f(value), substitutions, args.map(f), silType)
       case DebugValue(operand) => DebugValue(r(operand))
       case DebugValueAddr(operand) => DebugValueAddr(r(operand))
+      case DeallocStack(operand) => DeallocStack(r(operand))
     }
   }
 
