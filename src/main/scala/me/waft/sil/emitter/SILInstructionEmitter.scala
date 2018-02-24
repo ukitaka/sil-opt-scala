@@ -49,6 +49,8 @@ object SILInstructionEmitter {
         " " + emitSILValue(value) + //TODO: substitutions
         " " + args.map(emitSILValue).mkString(", ") +
         " " + emitSILType(silType)
+    case DebugValue(operand) => emitSILOperand(operand)
+    case DebugValueAddr(operand) => emitSILOperand(operand)
   })
 
 }

@@ -27,8 +27,8 @@ Swift Intermediate Language (SIL) parser and optimizer written in Scala.
 
 ### Debug Information
 
-- [ ] debug_value
-- [ ] debug_value_addr
+- [x] debug_value
+- [x] debug_value_addr
 
 ### Accessing Memory
 

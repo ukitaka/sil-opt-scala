@@ -49,6 +49,8 @@ object SILValueReplacer {
         WitnessMethod(archetype, declRef, r(operand), funcType)
       case Apply(noThrow, value, substitutions, args, silType) =>
         Apply(noThrow, f(value), substitutions, args.map(f), silType)
+      case DebugValue(operand) => DebugValue(r(operand))
+      case DebugValueAddr(operand) => DebugValueAddr(r(operand))
     }
   }
 

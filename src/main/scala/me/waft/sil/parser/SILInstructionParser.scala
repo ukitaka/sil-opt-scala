@@ -14,6 +14,7 @@ trait SILInstructionParser
     with instruction.AccessingMemoryParser
     with instruction.ProtocolParser
     with instruction.DynamicDispatchParser
+    with instruction.DebugInformationParser
     with instruction.ReferenceCountingParser {
 
   import WhiteSpaceApi._
@@ -34,5 +35,5 @@ trait SILInstructionParser
       builtin | projectBox | store | load | destoryAddr |
       strongRelease | tuple | tupleExtract | functionApply |
       openExistentialAddr | openExistentialValue | openExistentialRef | openExistentialMetatype |
-      witnessMethod
+      witnessMethod | debugValue | debugValueAddr
 }
