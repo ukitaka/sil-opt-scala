@@ -7,13 +7,15 @@ import me.waft.sil.lang.{SILInstruction, SILInstructionDef, SILValue}
 trait SILInstructionParser
     extends Parser
     with SILValueParser
-    with instruction.AllocParser
+    with instruction.AllocationAndDeallocationParser
     with instruction.AggregateTypesParser
     with instruction.LiteralParser
     with instruction.FunctionApplicationParser
     with instruction.AccessingMemoryParser
     with instruction.ProtocolParser
     with instruction.DynamicDispatchParser
+    with instruction.DebugInformationParser
+    with instruction.UncheckedConversionsParser
     with instruction.ReferenceCountingParser {
 
   import WhiteSpaceApi._
@@ -30,9 +32,9 @@ trait SILInstructionParser
       .map(SILInstructionDef.tupled)
 
   def silInstruction: P[SILInstruction] =
-    allocStack | allocBox | struct | structExtract | integerLiteral |
+    allocStack | deallocStack | allocBox | struct | structExtract | integerLiteral |
       builtin | projectBox | store | load | destoryAddr |
       strongRelease | tuple | tupleExtract | functionApply |
       openExistentialAddr | openExistentialValue | openExistentialRef | openExistentialMetatype |
-      witnessMethod
+      classMethod | witnessMethod | debugValue | debugValueAddr | upcast
 }

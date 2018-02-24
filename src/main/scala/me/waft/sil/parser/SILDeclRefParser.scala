@@ -3,21 +3,27 @@ package me.waft.sil.parser
 import fastparse.noApi._
 import me.waft.sil.lang.decl
 import me.waft.sil.lang.decl._
+import me.waft.swift.parser.SwiftTypeParser
 
-trait SILDeclRefParser extends IdentifierParser {
+trait SILDeclRefParser extends IdentifierParser with SwiftTypeParser {
 
   import WhiteSpaceApi._
 
   def silDeclRef: P[SILDeclRef] =
-    ("#" ~ silDeclRefIdentifier ~ silDeclSubref.?).map(SILDeclRef.tupled)
+    ("#" ~ silDeclRefIdentifier ~ silDeclSubref.? ~ (":" ~ swiftType).?)
+      .map(SILDeclRef.tupled)
 
   def silDeclRefIdentifier: P[String] = (identifier ~ (".".! ~ identifier)).!
 
   def silDeclSubref: P[SILDeclSubref] =
     ("!" ~ silDeclSubrefPart ~ ("." ~ silDeclUncurryLevel).? ~ ("." ~ silDeclLang).?)
-      .map { case (part, level, lang) => decl.SILDeclSubref(Some(part), level, lang) } |
+      .map {
+        case (part, level, lang) => decl.SILDeclSubref(Some(part), level, lang)
+      } |
       ("!" ~ silDeclUncurryLevel ~ ("." ~ silDeclLang).?)
-        .map { case (level, lang) => decl.SILDeclSubref(None, Some(level), lang) } |
+        .map {
+          case (level, lang) => decl.SILDeclSubref(None, Some(level), lang)
+        } |
       ("!" ~ silDeclLang)
         .const(SILDeclSubref(None, None, Some(SILDeclLang.Foreign)))
 

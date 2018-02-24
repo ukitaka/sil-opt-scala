@@ -1,7 +1,7 @@
 package me.waft.sil.parser.instruction
 
 import fastparse.noApi._
-import me.waft.sil.lang.{Apply, BuiltIn, SILSubstitution}
+import me.waft.sil.lang.{Apply, BuiltIn, SILSubstitution, SILType}
 import me.waft.sil.parser._
 
 trait FunctionApplicationParser extends SILOperandParser with SILTypeParser {
@@ -12,7 +12,7 @@ trait FunctionApplicationParser extends SILOperandParser with SILTypeParser {
     "<" ~ silSubstitution.repTC(1) ~ ">"
 
   def silSubstitution: P[SILSubstitution] =
-    (nominalType ~ "=" ~ nominalType).map(SILSubstitution.tupled)
+    (nominalType | annotatedType).map(SILSubstitution)
 
   def builtin: P[BuiltIn] =
     ("builtin"

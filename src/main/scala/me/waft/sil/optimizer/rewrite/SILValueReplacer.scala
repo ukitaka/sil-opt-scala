@@ -45,10 +45,16 @@ object SILValueReplacer {
         OpenExistentialRef(r(operand), silType)
       case OpenExistentialMetatype(operand, silType) =>
         OpenExistentialMetatype(r(operand), silType)
-      case WitnessMethod(archetype, declRef, funcType) =>
-        WitnessMethod(archetype, declRef, funcType)
+      case ClassMethod(operand, declRef, funcType) =>
+       ClassMethod(r(operand), declRef, funcType)
+      case WitnessMethod(archetype, declRef, operand, funcType) =>
+        WitnessMethod(archetype, declRef, r(operand), funcType)
       case Apply(noThrow, value, substitutions, args, silType) =>
         Apply(noThrow, f(value), substitutions, args.map(f), silType)
+      case DebugValue(operand) => DebugValue(r(operand))
+      case DebugValueAddr(operand) => DebugValueAddr(r(operand))
+      case DeallocStack(operand) => DeallocStack(r(operand))
+      case Upcast(operand, to) => Upcast(r(operand), to)
     }
   }
 

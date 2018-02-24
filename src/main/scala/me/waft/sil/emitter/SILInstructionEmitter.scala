@@ -41,14 +41,21 @@ object SILInstructionEmitter {
       emitSILOperand(operand) + " to " + emitSILType(silType)
     case OpenExistentialMetatype(operand, silType) =>
       emitSILOperand(operand) + " to " + emitSILType(silType)
-    case WitnessMethod(archetype, declRef, funcType) =>
-      emitSILType(archetype) + ", " + declRef.declRef //TODO emil sil declRef
+    case ClassMethod(operand, declRef, funcType) =>
+      emitSILOperand(operand) + ", " + declRef.declRef + //TODO emil sil declRef
         " : " + emitSILType(funcType)
+    case WitnessMethod(archetype, declRef, operand, funcType) =>
+      emitSILType(archetype) + ", " + declRef.declRef + //TODO emil sil declRef
+      emitSILOperand(operand) + " : " + emitSILType(funcType)
     case Apply(noThrow, value, substitutions, args, silType) =>
       (if(noThrow) "nothrow" else "") +
         " " + emitSILValue(value) + //TODO: substitutions
         " " + args.map(emitSILValue).mkString(", ") +
         " " + emitSILType(silType)
+    case DebugValue(operand) => emitSILOperand(operand)
+    case DebugValueAddr(operand) => emitSILOperand(operand)
+    case DeallocStack(operand) => emitSILOperand(operand)
+    case Upcast(operand, to) => emitSILOperand(operand) + "to" + emitSILType(to)
   })
 
 }

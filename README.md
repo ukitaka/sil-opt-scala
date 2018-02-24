@@ -17,7 +17,7 @@ Swift Intermediate Language (SIL) parser and optimizer written in Scala.
 - [x] alloc_box
 - [ ] alloc_value_buffer
 - [ ] alloc_global
-- [ ] dealloc_stack
+- [x] dealloc_stack
 - [ ] dealloc_box
 - [x] project_box
 - [ ] dealloc_ref
@@ -27,8 +27,8 @@ Swift Intermediate Language (SIL) parser and optimizer written in Scala.
 
 ### Debug Information
 
-- [ ] debug_value
-- [ ] debug_value_addr
+- [x] debug_value
+- [x] debug_value_addr
 
 ### Accessing Memory
 
@@ -82,7 +82,7 @@ Swift Intermediate Language (SIL) parser and optimizer written in Scala.
 
 ### Dynamic Dispatch
 
-- [ ] class_method
+- [x] class_method
 - [ ] objc_method
 - [ ] super_method
 - [ ] objc_super_method
@@ -162,7 +162,7 @@ Swift Intermediate Language (SIL) parser and optimizer written in Scala.
 
 ### Unchecked Conversions
 
-- [ ] upcast
+- [x] upcast
 - [ ] address_to_pointer
 - [ ] pointer_to_address
 - [ ] unchecked_ref_cast

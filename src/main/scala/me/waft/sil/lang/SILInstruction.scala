@@ -8,6 +8,8 @@ case class AllocStack(`type`: SILType) extends SILInstruction("alloc_stack")
 
 case class AllocBox(`type`: SILType) extends SILInstruction("alloc_box")
 
+case class DeallocStack(operand: SILOperand) extends SILInstruction("dealloc_stack")
+
 case class StructExtract(operand: SILOperand, declRef: SILDeclRef)
     extends SILInstruction("struct_extract")
 
@@ -55,8 +57,20 @@ case class OpenExistentialRef(operand: SILOperand, `type`: SILType)
 case class OpenExistentialMetatype(operand: SILOperand, `type`: SILType)
     extends SILInstruction("open_existential_metatype")
 
-case class WitnessMethod(archetype: SILType,
+case class Upcast(operand: SILOperand, to: SILType) extends SILInstruction("upcast")
+
+case class DebugValue(operand: SILOperand) extends SILInstruction("debug_value")
+
+case class DebugValueAddr(operand: SILOperand) extends SILInstruction("debug_value_addr")
+
+case class ClassMethod(operand: SILOperand,
+                       declRef: SILDeclRef,
+                       funcType: SILType)
+  extends SILInstruction("class_method")
+
+case class WitnessMethod(lookupType: SILType,
                          declRef: SILDeclRef,
+                         operand: SILOperand,
                          funcType: SILType)
     extends SILInstruction("witness_method")
 

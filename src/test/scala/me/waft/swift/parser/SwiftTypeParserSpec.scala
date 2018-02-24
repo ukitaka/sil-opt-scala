@@ -1,7 +1,8 @@
 package me.waft.swift.parser
 
 import fastparse.core.Parsed
-import me.waft.swift.lang.`type`.{Attribute, FunctionTypeArgument, NominalType, TupleType}
+import me.waft.swift.lang.`type`.GenericParameter.ConformanceRequirement
+import me.waft.swift.lang.`type`._
 import org.scalatest._
 
 class SwiftTypeParserSpec extends FlatSpec with Matchers with SwiftTypeParser {
@@ -56,7 +57,8 @@ class SwiftTypeParserSpec extends FlatSpec with Matchers with SwiftTypeParser {
   "functionTypeArgumentClause" should "be parsed well" in {
     val arg = "(Bool)"
     val result = functionTypeArgumentClause.parse(arg).get.value
-    result should be(TupleType(List(FunctionTypeArgument(List(), NominalType("Bool")))))
+    result should be(
+      TupleType(List(FunctionTypeArgument(List(), NominalType("Bool")))))
   }
 
   "function type parsing" should "work well" in {
@@ -79,5 +81,66 @@ class SwiftTypeParserSpec extends FlatSpec with Matchers with SwiftTypeParser {
     result.argType should matchPattern { case TupleType(_) => }
     result.attributes.head.name should be("convention")
     result.attributes.head.balancedTokens.head should be("thin")
+  }
+
+  "@opened attributed type" should "be parsed well" in {
+    val swiftType = """@opened("1B68354A-4796-11E6-B7DF-B8E856428C60") Proto"""
+    val result = annotatedType.parse(swiftType).get.value
+    result.`type` should be(NominalType("Proto"))
+    result.attributes.head.name should be("opened")
+    result.attributes.head.balancedTokens.head should be(
+      "1B68354A-4796-11E6-B7DF-B8E856428C60")
+  }
+
+  "attributed function type that has generic params" should "be parsed well" in {
+    val attr = """@convention(witness_method: Pingable)"""
+    val res1 = attribute.parse(attr).get.value
+    res1.name should be("convention")
+    res1.balancedTokens.head should be("witness_method: Pingable")
+
+    val gen = """<τ_0_0 where τ_0_0 : Pingable>"""
+    val res2 = genericParameterClause.parse(gen).get.value
+    res2.typeParameters.head should be(NominalType("τ_0_0"))
+    res2.requirements.head should be(
+      ConformanceRequirement(NominalType("τ_0_0"), NominalType("Pingable")))
+
+    val attr2 = """@in_guaranteed"""
+    val res3 = attributes.parse(attr2).get.value.head
+    res3.name should be("in_guaranteed")
+
+    val argType =
+      FunctionTypeArgument(Seq(Attribute("in_guaranteed", Seq())),
+                           NominalType("τ_0_0"))
+
+    val an = """(@in_guaranteed τ_0_0)"""
+    val res4 = functionTypeArgumentClause.parse(an).get.value
+    res4.types.head should be(argType)
+
+    val func = """(@in_guaranteed τ_0_0) -> ()"""
+    val res5 = functionType.parse(func).get.value
+    res5.argType should be(TupleType(Seq(argType)))
+    res5.valueType should be(TupleType(Seq()))
+
+    val s =
+      """@convention(witness_method: Pingable) <τ_0_0 where τ_0_0 : Pingable> (@in_guaranteed τ_0_0) -> ()"""
+    val result = genericFunctionType.parse(s).get.value
+    result.argType should be(TupleType(Seq(argType)))
+    result.valueType should be(TupleType(Seq()))
+  }
+
+  "Tuple type that includes annotated type" should "be parsed well" in {
+    val t = "@convention(thin) (@guaranteed Proto, Bool) -> ()"
+    val result = functionType.parse(t).get.value
+    result.argType should be(
+      TupleType(
+        Seq(FunctionTypeArgument(Seq(Attribute("guaranteed", Seq())),
+                                 NominalType("Proto")),
+            FunctionTypeArgument(Seq(), NominalType(("Bool"))))))
+    result.valueType should be(TupleType(Seq()))
+  }
+
+  "Function parser" should "parse arg type that includes protocol composition type" in {
+    val t = """@convention(thin) (@guaranteed Proto & Ping) -> @owned Ping"""
+    val result = functionType.parse(t).get.value
   }
 }
