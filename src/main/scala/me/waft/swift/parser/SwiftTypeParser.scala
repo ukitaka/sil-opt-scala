@@ -1,6 +1,10 @@
 package me.waft.swift.parser
 
 import fastparse.noApi._
+import me.waft.swift.lang.`type`.GenericParameter.{
+  ConformanceRequirement,
+  Requirement
+}
 import me.waft.swift.lang.`type`._
 
 trait SwiftTypeParser extends SwiftIdentifierParser {
@@ -12,6 +16,8 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
 
   def nominalType: P[NominalType] =
     swiftIdentifier.rep(1, ".").!.map(NominalType)
+
+  def selfType: P[SwiftType] = "Self".const(SelfType)
 
   // TODO: Support only `(NominalType ...)` for now.
   def tupleType: P[TupleType] =
@@ -64,5 +70,28 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
 
   private[this] def balancedToken: P[String] =
     ("witness_method" ~ ":" ~ swiftIdentifier).! | //TODO
-    swiftIdentifier | stringLiteral
+      swiftIdentifier | stringLiteral
+
+  // generics
+
+  def genericParameterClause: P[GenericParameter] =
+    ("<" ~ genericParameterList ~ genericWhereClause.?? ~ ">")
+      .map(g => GenericParameter.apply(g._1, g._2)) // TODO: For some reason, cannot use `.tupled`.
+
+  private[this] def genericParameterList: P[Seq[SwiftType]] = genericParameter.repTC(1)
+
+  private[this] def genericParameter: P[SwiftType] = nominalType //TODO
+
+  private[this] def genericWhereClause: P[Seq[Requirement]] = "where" ~ requirementList
+
+  private[this] def requirementList: P[Seq[Requirement]] = requirement.repTC(1)
+
+  private[this] def requirement: P[Requirement] = conformanceRequirement | sameTypeRequirement
+
+  private[this] def conformanceRequirement: P[Requirement] =
+    ((nominalType | selfType) ~ ":" ~ nominalType)
+      .map(ConformanceRequirement.tupled)
+
+  private[this] def sameTypeRequirement: P[Requirement] =
+    (nominalType ~ "==" ~ nominalType).map(ConformanceRequirement.tupled)
 }

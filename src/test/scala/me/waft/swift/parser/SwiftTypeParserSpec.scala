@@ -1,7 +1,13 @@
 package me.waft.swift.parser
 
 import fastparse.core.Parsed
-import me.waft.swift.lang.`type`.{Attribute, FunctionTypeArgument, NominalType, TupleType}
+import me.waft.swift.lang.`type`.GenericParameter.ConformanceRequirement
+import me.waft.swift.lang.`type`.{
+  Attribute,
+  FunctionTypeArgument,
+  NominalType,
+  TupleType
+}
 import org.scalatest._
 
 class SwiftTypeParserSpec extends FlatSpec with Matchers with SwiftTypeParser {
@@ -56,7 +62,8 @@ class SwiftTypeParserSpec extends FlatSpec with Matchers with SwiftTypeParser {
   "functionTypeArgumentClause" should "be parsed well" in {
     val arg = "(Bool)"
     val result = functionTypeArgumentClause.parse(arg).get.value
-    result should be(TupleType(List(FunctionTypeArgument(List(), NominalType("Bool")))))
+    result should be(
+      TupleType(List(FunctionTypeArgument(List(), NominalType("Bool")))))
   }
 
   "function type parsing" should "work well" in {
@@ -86,7 +93,8 @@ class SwiftTypeParserSpec extends FlatSpec with Matchers with SwiftTypeParser {
     val result = annotatedType.parse(swiftType).get.value
     result.`type` should be(NominalType("Proto"))
     result.attributes.head.name should be("opened")
-    result.attributes.head.balancedTokens.head should be("1B68354A-4796-11E6-B7DF-B8E856428C60")
+    result.attributes.head.balancedTokens.head should be(
+      "1B68354A-4796-11E6-B7DF-B8E856428C60")
   }
 
   "attributed function type that has generic params" should "be parsed well" in {
@@ -94,6 +102,12 @@ class SwiftTypeParserSpec extends FlatSpec with Matchers with SwiftTypeParser {
     val res1 = attribute.parse(attr).get.value
     res1.name should be("convention")
     res1.balancedTokens.head should be("witness_method: Pingable")
+
+    val gen = """<τ_0_0 where τ_0_0 : Pingable>"""
+    val res2 = genericParameterClause.parse(gen).get.value
+    res2.typeParameters.head should be(NominalType("τ_0_0"))
+    res2.requirements.head should be(
+      ConformanceRequirement(NominalType("τ_0_0"), NominalType("Pingable")))
 
 //    val s = """$@convention(witness_method: Pingable) <τ_0_0 where τ_0_0 : Pingable> (@in_guaranteed τ_0_0) -> ()"""
 //    val result = functionType.parse(s).get.value
