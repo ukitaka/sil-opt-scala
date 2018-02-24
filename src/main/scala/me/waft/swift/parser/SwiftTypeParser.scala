@@ -87,18 +87,15 @@ trait SwiftTypeParser extends SwiftIdentifierParser {
     ("<" ~ genericParameterList ~ genericWhereClause.?? ~ ">")
       .map(g => GenericParameter.apply(g._1, g._2)) // TODO: For some reason, cannot use `.tupled`.
 
-  private[this] def genericParameterList: P[Seq[SwiftType]] =
-    genericParameter.repTC(1)
+  private[this] def genericParameterList: P[Seq[SwiftType]] = genericParameter.repTC(1)
 
   private[this] def genericParameter: P[SwiftType] = nominalType //TODO
 
-  private[this] def genericWhereClause: P[Seq[Requirement]] =
-    "where" ~ requirementList
+  private[this] def genericWhereClause: P[Seq[Requirement]] = "where" ~ requirementList
 
   private[this] def requirementList: P[Seq[Requirement]] = requirement.repTC(1)
 
-  private[this] def requirement: P[Requirement] =
-    conformanceRequirement | sameTypeRequirement
+  private[this] def requirement: P[Requirement] = conformanceRequirement | sameTypeRequirement
 
   private[this] def conformanceRequirement: P[Requirement] =
     ((nominalType | selfType) ~ ":" ~ nominalType)

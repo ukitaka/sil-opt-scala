@@ -46,6 +46,12 @@ class SILInstructionsParserSpec extends FlatSpec with Matchers with SILInstructi
     result.name should be("witness_method")
   }
 
+  "witness_method instruction" should "be parsed well 2" in {
+    val instruction = """witness_method $@opened("1E467EB8-D5C5-11E5-8C0E-A82066121073") Pingable, #Pingable.ping!1 : <Self where Self : Pingable> (Self) -> () -> (), %2 : $*@opened("1E467EB8-D5C5-11E5-8C0E-A82066121073") Pingable : $@convention(witness_method: Pingable) <τ_0_0 where τ_0_0 : Pingable> (@in_guaranteed τ_0_0) -> ()""".stripMargin
+    val result = witnessMethod.parse(instruction).get.value
+    result.name should be("witness_method")
+  }
+
   "apply instruction" should "be parsed well" in {
     val instruction = """apply %3<@opened("1E467EB8-D5C5-11E5-8C0E-A82066121073") Pingable>(%2) : $@convention(witness_method: Pingable) <τ_0_0 where τ_0_0 : Pingable> (@in_guaranteed τ_0_0) -> ()"""
     val result = functionApply.parse(instruction).get.value
