@@ -4,6 +4,7 @@ import me.waft.sil.lang._
 import me.waft.sil.optimizer.analysis.SILFunctionAnalysis
 import me.waft.sil.optimizer.rewrite.{SILFunctionValueRenamer, SILValueReplacer}
 import me.waft.sil.optimizer.util.Implicits._
+import me.waft.swift.lang.`type`.AnnotatedType
 
 case class CSE(function: SILFunction) {
   type Available = Map[SILInstruction, SILValue]
@@ -11,10 +12,11 @@ case class CSE(function: SILFunction) {
 
   case class EliminationInfo(available: Available, replace: Replace) {
     def addToReplace(instructionDef: SILInstructionDef) =
-      EliminationInfo(available,
-                      replace ++ instructionDef.values
-                        .map(_ -> available(instructionDef.instruction))
-                        .toMap)
+      EliminationInfo(
+        available,
+        replace ++ instructionDef.values
+          .map(_ -> getRepresentative(instructionDef.instruction).get._2)
+          .toMap)
 
     def makeAvailable(instructionDef: SILInstructionDef): EliminationInfo =
       EliminationInfo(
@@ -23,6 +25,20 @@ case class CSE(function: SILFunction) {
           .toMap,
         replace
       )
+
+    def getRepresentative(
+        instruction: SILInstruction): Option[(SILInstruction, SILValue)] =
+      instruction match {
+        case OpenExistentialRef(op, SILType(AnnotatedType(_, ty))) =>
+          available.find {
+            case (OpenExistentialRef(op2, SILType(AnnotatedType(_, ty2))), _) =>
+              op == op2 && ty == ty2
+          }
+        case _ => available.get(instruction).map(v => (instruction, v))
+      }
+
+    def isAlreadyAvailable(inst: SILInstruction): Boolean =
+      getRepresentative(inst).isDefined
   }
 
   object EliminationInfo {
@@ -47,7 +63,7 @@ case class CSE(function: SILFunction) {
   def eliminate(info: EliminationInfo,
                 instructionDef: SILInstructionDef): EliminationInfo =
     if (canHandle(instructionDef)) {
-      if (info.available.contains(instructionDef.instruction)) {
+      if (info.isAlreadyAvailable(instructionDef.instruction)) {
         info.addToReplace(instructionDef)
       } else {
         info.makeAvailable(instructionDef)
@@ -107,8 +123,8 @@ case class CSE(function: SILFunction) {
       //    case ThinFunctionToPointer => true
       //    case PointerToThinFunction => true
       //    case MarkDependence => true
-      //    case OpenExistentialRef => true
-      case _ => false
+      case OpenExistentialRef(_, _) => true
+      case _                        => false
     }
 }
 

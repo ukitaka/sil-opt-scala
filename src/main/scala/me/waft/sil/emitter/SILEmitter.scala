@@ -1,6 +1,11 @@
 package me.waft.sil.emitter
 
 import me.waft.sil.lang._
+import me.waft.swift.lang.`type`.GenericParameter.{
+  ConformanceRequirement,
+  Requirement,
+  SameTypeRequirement
+}
 import me.waft.swift.lang.`type`._
 
 object SILEmitter {
@@ -19,7 +24,26 @@ object SILEmitter {
     case FunctionTypeArgument(_, t) => "(" + emitSwiftType(t) + ")"
     case AnnotatedType(attributes, t) =>
       attributes.map(emitSwiftTypeAttribute).mkString(" ") + emitSwiftType(t)
+    case GenericFunctionType(attr,
+                             genericParameter,
+                             argType,
+                             throwing,
+                             returnType) =>
+      attr.map(emitSwiftTypeAttribute).mkString(" ")
   }
+
+  def emitGenericParameter(genericParameter: GenericParameter): String =
+    genericParameter.typeParameters.mkString(", ") + " where " + genericParameter.requirements
+      .map(emitGenericParameterRequirement)
+      .mkString(", ")
+
+  def emitGenericParameterRequirement(requirement: Requirement): String =
+    requirement match {
+      case ConformanceRequirement(target, conformanceTo) =>
+        emitSwiftType(target) + " : " + emitSwiftType(conformanceTo)
+      case SameTypeRequirement(type1, type2) =>
+        emitSwiftType(type1) + " == " + emitSwiftType(type2)
+    }
 
   def emitSwiftTypeAttribute(attribute: Attribute): String =
     "@" + attribute.name + attribute.balancedTokens.mkString("(", ",", ")")
