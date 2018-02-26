@@ -107,7 +107,7 @@ case class CSE(function: SILFunction) {
       //    case ThinFunctionToPointer => true
       //    case PointerToThinFunction => true
       //    case MarkDependence => true
-      //    case OpenExistentialRef => true
+      case OpenExistentialRef(_, _) => true
       case _ => false
     }
 }

@@ -170,7 +170,7 @@ class CSESpec extends FlatSpec with Matchers with SILFunctionParser {
     optimized should be(expected)
   }
 
-  ignore should "optimize @cse_open_existential" in {
+  it should "optimize @cse_open_existential" in {
     val sil =
       """|sil @cse_open_existential : $@convention(thin) (@guaranteed Proto, Bool) -> () {
          |bb0(%0 : $Proto, %1 : $Bool):
@@ -233,6 +233,7 @@ class CSESpec extends FlatSpec with Matchers with SILFunctionParser {
     val original = silFunction.parse(sil).get.value
     val expected = silFunction.parse(optimizedSil).get.value
     val optimized = CSE.run(original)
+    println( SILEmitter.emitSILFunction(optimized) )
     optimized should be(expected)
   }
 
