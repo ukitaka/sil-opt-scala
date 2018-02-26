@@ -5,7 +5,7 @@ import me.waft.sil.parser.SILFunctionParser
 import org.scalatest.{FlatSpec, Matchers}
 
 class CSESpec extends FlatSpec with Matchers with SILFunctionParser {
-  val optimizer = it
+  val optimizer = ignore
 
   optimizer should "optimize @test0 well" in {
     val sil =
@@ -233,7 +233,10 @@ class CSESpec extends FlatSpec with Matchers with SILFunctionParser {
     val original = silFunction.parse(sil).get.value
     val expected = silFunction.parse(optimizedSil).get.value
     val optimized = CSE.run(original)
-    println( SILEmitter.emitSILFunction(optimized) )
+    println( "[original]--------------------------" )
+    println( SILEmitter.emitSILFunction(original)  )
+    println( "[optimized]--------------------------" )
+    println( SILEmitter.emitSILFunction(optimized)  )
     optimized should be(expected)
   }
 
