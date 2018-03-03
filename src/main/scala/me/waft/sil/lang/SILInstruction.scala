@@ -10,6 +10,9 @@ case class AllocBox(`type`: SILType) extends SILInstruction("alloc_box")
 
 case class DeallocStack(operand: SILOperand) extends SILInstruction("dealloc_stack")
 
+case class StructElementAddr(operand: SILOperand, declRef: SILDeclRef)
+  extends SILInstruction("struct_element_addr")
+
 case class StructExtract(operand: SILOperand, declRef: SILDeclRef)
     extends SILInstruction("struct_extract")
 

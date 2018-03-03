@@ -1,7 +1,7 @@
 package me.waft.sil.parser.instruction
 
 import fastparse.noApi._
-import me.waft.sil.lang.{Struct, StructExtract, Tuple, TupleExtract}
+import me.waft.sil.lang._
 import me.waft.sil.parser.{SILDeclRefParser, SILOperandParser, SILTypeParser}
 
 trait AggregateTypesParser extends SILDeclRefParser
@@ -12,6 +12,9 @@ trait AggregateTypesParser extends SILDeclRefParser
 
   def structExtract: P[StructExtract] =
     ("struct_extract" ~ silOperand ~ "," ~ silDeclRef).map(StructExtract.tupled)
+
+  def structElementAddr: P[StructElementAddr] =
+    ("struct_element_addr" ~ silOperand ~ "," ~ silDeclRef).map(StructElementAddr.tupled)
 
   def struct: P[Struct] =
     ("struct" ~ silType ~ silOperand.repTC(1).parened).map(Struct.tupled)
