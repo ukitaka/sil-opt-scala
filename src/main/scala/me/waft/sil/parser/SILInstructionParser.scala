@@ -32,7 +32,7 @@ trait SILInstructionParser
       .map(SILInstructionDef.tupled)
 
   def silInstruction: P[SILInstruction] =
-    allocStack | deallocStack | allocBox | struct | structExtract | integerLiteral |
+    allocStack | deallocStack | allocBox | struct | structExtract | structElementAddr  | integerLiteral |
       builtin | projectBox | store | load | destoryAddr |
       strongRelease | tuple | tupleExtract | functionApply |
       openExistentialAddr | openExistentialValue | openExistentialRef | openExistentialMetatype |

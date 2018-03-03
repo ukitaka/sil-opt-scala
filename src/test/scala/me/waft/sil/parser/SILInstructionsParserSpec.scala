@@ -71,4 +71,9 @@ class SILInstructionsParserSpec extends FlatSpec with Matchers with SILInstructi
     result.name should be("class_method")
   }
 
+  "struct_element_addr instruction" should "be parsed well" in {
+    val instruction = """struct_element_addr %22 : $*Int64, #Int64._value"""
+    val result = structElementAddr.parse(instruction).get.value
+    result.name should be("struct_element_addr")
+  }
 }
