@@ -105,8 +105,8 @@ class Mem2RegSpec extends FlatSpec with Matchers with SILFunctionParser {
       """.stripMargin
 
     val func0 = silFunction.parse(sil).get.value
-//    val func1 = silFunction.parse(optimizedSil).get.value
+    val func1 = silFunction.parse(optimizedSil).get.value
     //    val func2 = Mem2Reg.run(func0)
-    //    func1 shouldBe (func2)
+//        func1 shouldBe (func2)
   }
 }

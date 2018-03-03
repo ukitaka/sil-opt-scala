@@ -57,6 +57,7 @@ object SILValueReplacer {
       case DebugValueAddr(operand) => DebugValueAddr(r(operand))
       case DeallocStack(operand)   => DeallocStack(r(operand))
       case Upcast(operand, to)     => Upcast(r(operand), to)
+      case CondFail(operand)     => CondFail(r(operand))
     }
   }
 

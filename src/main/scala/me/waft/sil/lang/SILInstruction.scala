@@ -110,6 +110,8 @@ case class CondBr(value: SILValue,
                   ifFalseArgs: Seq[SILOperand])
     extends SILTerminator("cond_br")
 
+case class CondFail(operand: SILOperand) extends SILInstruction("cond_fail")
+
 // case class SwitchValue() extends SILTerminator
 // case class SelectValue() extends SILTerminator
 // case class SwitchEnum() extends SILTerminator

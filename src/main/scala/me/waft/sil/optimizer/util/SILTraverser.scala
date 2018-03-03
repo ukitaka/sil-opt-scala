@@ -7,6 +7,7 @@ case class SILInstructionTraverser(private val instruction: SILInstruction) {
     case AllocStack(_)                   => Set()
     case AllocBox(_)                     => Set()
     case StructExtract(operand, _)       => Set(operand.value)
+    case StructElementAddr(operand, _)   => Set(operand.value)
     case IntegerLiteral(_, _)            => Set()
     case BuiltIn(_, _, operands, _)      => operands.map(_.value).toSet
     case Struct(_, operands)             => operands.map(_.value).toSet
@@ -39,6 +40,7 @@ case class SILInstructionTraverser(private val instruction: SILInstruction) {
     case DebugValueAddr(operand) => Set(operand.value)
     case DeallocStack(operand) => Set(operand.value)
     case Upcast(operand, _) => Set(operand.value)
+    case CondFail(operand) => Set(operand.value)
   }
 }
 
