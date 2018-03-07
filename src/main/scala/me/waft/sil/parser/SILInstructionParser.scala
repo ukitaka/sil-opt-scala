@@ -16,6 +16,7 @@ trait SILInstructionParser
     with instruction.DynamicDispatchParser
     with instruction.DebugInformationParser
     with instruction.UncheckedConversionsParser
+    with instruction.RuntimeFailuresParser
     with instruction.ReferenceCountingParser {
 
   import WhiteSpaceApi._
@@ -32,9 +33,9 @@ trait SILInstructionParser
       .map(SILInstructionDef.tupled)
 
   def silInstruction: P[SILInstruction] =
-    allocStack | deallocStack | allocBox | struct | structExtract | integerLiteral |
+    allocStack | deallocStack | allocBox | struct | structExtract | structElementAddr  | integerLiteral |
       builtin | projectBox | store | load | destoryAddr |
       strongRelease | tuple | tupleExtract | functionApply |
       openExistentialAddr | openExistentialValue | openExistentialRef | openExistentialMetatype |
-      classMethod | witnessMethod | debugValue | debugValueAddr | upcast
+      classMethod | witnessMethod | debugValue | debugValueAddr | upcast | condFail
 }

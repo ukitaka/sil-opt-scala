@@ -11,6 +11,7 @@ object SILInstructionEmitter {
     case AllocStack(t) => emitSILType(t)
     case AllocBox(t) => emitSILType(t)
     case StructExtract(operand, _) => emitSILOperand(operand)
+    case StructElementAddr(operand, _) => emitSILOperand(operand)
     case IntegerLiteral(_, _) => ""
     case BuiltIn(_, _, operands, _) => operands.map(emitSILOperand).mkString(", ")
     case Struct(_, operands) => operands.map(emitSILOperand).mkString(", ")
@@ -56,6 +57,7 @@ object SILInstructionEmitter {
     case DebugValueAddr(operand) => emitSILOperand(operand)
     case DeallocStack(operand) => emitSILOperand(operand)
     case Upcast(operand, to) => emitSILOperand(operand) + "to" + emitSILType(to)
+    case CondFail(operand) => emitSILOperand(operand)
   })
 
 }

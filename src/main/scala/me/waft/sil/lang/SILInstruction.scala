@@ -10,6 +10,9 @@ case class AllocBox(`type`: SILType) extends SILInstruction("alloc_box")
 
 case class DeallocStack(operand: SILOperand) extends SILInstruction("dealloc_stack")
 
+case class StructElementAddr(operand: SILOperand, declRef: SILDeclRef)
+  extends SILInstruction("struct_element_addr")
+
 case class StructExtract(operand: SILOperand, declRef: SILDeclRef)
     extends SILInstruction("struct_extract")
 
@@ -106,6 +109,8 @@ case class CondBr(value: SILValue,
                   ifFalseLabel: String,
                   ifFalseArgs: Seq[SILOperand])
     extends SILTerminator("cond_br")
+
+case class CondFail(operand: SILOperand) extends SILInstruction("cond_fail")
 
 // case class SwitchValue() extends SILTerminator
 // case class SelectValue() extends SILTerminator
